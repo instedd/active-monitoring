@@ -19,7 +19,7 @@ defmodule ActiveMonitoring.Mixfile do
   def application do
     [mod: {ActiveMonitoring, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :mariaex]]
+                    :phoenix_ecto, :mariaex, :timex_ecto, :coherence]]
   end
 
   # Specifies which paths to compile per environment.
@@ -30,14 +30,19 @@ defmodule ActiveMonitoring.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.2.1"},
-     {:phoenix_pubsub, "~> 1.0"},
-     {:phoenix_ecto, "~> 3.0"},
-     {:mariaex, ">= 0.0.0"},
-     {:phoenix_html, "~> 2.6"},
-     {:phoenix_live_reload, "~> 1.0", only: :dev},
-     {:gettext, "~> 0.11"},
-     {:cowboy, "~> 1.0"}]
+    [
+      {:phoenix, "~> 1.2.1"},
+      {:phoenix_pubsub, "~> 1.0"},
+      {:phoenix_ecto, "~> 3.0"},
+      {:mariaex, ">= 0.0.0"},
+      {:phoenix_html, "~> 2.6"},
+      {:phoenix_live_reload, "~> 1.0", only: :dev},
+      {:gettext, "~> 0.11"},
+      {:timex, "~> 3.0", override: true},
+      {:timex_ecto, "~> 3.0", override: true},
+      {:coherence, "~> 0.3"},
+      {:cowboy, "~> 1.0"},
+    ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

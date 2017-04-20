@@ -67,3 +67,21 @@ config :active_monitoring, ActiveMonitoring.Repo,
   database: System.get_env("DATABASE_NAME") || "active_monitoring",
   hostname: System.get_env("DATABASE_HOST") || "localhost",
   pool_size: 20
+
+smtp_config = [
+  adapter: Swoosh.Adapters.SMTP,
+  relay: {:system, "SMTP_SERVER"},
+  port: {:system, "SMTP_PORT"},
+  username: {:system, "SMTP_USER"},
+  password: {:system, "SMTP_PASS"},
+  tls: :always, # can be `:always` or `:never`
+  ssl: false, # can be `true`
+  retries: 1
+]
+
+config :active_monitoring, ActiveMonitoring.Mailer, smtp_config
+config :coherence, ActiveMonitoring.Coherence.Mailer, smtp_config
+
+config :coherence,
+  email_from_name: System.get_env("EMAIL_FROM_NAME"),
+  email_from_email: System.get_env("EMAIL_FROM_EMAIL")

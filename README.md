@@ -18,6 +18,20 @@ You can use [dockerdev](https://github.com/waj/dockerdev) to access the web app 
 
 Just follow the instructions at the README of dockerdev.
 
+## Coherence
+
+### Upgrading
+
+We're using Coherence to support registration, authorization, and other user management flows.
+If you need to upgrade the version of Coherence that Ask uses, there are some steps that you need to mind.
+Please check them out here: https://github.com/smpallen99/coherence#upgrading
+
+### Coherence Mails
+
+Coherence uses Swoosh as it's mailer lib. In development, we use Swoosh's local adapter, which
+mounts a mini email client that displays sent emails at `{BASE_URL}/dev/mailbox`. That comes handy
+to test flows which depend on email without having to send them in development.
+
 ## Learn more
 
 * Phoenix
