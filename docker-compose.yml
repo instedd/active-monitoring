@@ -1,0 +1,53 @@
+version: '2'
+volumes:
+  db:
+  node_modules:
+  deps:
+  build:
+
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - 'db:/var/lib/mysql'
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+
+  app:
+    command: elixir --sname server -S mix phoenix.server
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    working_dir: /app
+    depends_on:
+      - db
+    volumes:
+      - './:/app'
+      - 'deps:/app/deps'
+      - 'build:/app/_build'
+    environment:
+      DATABASE_HOST: db
+      HTTP_PORT: 80
+      TERM: xterm
+    ports:
+      - 4000:80
+
+  brunch:
+    build:
+      context: ./
+      dockerfile: Dockerfile.brunch
+    command: node_modules/brunch/bin/brunch watch
+    restart: always
+    working_dir: /app
+    stop_signal: SIGKILL
+    volumes:
+      - './:/app'
+      - 'deps:/app/deps'
+      - 'node_modules:/app/node_modules'
+
+  ngrok:
+    image: wernight/ngrok
+    ports:
+      - 4040:4040
+    environment:
+      NGROK_PORT: 'app:80'
