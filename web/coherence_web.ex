@@ -13,7 +13,6 @@ defmodule ActiveMonitoring.Coherence.Web do
       import ActiveMonitoring.ErrorHelpers
       import ActiveMonitoring.Gettext
       import ActiveMonitoring.Coherence.ViewHelpers
-
     end
   end
 

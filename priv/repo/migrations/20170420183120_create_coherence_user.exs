@@ -4,23 +4,29 @@ defmodule ActiveMonitoring.Repo.Migrations.CreateCoherenceUser do
     create table(:users) do
       add :name, :string
       add :email, :string
-      # authenticatable
-      add :password_hash, :string
-      # recoverable
-      add :reset_password_token, :string
-      add :reset_password_sent_at, :datetime
-      # lockable
-      add :failed_attempts, :integer, default: 0
-      add :locked_at, :datetime
+      # rememberable
+      add :remember_created_at, :utc_datetime
+      # confirmable
+      add :confirmation_token, :string
+      add :confirmed_at, :utc_datetime
+      add :confirmation_sent_at, :utc_datetime
       # trackable
       add :sign_in_count, :integer, default: 0
-      add :current_sign_in_at, :datetime
-      add :last_sign_in_at, :datetime
+      add :current_sign_in_at, :utc_datetime
+      add :last_sign_in_at, :utc_datetime
       add :current_sign_in_ip, :string
       add :last_sign_in_ip, :string
       # unlockable_with_token
       add :unlock_token, :string
-      
+      # lockable
+      add :failed_attempts, :integer, default: 0
+      add :locked_at, :utc_datetime
+      # recoverable
+      add :reset_password_token, :string
+      add :reset_password_sent_at, :utc_datetime
+      # authenticatable
+      add :password_hash, :string
+
       timestamps()
     end
     create unique_index(:users, [:email])

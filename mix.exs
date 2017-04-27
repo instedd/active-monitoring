@@ -40,7 +40,7 @@ defmodule ActiveMonitoring.Mixfile do
       {:gettext, "~> 0.11"},
       {:timex, "~> 3.0", override: true},
       {:timex_ecto, "~> 3.0", override: true},
-      {:coherence, "~> 0.3"},
+      {:coherence, git: "https://github.com/manastech/coherence.git", branch: "v0.3.2"},
       {:cowboy, "~> 1.0"},
     ]
   end

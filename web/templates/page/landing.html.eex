@@ -1,0 +1,7 @@
+<body>
+  <h1>Active Monitoring</h1>
+  <ul>
+    <li><a href='<%= session_path @conn, :new %>'>Login</a></li>
+    <li><a href="<%= registration_path @conn, :new %>">Sign up for free</a></li>
+  </ul>
+</body>

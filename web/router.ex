@@ -44,12 +44,13 @@ defmodule ActiveMonitoring.Router do
   end
 
   scope "/", ActiveMonitoring do
-    pipe_through :browser # Use the default browser stack
+    pipe_through :browser
     coherence_routes :public
 
     get "/registrations/confirmation_sent", Coherence.RegistrationController, :confirmation_sent
     get "/registrations/confirmation_expired", Coherence.RegistrationController, :confirmation_expired
     get "/passwords/password_recovery_sent", Coherence.PasswordController, :password_recovery_sent
+
     get "/*path", PageController, :index
   end
 end
