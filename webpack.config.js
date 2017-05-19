@@ -14,7 +14,7 @@ module.exports = {
    Only code referenced from this files will be included in the target bundles.
    */
   entry: [
-    "./web/static/js/app.js",
+    "./web/static/js/app.jsx",
     "./web/static/css/app.scss"
   ],
 
@@ -26,12 +26,12 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['es2015', 'flow']
+            presets: ['es2015', 'react', 'flow']
           }
         }
       },

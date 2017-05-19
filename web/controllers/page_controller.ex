@@ -11,7 +11,7 @@ defmodule ActiveMonitoring.PageController do
       {path, nil} ->
         conn |> redirect(to: "#{session_path(conn, :new)}?redirect=/#{Enum.join path, "/"}")
       _ ->
-        conn |> render("index.html", user: user)
+        conn |> render("app.html", user: user)
     end
   end
 end
