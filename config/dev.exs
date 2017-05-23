@@ -48,3 +48,8 @@ config :coherence,
 
 config :coherence, ActiveMonitoring.Coherence.Mailer,
   adapter: Swoosh.Adapters.Local
+
+config :guisso,
+  client_id: System.get_env("GUISSO_CLIENT_ID"),
+  client_secret: System.get_env("GUISSO_CLIENT_SECRET"),
+  redirect_uri: System.get_env("GUISSO_REDIRECT_URI")

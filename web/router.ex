@@ -53,6 +53,9 @@ defmodule ActiveMonitoring.Router do
     get "/registrations/confirmation_expired", Coherence.RegistrationController, :confirmation_expired
     get "/passwords/password_recovery_sent", Coherence.PasswordController, :password_recovery_sent
 
+    get "/login", OauthController, :login
+    get "/oauth_callback", OauthController, :oauth_callback
+
     get "/*path", PageController, :index
   end
 end
