@@ -35,7 +35,7 @@ defmodule ActiveMonitoring.Router do
     end
   end
 
-  scope "/api" , Ask do
+  scope "/api", ActiveMonitoring do
     pipe_through :api
 
     scope "/v1" do
