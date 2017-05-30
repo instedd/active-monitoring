@@ -1,39 +1,42 @@
 defmodule ActiveMonitoring.OauthController do
   use ActiveMonitoring.Web, :controller
 
-  def login(conn, params) do
+  def login(conn, _params) do
+    guisso_settings = Application.get_env(:active_monitoring, :guisso)
     conn = set_app_client_id(conn)
     csrf_token = generate_csrf_token(conn)
 
     auth_params = %{
-      client_id: Application.get_env(:guisso, :client_id),
+      client_id: guisso_settings[:client_id],
       response_type: "code",
       scope: "openid email",
-      redirect_uri: Application.get_env(:guisso, :redirect_uri),
+      redirect_uri: guisso_settings[:redirect_uri],
       state: csrf_token,
     }
 
-    url = "https://accounts.google.com/o/oauth2/v2/auth?#{URI.encode_query(auth_params)}"
+    url = "#{guisso_settings[:auth_url]}?#{URI.encode_query(auth_params)}"
 
     redirect(conn, external: url)
   end
 
   def oauth_callback(conn, %{"code" => code, "state" => state}) do
+    guisso_settings = Application.get_env(:active_monitoring, :guisso)
+
     case verify_csrf_token(conn, state) do
       :ok ->
         token_params = [
           code: code,
-          client_id: Application.get_env(:guisso, :client_id),
-          client_secret: Application.get_env(:guisso, :client_secret),
-          redirect_uri: Application.get_env(:guisso, :redirect_uri),
+          client_id: guisso_settings[:client_id],
+          client_secret: guisso_settings[:client_secret],
+          redirect_uri: guisso_settings[:redirect_uri],
           grant_type: "authorization_code"
         ]
 
-        case HTTPoison.post("https://www.googleapis.com/oauth2/v4/token", { :form, token_params }) do
+        case HTTPoison.post(guisso_settings[:token_url], { :form, token_params }) do
           {:ok, response} ->
             {:ok, %{ "id_token" => jwt }} = Poison.decode(response.body)
 
-            [header, payload, secret] = String.split(jwt, ".")
+            [_header, payload, _secret] = String.split(jwt, ".")
             {:ok, payload_json} = Base.decode64(payload, padding: false)
             {:ok, parsed_jwt} = Poison.decode(payload_json)
 
@@ -42,7 +45,7 @@ defmodule ActiveMonitoring.OauthController do
           _error ->
             text conn, "An error occurred while logging you in."
         end
-      { :error, cause } ->
+      { :error, _cause } ->
         text conn, "An error occurred while logging you in."
     end
   end
