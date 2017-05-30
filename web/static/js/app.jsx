@@ -15,11 +15,8 @@ import Channels from './components/Channels.jsx'
 const history = createHistory()
 const middleware = routerMiddleware(history)
 
-const numReducer = (state = 0, action) => { return state + 1 }
-
 const store = createStore(
-  combineReducers({ num: numReducer,
-                    router: routerReducer }),
+  combineReducers({ router: routerReducer }),
   applyMiddleware(middleware)
 )
 
@@ -31,7 +28,7 @@ if (root) {
       <Router history={history}>
         <div>
           <Nav/>
-          <Route exact path="/'">
+          <Route exact path="/">
             <Redirect to="/campaigns"/>
           </Route>
 

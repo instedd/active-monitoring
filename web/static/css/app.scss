@@ -1,3 +1,71 @@
-@import "../vendor/css/mui";
+@import "~react-md/src/scss/react-md";
 
-@import "reset-mui";
+$md-primary-color: $md-green-500;
+$md-secondary-color: $md-pink-a-400;
+
+@include react-md-everything;
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #eeeeee;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.app-header {
+  background-color: #444444;
+  border-bottom: 1px solid #222222;
+  padding: 10px 50px;
+  color: white;
+}
+
+.app-subheader {
+  background-color: #444444;
+  padding: 10px 50px;
+  color: white;
+  height: 100px;
+  h3 {
+    color: white;
+  }
+}
+
+ul.app-menu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  li {
+    display: inline-block;
+    margin-right: 20px;
+    a {
+      text-decoration: none;
+      color: #a8a8a8;
+    }
+    a.active {
+      color: white;
+    }
+  }
+}
+
+.app-user-info {
+  color: #a8a8a8;
+  text-align: right;
+  line-height: 1.8;
+  * {
+    text-align: left;
+  }
+  i.material-icons {
+    color: #a8a8a8;
+  }
+}
+
+.app-user-menu {
+  margin: -12px 0;
+}
+
+.floating-add-button {
+}
