@@ -25,7 +25,7 @@ defmodule ActiveMonitoring.Router do
     plug :fetch_session
     plug :fetch_flash
 
-    plug Coherence.Authentication.Session, db_model: ActiveMonitoring.User
+    plug Coherence.Authentication.Session, db_model: ActiveMonitoring.User, protected: true
   end
 
   if Mix.env == :dev do
@@ -35,11 +35,13 @@ defmodule ActiveMonitoring.Router do
     end
   end
 
-  scope "/api" , Ask do
+  scope "/api", ActiveMonitoring do
     pipe_through :api
 
     scope "/v1" do
       delete "/sessions", Coherence.SessionController, :api_delete
+
+      resources "/campaigns", CampaignsController, only: [:index, :create, :update, :delete]
     end
   end
 
