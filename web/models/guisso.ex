@@ -1,7 +1,6 @@
-defmodule ActiveMonitoring.OauthController do
-  use ActiveMonitoring.Web, :controller
+defmodule Guisso do
 
-  def login(conn, _params) do
+  def auth_code_url(conn) do
     guisso_settings = Application.get_env(:active_monitoring, :guisso)
     conn = set_app_client_id(conn)
     csrf_token = generate_csrf_token(conn)
@@ -14,12 +13,10 @@ defmodule ActiveMonitoring.OauthController do
       state: csrf_token,
     }
 
-    url = "#{guisso_settings[:auth_url]}?#{URI.encode_query(auth_params)}"
-
-    redirect(conn, external: url)
+    {conn, "#{guisso_settings[:auth_url]}?#{URI.encode_query(auth_params)}"}
   end
 
-  def oauth_callback(conn, %{"code" => code, "state" => state}) do
+  def request_auth_token(conn, %{"code" => code, "state" => state}) do
     guisso_settings = Application.get_env(:active_monitoring, :guisso)
 
     case verify_csrf_token(conn, state) do
@@ -37,44 +34,23 @@ defmodule ActiveMonitoring.OauthController do
             {:ok, %{ "id_token" => id_token }} = Poison.decode(response.body)
             {:ok, token} = verify_jwt(id_token, guisso_settings[:client_secret])
 
-            text conn, "Welcome #{token.claims["email"]}"
+            {:ok, token.claims["email"]}
 
           _error ->
-            text conn, "An error occurred while logging you in."
+            :error
         end
       { :error, _cause } ->
-        text conn, "An error occurred while logging you in."
-    end
-  end
-
-  defp verify_jwt(id_token, client_secret) do
-    token = Joken.token(id_token)
-
-    sign_fn = case Joken.peek_header(token) do
-                %{ "alg" => "HS256" } -> &Joken.hs256/1
-                %{ "alg" => "HS384" } -> &Joken.hs384/1
-                %{ "alg" => "HS512" } -> &Joken.hs512/1
-              end
-
-    signer = sign_fn.(client_secret)
-
-    token = Joken.Signer.verify(token, signer)
-
-    case token.errors do
-      [] ->
-        { :ok, token }
-      _ ->
         :error
     end
   end
 
   defp get_app_client_id(conn) do
-    get_session(conn, :client_id)
+    Plug.Conn.get_session(conn, :client_id)
   end
 
   defp set_app_client_id(conn) do
     client_id = :crypto.strong_rand_bytes(10) |> Base.encode64()
-    put_session(conn, :client_id, client_id)
+    Plug.Conn.put_session(conn, :client_id, client_id)
   end
 
   defp generate_csrf_token(conn) do
@@ -111,6 +87,27 @@ defmodule ActiveMonitoring.OauthController do
         end
       _ ->
         {:error, :invalid_client}
+    end
+  end
+
+  defp verify_jwt(id_token, client_secret) do
+    token = Joken.token(id_token)
+
+    sign_fn = case Joken.peek_header(token) do
+                %{ "alg" => "HS256" } -> &Joken.hs256/1
+                %{ "alg" => "HS384" } -> &Joken.hs384/1
+                %{ "alg" => "HS512" } -> &Joken.hs512/1
+              end
+
+    signer = sign_fn.(client_secret)
+
+    token = Joken.Signer.verify(token, signer)
+
+    case token.errors do
+      [] ->
+        { :ok, token }
+      _ ->
+        :error
     end
   end
 

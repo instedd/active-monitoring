@@ -7,8 +7,7 @@
             <td class="mui--text-title">Active Monitoring</td>
             <td align="right">
               <ul class="mui-list--inline mui--text-body2">
-                <li><a href="<%= session_path @conn, :new %>">Login</a></li>
-                <li><a href="<%= registration_path @conn, :new %>">Sign up</a></li>
+                <li><a href="<%= session_path @conn, :login %>">Login</a></li>
               </ul>
             </td>
           </tr>
