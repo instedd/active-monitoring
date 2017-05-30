@@ -34,19 +34,37 @@ defmodule ActiveMonitoring.OauthController do
 
         case HTTPoison.post(guisso_settings[:token_url], { :form, token_params }) do
           {:ok, response} ->
-            {:ok, %{ "id_token" => jwt }} = Poison.decode(response.body)
+            {:ok, %{ "id_token" => id_token }} = Poison.decode(response.body)
+            {:ok, token} = verify_jwt(id_token, guisso_settings[:client_secret])
 
-            [_header, payload, _secret] = String.split(jwt, ".")
-            {:ok, payload_json} = Base.decode64(payload, padding: false)
-            {:ok, parsed_jwt} = Poison.decode(payload_json)
-
-            text conn, "Welcome #{parsed_jwt["email"]}!"
+            text conn, "Welcome #{token.claims["email"]}"
 
           _error ->
             text conn, "An error occurred while logging you in."
         end
       { :error, _cause } ->
         text conn, "An error occurred while logging you in."
+    end
+  end
+
+  defp verify_jwt(id_token, client_secret) do
+    token = Joken.token(id_token)
+
+    sign_fn = case Joken.peek_header(token) do
+                %{ "alg" => "HS256" } -> &Joken.hs256/1
+                %{ "alg" => "HS384" } -> &Joken.hs384/1
+                %{ "alg" => "HS512" } -> &Joken.hs512/1
+              end
+
+    signer = sign_fn.(client_secret)
+
+    token = Joken.Signer.verify(token, signer)
+
+    case token.errors do
+      [] ->
+        { :ok, token }
+      _ ->
+        :error
     end
   end
 

@@ -43,6 +43,7 @@ defmodule ActiveMonitoring.Mixfile do
       {:coherence, git: "https://github.com/manastech/coherence.git", branch: "v0.3.2"},
       {:cowboy, "~> 1.0"},
       {:httpoison, "~> 0.11"},
+      {:joken, "~> 1.4.1"}
     ]
   end
 
