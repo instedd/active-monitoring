@@ -61,8 +61,8 @@ config :active_monitoring, ActiveMonitoring.Repo,
 
 # Configure your database
 config :active_monitoring, ActiveMonitoring.Repo,
-  adapter: Ecto.Adapters.MySQL,
-  username: System.get_env("DATABASE_USER") || "root",
+  adapter: Ecto.Adapters.Postgres,
+  username: System.get_env("DATABASE_USER") || "active_monitoring",
   password: System.get_env("DATABASE_PASS") || "",
   database: System.get_env("DATABASE_NAME") || "active_monitoring",
   hostname: System.get_env("DATABASE_HOST") || "localhost",

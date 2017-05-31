@@ -32,8 +32,8 @@ config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
 config :active_monitoring, ActiveMonitoring.Repo,
-  adapter: Ecto.Adapters.MySQL,
-  username: "root",
+  adapter: Ecto.Adapters.Postgres,
+  username: "postgres",
   password: "",
   database: "active_monitoring_dev",
   hostname: System.get_env("DATABASE_HOST") || "localhost",

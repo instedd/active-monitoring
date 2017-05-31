@@ -11,9 +11,10 @@ config :logger, level: :warn
 
 # Configure your database
 config :active_monitoring, ActiveMonitoring.Repo,
-  adapter: Ecto.Adapters.MySQL,
-  username: "root",
+  adapter: Ecto.Adapters.Postgres,
+  username: "postgres",
   password: "",
   database: "active_monitoring_test",
   hostname: System.get_env("DATABASE_HOST") || "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool: Ecto.Adapters.SQL.Sandbox,
+  ownership_timeout: 10 * 60 * 1000
