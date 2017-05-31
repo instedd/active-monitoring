@@ -2,22 +2,26 @@ import "phoenix_html"
 
 import React, {Component} from 'react'
 import { render } from 'react-dom'
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux'
 import { Router, Route, Redirect } from 'react-router'
 import createHistory from 'history/createBrowserHistory'
-import ReactRouterRedux, { routerReducer, routerMiddleware, push } from 'react-router-redux'
+import ReactRouterRedux, { routerMiddleware, push } from 'react-router-redux'
+import thunkMiddleware from 'redux-thunk'
 
+import reducers from './reducers'
 import Nav from './components/Nav.jsx'
 import Campaigns from './components/Campaigns.jsx'
 import Channels from './components/Channels.jsx'
 
 const history = createHistory()
-const middleware = routerMiddleware(history)
 
 const store = createStore(
-  combineReducers({ router: routerReducer }),
-  applyMiddleware(middleware)
+  reducers,
+  applyMiddleware(
+    thunkMiddleware,
+    routerMiddleware(history)
+  )
 )
 
 const root = document.getElementById('root')
