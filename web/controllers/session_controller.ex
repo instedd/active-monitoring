@@ -2,6 +2,7 @@ defmodule ActiveMonitoring.SessionController do
   use ActiveMonitoring.Web, :controller
 
   alias ActiveMonitoring.User
+  alias ActiveMonitoring.Repo
   alias Coherence.ControllerHelpers, as: Helpers
   alias Coherence.Rememberable
   use Coherence.Config
@@ -25,19 +26,13 @@ defmodule ActiveMonitoring.SessionController do
   """
   def oauth_callback(conn, params) do
     {:ok, email} = Guisso.request_auth_token(conn, params)
+    user = find_or_create_user(email)
 
-    user = Config.repo.one(from u in User, where: field(u, :email) == ^email)
-
-    if user != nil do
-      Coherence.Authentication.Session.create_login(conn, user, [id_key: Config.schema_key])
-      |> Helpers.track_login(user, true)
-      |> save_rememberable(user)
-      |> put_flash(:notice, "Signed in successfully.")
-      |> Helpers.redirect_to(:session_create, params)
-    else
-      # TODO
-      text conn, "Welcome new user!"
-    end
+    Coherence.Authentication.Session.create_login(conn, user, [id_key: Config.schema_key])
+    |> Helpers.track_login(user, true)
+    |> save_rememberable(user)
+    |> put_flash(:notice, "Signed in successfully.")
+    |> Helpers.redirect_to(:session_create, params)
   end
 
   @doc """
@@ -69,6 +64,18 @@ defmodule ActiveMonitoring.SessionController do
     |> delete_rememberable(user)
   end
 
+
+  defp find_or_create_user(email) do
+    case Repo.one(from u in User, where: field(u, :email) == ^email) do
+      nil ->
+        %User{}
+        |> User.changeset(%{email: email})
+        |> Repo.insert!
+
+      user ->
+        user
+    end
+  end
 
   defp save_rememberable(conn, user) do
     {changeset, series, token} = Rememberable.create_login(user)
