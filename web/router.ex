@@ -47,9 +47,8 @@ defmodule ActiveMonitoring.Router do
 
   scope "/", ActiveMonitoring do
     pipe_through :browser
-    coherence_routes :public
 
-    get "/login", SessionController, :login
+    get "/sessions/new", SessionController, :login
     get "/oauth_callback", SessionController, :oauth_callback
     get "/*path", PageController, :index
   end
