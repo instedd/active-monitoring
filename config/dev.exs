@@ -42,6 +42,13 @@ config :active_monitoring, ActiveMonitoring.Repo,
 config :active_monitoring, ActiveMonitoring.Mailer,
   adapter: Swoosh.Adapters.Local
 
+config :active_monitoring, :guisso,
+  auth_url: "https://login-stg.instedd.org/oauth2/authorize",
+  token_url: "https://login-stg.instedd.org/oauth2/token",
+  redirect_uri: "http://localhost:4000/oauth_callback",
+  client_id: System.get_env("GUISSO_CLIENT_ID"),
+  client_secret: System.get_env("GUISSO_CLIENT_SECRET")
+
 config :coherence,
   email_from_name: "Active Monitoring Dev",
   email_from_email: "myname@domain.com"

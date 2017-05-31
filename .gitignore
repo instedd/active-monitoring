@@ -28,3 +28,6 @@ erl_crash.dump
 .vagrant
 
 /test/tmp/
+
+# Local development settings
+.env

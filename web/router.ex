@@ -39,7 +39,7 @@ defmodule ActiveMonitoring.Router do
     pipe_through :api
 
     scope "/v1" do
-      delete "/sessions", Coherence.SessionController, :api_delete
+      delete "/sessions", SessionController, :api_delete
 
       resources "/campaigns", CampaignsController, only: [:index, :create, :update, :delete]
     end
@@ -49,10 +49,8 @@ defmodule ActiveMonitoring.Router do
     pipe_through :browser
     coherence_routes :public
 
-    get "/registrations/confirmation_sent", Coherence.RegistrationController, :confirmation_sent
-    get "/registrations/confirmation_expired", Coherence.RegistrationController, :confirmation_expired
-    get "/passwords/password_recovery_sent", Coherence.PasswordController, :password_recovery_sent
-
+    get "/login", SessionController, :login
+    get "/oauth_callback", SessionController, :oauth_callback
     get "/*path", PageController, :index
   end
 end

@@ -19,7 +19,7 @@ defmodule ActiveMonitoring.Mixfile do
   def application do
     [mod: {ActiveMonitoring, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :mariaex, :timex_ecto, :coherence]]
+                    :phoenix_ecto, :mariaex, :timex_ecto, :coherence, :httpoison]]
   end
 
   # Specifies which paths to compile per environment.
@@ -42,6 +42,8 @@ defmodule ActiveMonitoring.Mixfile do
       {:timex_ecto, "~> 3.0", override: true},
       {:coherence, git: "https://github.com/manastech/coherence.git", branch: "v0.3.2"},
       {:cowboy, "~> 1.0"},
+      {:httpoison, "~> 0.11"},
+      {:joken, "~> 1.4.1"}
     ]
   end
 
