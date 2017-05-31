@@ -5,6 +5,10 @@
     "watch": "webpack --watch-stdin --progress --color"
   },
   "dependencies": {
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "isomorphic-fetch": "^2.2.1",
+    "lodash": "^4.17.4",
     "phoenix": "file:deps/phoenix",
     "phoenix_html": "file:deps/phoenix_html",
     "react": "^15.5.4",
@@ -14,7 +18,8 @@
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
     "react-router-redux": "^4.0.8",
-    "redux": "^3.6.0"
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
