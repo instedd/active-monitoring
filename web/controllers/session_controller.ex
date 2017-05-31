@@ -14,10 +14,8 @@ defmodule ActiveMonitoring.SessionController do
   Begin the login with Guisso using OpenId Connect.
   Flow continues at `oauth_callback`.
   """
-  def login(conn, _params) do
-    {conn, url} = Guisso.auth_code_url(conn)
-
-    redirect(conn, external: url)
+  def login(conn, params) do
+    Guisso.request_auth_code(conn, params["redirect"])
   end
 
   @doc """
@@ -25,14 +23,14 @@ defmodule ActiveMonitoring.SessionController do
   access to his/her account information.
   """
   def oauth_callback(conn, params) do
-    {:ok, email} = Guisso.request_auth_token(conn, params)
+    {:ok, email, redirect} = Guisso.request_auth_token(conn, params)
     user = find_or_create_user(email)
 
     Coherence.Authentication.Session.create_login(conn, user, [id_key: Config.schema_key])
     |> Helpers.track_login(user, true)
     |> save_rememberable(user)
     |> put_flash(:notice, "Signed in successfully.")
-    |> Helpers.redirect_to(:session_create, params)
+    |> redirect(to: redirect || "/")
   end
 
   @doc """

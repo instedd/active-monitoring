@@ -1,8 +1,8 @@
 defmodule Guisso do
 
-  def auth_code_url(conn) do
+  def request_auth_code(conn, redirect) do
     guisso_settings = Application.get_env(:active_monitoring, :guisso)
-    conn = set_app_client_id(conn)
+    conn = set_client_state(conn, redirect)
     csrf_token = generate_csrf_token(conn)
 
     auth_params = %{
@@ -13,13 +13,14 @@ defmodule Guisso do
       state: csrf_token,
     }
 
-    {conn, "#{guisso_settings[:auth_url]}?#{URI.encode_query(auth_params)}"}
+    Phoenix.Controller.redirect(conn, external: "#{guisso_settings[:auth_url]}?#{URI.encode_query(auth_params)}")
   end
 
   def request_auth_token(conn, %{"code" => code, "state" => state}) do
     guisso_settings = Application.get_env(:active_monitoring, :guisso)
+    client_state = get_client_state(conn)
 
-    case verify_csrf_token(conn, state) do
+    case verify_csrf_token(state, client_state) do
       :ok ->
         token_params = [
           code: code,
@@ -34,7 +35,7 @@ defmodule Guisso do
             {:ok, %{ "id_token" => id_token }} = Poison.decode(response.body)
             {:ok, token} = verify_jwt(id_token, guisso_settings[:client_secret])
 
-            {:ok, token.claims["email"]}
+            {:ok, token.claims["email"], client_state[:redirect]}
 
           _error ->
             :error
@@ -44,17 +45,19 @@ defmodule Guisso do
     end
   end
 
-  defp get_app_client_id(conn) do
-    Plug.Conn.get_session(conn, :client_id)
+  defp get_client_state(conn) do
+    Plug.Conn.get_session(conn, :client_state)
   end
 
-  defp set_app_client_id(conn) do
+  defp set_client_state(conn, redirect) do
     client_id = :crypto.strong_rand_bytes(10) |> Base.encode64()
-    Plug.Conn.put_session(conn, :client_id, client_id)
+
+    Plug.Conn.put_session(conn, :client_state, %{ client_id: client_id,
+                                                  redirect: redirect })
   end
 
   defp generate_csrf_token(conn) do
-    client_id = get_app_client_id(conn)
+    %{client_id: client_id} = get_client_state(conn)
     expiration = :os.system_time(:seconds) + 60 * 5
     signature = sign_csrf_token(client_id, expiration)
 
@@ -68,9 +71,9 @@ defmodule Guisso do
     :crypto.hmac(:sha256, secret, data) |> Base.encode64()
   end
 
-  def verify_csrf_token(conn, state) do
+  def verify_csrf_token(state, client_state) do
     current_time = :os.system_time(:seconds)
-    expected_client_id = get_app_client_id(conn)
+    %{client_id: expected_client_id} = client_state
 
     case String.split(state, "///") do
       [^expected_client_id, expiration, signature] ->
