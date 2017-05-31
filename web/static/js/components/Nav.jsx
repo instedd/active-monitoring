@@ -2,7 +2,7 @@ import React from 'react';
 import MenuButton from 'react-md/lib/Menus/MenuButton';
 import ListItem from 'react-md/lib/Lists/ListItem';
 import { NavLink } from 'react-router-dom';
-
+import { logout } from '../api';
 
 const UserInfo = (({displayName}) =>
   <div className="app-user-info">
@@ -13,7 +13,7 @@ const UserInfo = (({displayName}) =>
       icon
       buttonChildren="arrow_drop_down">
       <ListItem primaryText="Preferences" />
-      <ListItem primaryText="Sign out" />
+      <ListItem onClick={logout} primaryText="Sign out" />
     </MenuButton>
   </div>
 );

@@ -50,10 +50,7 @@ defmodule ActiveMonitoring.Router do
     coherence_routes :public
 
     get "/login", SessionController, :login
-    get "/logout", SessionController, :delete
-
     get "/oauth_callback", SessionController, :oauth_callback
-
     get "/*path", PageController, :index
   end
 end
