@@ -20,13 +20,13 @@ html, body {
 .app-header {
   background-color: #444444;
   border-bottom: 1px solid #222222;
-  padding: 10px 50px;
+  padding: 10px 10%;
   color: white;
 }
 
 .app-subheader {
   background-color: #444444;
-  padding: 10px 50px;
+  padding: 10px 10%;
   color: white;
   height: 100px;
   h3 {
@@ -68,4 +68,40 @@ ul.app-menu {
 }
 
 .floating-add-button {
+}
+
+.app-listing {
+  background: white;
+  max-width: 1100px;
+  margin: 40px auto;
+  border-radius: 2px;
+  font-size: 15px;
+  @include md-box-shadow(1);
+
+  .md-table-column {
+    font-size: 15px;
+    padding: 25px;
+  }
+
+}
+
+.app-listing-no-data {
+  width: 100%;
+  padding-top: 100px;
+
+  .app-listing-no-data-image {
+    display: inline-block;
+    width: 150px;
+    margin-bottom: 20px;
+  }
+  .app-listing-no-data-text {
+    font-size: 24px;
+    color: #9E9E9E;
+
+    a {
+      display: block;
+      text-decoration: none;
+      color: $md-primary-color;
+    }
+  }
 }
