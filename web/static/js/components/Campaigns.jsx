@@ -2,6 +2,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import * as actions from '../actions/campaigns'
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 import DataTable from 'react-md/lib/DataTables/DataTable'
 import TableHeader from 'react-md/lib/DataTables/TableHeader'
@@ -9,8 +10,8 @@ import TableBody from 'react-md/lib/DataTables/TableBody'
 import TableRow from 'react-md/lib/DataTables/TableRow'
 import TableColumn from 'react-md/lib/DataTables/TableColumn'
 
-import EmptyListing from "./EmptyListing.jsx"
-import Subheader from "./Subheader.jsx"
+import EmptyListing from './EmptyListing.jsx'
+import Subheader from './Subheader.jsx'
 
 class CampaignsList extends Component {
   render() {
@@ -18,15 +19,15 @@ class CampaignsList extends Component {
 
     if (campaigns.length == 0) {
       return (
-        <EmptyListing image="/images/campaign.svg">
+        <EmptyListing image='/images/campaign.svg'>
           You have no campaigns yet
-          <NavLink to="#">Create one</NavLink>
+          <NavLink to='#'>Create one</NavLink>
         </EmptyListing>
       )
     }
 
     return (
-      <DataTable plain className="app-listing">
+      <DataTable plain className='app-listing'>
         <TableHeader>
           <TableRow>
             <TableColumn>Name</TableColumn>
@@ -35,11 +36,15 @@ class CampaignsList extends Component {
           </TableRow>
         </TableHeader>
         <TableBody>
-          { campaigns.map(c => <CampaignItem key={c.id} campaign={c}></CampaignItem>) }
+          { campaigns.map(c => <CampaignItem key={c.id} campaign={c} />) }
         </TableBody>
       </DataTable>
     )
   }
+}
+
+CampaignsList.propTypes = {
+  items: PropTypes.array
 }
 
 class CampaignItem extends Component {
@@ -55,6 +60,12 @@ class CampaignItem extends Component {
   }
 }
 
+CampaignItem.propTypes = {
+  campaign: PropTypes.shape({
+    name: PropTypes.string.isRequired
+  }).isRequired
+}
+
 class Campaigns extends Component {
   componentWillMount() {
     this.props.actions.fetchCampaigns()
@@ -63,11 +74,16 @@ class Campaigns extends Component {
   render() {
     return (
       <div>
-        <Subheader title="Campaigns"/>
-        <CampaignsList items={this.props.campaigns.items}/>
+        <Subheader title='Campaigns' />
+        <CampaignsList items={this.props.campaigns.items} />
       </div>
     )
   }
+}
+
+Campaigns.propTypes = {
+  actions: PropTypes.object.isRequired,
+  campaigns: PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state) => ({

@@ -1,6 +1,5 @@
 // @flow
 import isEqual from 'lodash/isEqual'
-import toInteger from 'lodash/toInteger'
 import values from 'lodash/values'
 
 const defaultInitialState = {

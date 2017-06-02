@@ -4,5 +4,5 @@ import campaigns from './campaigns'
 
 export default combineReducers({
   campaigns,
-  router: routerReducer,
+  router: routerReducer
 })

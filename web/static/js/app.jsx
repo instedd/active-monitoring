@@ -1,12 +1,12 @@
-import "phoenix_html"
+import 'phoenix_html'
 
-import React, {Component} from 'react'
+import React from 'react'
 import { render } from 'react-dom'
-import { createStore, applyMiddleware, compose } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import { Router, Route, Redirect } from 'react-router'
 import createHistory from 'history/createBrowserHistory'
-import ReactRouterRedux, { routerMiddleware, push } from 'react-router-redux'
+import { routerMiddleware } from 'react-router-redux'
 import thunkMiddleware from 'redux-thunk'
 
 import reducers from './reducers'
@@ -31,13 +31,13 @@ if (root) {
     <Provider store={store}>
       <Router history={history}>
         <div>
-          <Nav/>
-          <Route exact path="/">
-            <Redirect to="/campaigns"/>
+          <Nav />
+          <Route exact path='/'>
+            <Redirect to='/campaigns' />
           </Route>
 
-          <Route exact path="/campaigns" component={Campaigns}/>
-          <Route exact path="/channels" component={Channels}/>
+          <Route exact path='/campaigns' component={Campaigns} />
+          <Route exact path='/channels' component={Channels} />
         </div>
       </Router>
     </Provider>,
