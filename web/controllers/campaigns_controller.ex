@@ -30,4 +30,17 @@ defmodule ActiveMonitoring.CampaignsController do
         render(conn, ChangesetView, "error.json", changeset: changeset)
     end
   end
+
+  def update(conn, %{"id" => id, "campaign" => campaign_params}) do
+    campaign = Repo.get!(Campaign, id)
+    changeset = Campaign.changeset(campaign, campaign_params)
+
+    case Repo.update(changeset) do
+      {ok, campaign} ->
+        render(conn, "show.json", campaign: campaign)
+
+      {:error, changeset} ->
+        render(conn, ChangesetView, "error.json", changeset: changeset)
+    end
+  end
 end

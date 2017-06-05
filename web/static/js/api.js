@@ -71,9 +71,9 @@ const apiPostJSON = (url, body) => {
   return apiPutOrPostJSON(url, 'POST', body)
 }
 
-/* const apiPutJSON = (url, body) => {
- *   return apiPutOrPostJSON(url, 'PUT', body)
- * } */
+const apiPutJSON = (url, body) => {
+  return apiPutOrPostJSON(url, 'PUT', body)
+}
 
 const apiDelete = (url) => {
   return apiFetch(url, {method: 'DELETE'})
@@ -85,6 +85,10 @@ export const createCampaign = (campaign) => {
 
 export const logout = () => {
   apiDelete('sessions').then(() => { window.location.href = '/' })
+}
+
+export const updateCampaign = (campaign) => {
+  return apiPutJSON(`campaigns/${campaign.id}`, { campaign })
 }
 
 export const fetchCampaign = (id) => {

@@ -29,8 +29,38 @@ html, body {
   padding: 10px 10%;
   color: white;
   height: 100px;
-  h3 {
+
+  .app-header-title {
     color: white;
+    height: 100%;
+    position: relative;
+    padding-top: 13px;
+    width: 100%;
+
+    .app-header-title-view {
+      i {
+        margin-left: 10px;
+        color: #9e9e9e;
+      }
+    }
+
+    .app-header-title-edit {
+      width: 100%;
+      padding: 0;
+      margin: 0;
+
+      input {
+        color: white;
+        margin-top: 0;
+        font-size: 20px;
+        line-height: 28px;
+        letter-spacing: 0.5px;
+      }
+
+      .md-text-field-message-container--count-only {
+        display: none;
+      }
+    }
   }
 }
 

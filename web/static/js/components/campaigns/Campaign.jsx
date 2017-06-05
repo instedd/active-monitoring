@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 
 import * as actions from '../../actions/campaign.js'
+import CampaignTitle from './CampaignTitle.jsx'
 import Subheader from '../Subheader.jsx'
 
 class Campaign extends Component {
@@ -19,12 +20,10 @@ class Campaign extends Component {
     if (this.props.campaign.fetching || !this.props.campaign.data) {
       return <div />
     } else {
-      const title = this.props.campaign.data.name || 'Untitled Campaign'
-
       return (
         <div>
           <Subheader>
-            {title}
+            <CampaignTitle campaign={this.props.campaign.data} />
           </Subheader>
         </div>
       )

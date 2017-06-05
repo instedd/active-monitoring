@@ -12,6 +12,7 @@ export default (state = initialState, action) => {
     case actions.CAMPAIGN_CREATED: return campaignLoaded(state, action)
     case actions.CAMPAIGN_FETCH: return campaignFetch(state, action)
     case actions.CAMPAIGN_FETCHED: return campaignLoaded(state, action)
+    case actions.CAMPAIGN_UPDATED: return campaignLoaded(state, action)
     default: return state
   }
 }
