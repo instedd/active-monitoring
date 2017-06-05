@@ -1,9 +1,10 @@
-import * as actions from '../actions/campaign.js'
 import PropTypes from 'prop-types'
 import React, {Component} from 'react'
-import Subheader from './Subheader.jsx'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+
+import * as actions from '../../actions/campaign.js'
+import Subheader from '../Subheader.jsx'
 
 class Campaign extends Component {
   componentWillMount() {
@@ -22,7 +23,9 @@ class Campaign extends Component {
 
       return (
         <div>
-          <Subheader title={title} />
+          <Subheader>
+            {title}
+          </Subheader>
         </div>
       )
     }

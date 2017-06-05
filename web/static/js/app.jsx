@@ -11,9 +11,9 @@ import thunkMiddleware from 'redux-thunk'
 
 import reducers from './reducers'
 import Nav from './components/Nav.jsx'
-import Campaign from './components/Campaign.jsx'
-import Campaigns from './components/Campaigns.jsx'
-import Channels from './components/Channels.jsx'
+import Campaign from './components/campaigns/Campaign.jsx'
+import Campaigns from './components/campaigns/Campaigns.jsx'
+import Channels from './components/channels/Channels.jsx'
 
 const history = createHistory()
 

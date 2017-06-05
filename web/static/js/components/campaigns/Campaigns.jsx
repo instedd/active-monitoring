@@ -1,7 +1,5 @@
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import * as collectionActions from '../actions/campaigns'
-import * as itemActions from '../actions/campaign'
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
@@ -12,9 +10,10 @@ import TableBody from 'react-md/lib/DataTables/TableBody'
 import TableRow from 'react-md/lib/DataTables/TableRow'
 import TableColumn from 'react-md/lib/DataTables/TableColumn'
 
-import EmptyListing from './EmptyListing.jsx'
-import Subheader from './Subheader.jsx'
-import AddButton from './AddButton.jsx'
+import * as collectionActions from '../../actions/campaigns'
+import * as itemActions from '../../actions/campaign'
+import EmptyListing from '../EmptyListing.jsx'
+import Subheader from '../Subheader.jsx'
 
 class CampaignsList extends Component {
   render() {
@@ -88,8 +87,8 @@ class Campaigns extends Component {
   render() {
     return (
       <div>
-        <Subheader title='Campaigns'>
-          <AddButton onClick={() => this.createCampaign()} />
+        <Subheader addButtonHandler={() => this.createCampaign()}>
+          Campaigns
         </Subheader>
         <CampaignsList
           items={this.props.campaigns.items}
