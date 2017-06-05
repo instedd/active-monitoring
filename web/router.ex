@@ -41,7 +41,7 @@ defmodule ActiveMonitoring.Router do
     scope "/v1" do
       delete "/sessions", SessionController, :api_delete
 
-      resources "/campaigns", CampaignsController, only: [:index, :create, :update, :delete]
+      resources "/campaigns", CampaignsController, only: [:index, :create, :show, :update, :delete]
     end
   end
 

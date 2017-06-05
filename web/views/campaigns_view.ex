@@ -8,6 +8,11 @@ defmodule ActiveMonitoring.CampaignsView do
     %{data: rendered}
   end
 
+  def render("show.json", %{campaign: campaign}) do
+    %{data: render_one(campaign)}
+  end
+
+
   defp render_one(campaign) do
     %{
       id: campaign.id,

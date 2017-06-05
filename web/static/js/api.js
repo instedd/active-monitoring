@@ -53,34 +53,42 @@ const handleResponse = (response, callback) => {
   }
 }
 
-// const apiPutOrPostJSON = (url, verb, body) => {
-//   const options = {
-//     method: verb,
-//     headers: {
-//       'Accept': 'application/json',
-//       'Content-Type': 'application/json'
-//     }
-//   }
-//   if (body) {
-//     options.body = JSON.stringify(body)
-//   }
-//   return apiFetchJSON(url, options)
-// }
-//
-// const apiPostJSON = (url, body) => {
-//   return apiPutOrPostJSON(url, 'POST', body)
-// }
-//
-// const apiPutJSON = (url, body) => {
-//   return apiPutOrPostJSON(url, 'PUT', body)
-// }
+const apiPutOrPostJSON = (url, verb, body) => {
+  const options = {
+    method: verb,
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  }
+  if (body) {
+    options.body = JSON.stringify(body)
+  }
+  return apiFetchJSON(url, options)
+}
+
+const apiPostJSON = (url, body) => {
+  return apiPutOrPostJSON(url, 'POST', body)
+}
+
+/* const apiPutJSON = (url, body) => {
+ *   return apiPutOrPostJSON(url, 'PUT', body)
+ * } */
 
 const apiDelete = (url) => {
   return apiFetch(url, {method: 'DELETE'})
 }
 
+export const createCampaign = (campaign) => {
+  return apiPostJSON('campaigns', { campaign })
+}
+
 export const logout = () => {
   apiDelete('sessions').then(() => { window.location.href = '/' })
+}
+
+export const fetchCampaign = (id) => {
+  return apiFetchJSON(`campaigns/${id}`)
 }
 
 export const fetchCampaigns = () => {

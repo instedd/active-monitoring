@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import Button from 'react-md/lib/Buttons/Button'
 
 export default class Subheader extends Component {
   render() {
@@ -12,18 +11,13 @@ export default class Subheader extends Component {
           </div>
           {this.props.title}
         </h3>
-        <Button
-          floating
-          primary
-          style={{position: 'relative', bottom: '-38px'}}
-          className='md-cell--right md-cell--bottom'>
-          add
-        </Button>
+        {this.props.children}
       </section>
     )
   }
 }
 
 Subheader.propTypes = {
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  children: PropTypes.node
 }

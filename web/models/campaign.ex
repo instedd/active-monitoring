@@ -10,6 +10,5 @@ defmodule ActiveMonitoring.Campaign do
   def changeset(model, params \\ %{}) do
     model
     |> cast(params, [:name])
-    |> validate_required([:name])
   end
 end

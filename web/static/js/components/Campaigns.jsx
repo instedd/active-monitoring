@@ -1,9 +1,11 @@
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import * as actions from '../actions/campaigns'
+import * as collectionActions from '../actions/campaigns'
+import * as itemActions from '../actions/campaign'
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
+import { push } from 'react-router-redux'
 import DataTable from 'react-md/lib/DataTables/DataTable'
 import TableHeader from 'react-md/lib/DataTables/TableHeader'
 import TableBody from 'react-md/lib/DataTables/TableBody'
@@ -12,6 +14,7 @@ import TableColumn from 'react-md/lib/DataTables/TableColumn'
 
 import EmptyListing from './EmptyListing.jsx'
 import Subheader from './Subheader.jsx'
+import AddButton from './AddButton.jsx'
 
 class CampaignsList extends Component {
   render() {
@@ -21,7 +24,7 @@ class CampaignsList extends Component {
       return (
         <EmptyListing image='/images/campaign.svg'>
           You have no campaigns yet
-          <NavLink to='#'>Create one</NavLink>
+          <NavLink to='#' onClick={this.props.createCampaign}>Create one</NavLink>
         </EmptyListing>
       )
     }
@@ -36,7 +39,7 @@ class CampaignsList extends Component {
           </TableRow>
         </TableHeader>
         <TableBody>
-          { campaigns.map(c => <CampaignItem key={c.id} campaign={c} />) }
+          { campaigns.map(c => <CampaignItem key={c.id} campaign={c} onClick={this.props.onCampaignClick} />) }
         </TableBody>
       </DataTable>
     )
@@ -44,6 +47,8 @@ class CampaignsList extends Component {
 }
 
 CampaignsList.propTypes = {
+  createCampaign: PropTypes.func.isRequired,
+  onCampaignClick: PropTypes.func.isRequired,
   items: PropTypes.array
 }
 
@@ -51,7 +56,7 @@ class CampaignItem extends Component {
   render() {
     const campaign = this.props.campaign
     return (
-      <TableRow>
+      <TableRow onClick={() => this.props.onClick(campaign.id)}>
         <TableColumn>{campaign.name}</TableColumn>
         <TableColumn>...</TableColumn>
         <TableColumn>...</TableColumn>
@@ -62,28 +67,44 @@ class CampaignItem extends Component {
 
 CampaignItem.propTypes = {
   campaign: PropTypes.shape({
-    name: PropTypes.string.isRequired
-  }).isRequired
+    name: PropTypes.string
+  }).isRequired,
+  onClick: PropTypes.func.isRequired
 }
 
 class Campaigns extends Component {
   componentWillMount() {
-    this.props.actions.fetchCampaigns()
+    this.props.collectionActions.fetchCampaigns()
+  }
+
+  createCampaign() {
+    this.props.itemActions.createCampaign({name: ''})
+  }
+
+  goToCampaign(id) {
+    this.props.navigate(`/campaigns/${id}`)
   }
 
   render() {
     return (
       <div>
-        <Subheader title='Campaigns' />
-        <CampaignsList items={this.props.campaigns.items} />
+        <Subheader title='Campaigns'>
+          <AddButton onClick={() => this.createCampaign()} />
+        </Subheader>
+        <CampaignsList
+          items={this.props.campaigns.items}
+          createCampaign={() => this.createCampaign()}
+          onCampaignClick={(id) => this.goToCampaign(id)} />
       </div>
     )
   }
 }
 
 Campaigns.propTypes = {
-  actions: PropTypes.object.isRequired,
-  campaigns: PropTypes.object.isRequired
+  collectionActions: PropTypes.object.isRequired,
+  itemActions: PropTypes.object.isRequired,
+  campaigns: PropTypes.object.isRequired,
+  navigate: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
@@ -91,7 +112,9 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(actions, dispatch)
+  collectionActions: bindActionCreators(collectionActions, dispatch),
+  itemActions: bindActionCreators(itemActions, dispatch),
+  navigate: (path) => dispatch(push(path))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Campaigns)
