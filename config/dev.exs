@@ -45,7 +45,7 @@ config :active_monitoring, ActiveMonitoring.Mailer,
 config :active_monitoring, :guisso,
   auth_url: "https://login-stg.instedd.org/oauth2/authorize",
   token_url: "https://login-stg.instedd.org/oauth2/token",
-  redirect_uri: "http://localhost:4000/oauth_callback",
+  redirect_uri: System.get_env("GUISSO_REDIRECT_URI"),
   client_id: System.get_env("GUISSO_CLIENT_ID"),
   client_secret: System.get_env("GUISSO_CLIENT_SECRET")
 
