@@ -1,3 +1,4 @@
+// @flow
 import 'phoenix_html'
 
 import React from 'react'

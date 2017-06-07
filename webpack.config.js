@@ -4,6 +4,13 @@ var CopyWebpackPlugin = require('copy-webpack-plugin')
 var FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin')
 
 module.exports = {
+  devServer: {
+    disableHostCheck: true,
+    host: '0.0.0.0',
+    port: 4001,
+    overlay: true
+  },
+
   resolve: {
 
     /* Load path for required files */
