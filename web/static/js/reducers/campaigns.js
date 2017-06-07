@@ -2,7 +2,7 @@
 import * as actions from '../actions/campaigns'
 import collectionReducer, {defaultFilterProvider} from './collection'
 
-const itemsReducer = (state: IndexedList<Project>, _): IndexedList<Project> => state
+const itemsReducer = (state: IndexedList<Campaign>, _): IndexedList<Campaign> => state
 
 const initialState = {
   fetching: false,
