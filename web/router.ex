@@ -42,6 +42,7 @@ defmodule ActiveMonitoring.Router do
       delete "/sessions", SessionController, :api_delete
 
       resources "/campaigns", CampaignsController, only: [:index, :create, :show, :update, :delete]
+      resources "/channels", ChannelsController, only: [:index]
     end
   end
 

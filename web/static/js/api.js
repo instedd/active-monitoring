@@ -98,3 +98,7 @@ export const fetchCampaign = (id) => {
 export const fetchCampaigns = () => {
   return apiFetchJSON('campaigns')
 }
+
+export const fetchChannels = () => {
+  return apiFetchJSON('channels')
+}
