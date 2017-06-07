@@ -12,8 +12,8 @@ import TableColumn from 'react-md/lib/DataTables/TableColumn'
 
 import * as collectionActions from '../../actions/campaigns'
 import * as itemActions from '../../actions/campaign'
-import EmptyListing from '../EmptyListing.jsx'
-import Subheader from '../Subheader.jsx'
+import EmptyListing from '../EmptyListing'
+import Subheader from '../Subheader'
 
 class CampaignsList extends Component {
   render() {

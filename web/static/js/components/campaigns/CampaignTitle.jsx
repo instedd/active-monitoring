@@ -1,5 +1,5 @@
-import * as actions from '../../actions/campaign.js'
-import EditableTitleLabel from '../EditableTitleLabel.jsx'
+import * as actions from '../../actions/campaign'
+import EditableTitleLabel from '../EditableTitleLabel'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import merge from 'lodash/merge'

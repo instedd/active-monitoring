@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import AddButton from './AddButton.jsx'
+import AddButton from './AddButton'
 
 export default class Subheader extends Component {
   render() {

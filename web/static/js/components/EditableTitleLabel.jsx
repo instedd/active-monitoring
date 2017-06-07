@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import UntitledIfEmpty from './UntitledIfEmpty.jsx'
+import UntitledIfEmpty from './UntitledIfEmpty'
 import TextField from 'react-md/lib/TextFields'
 
 export default class EditableTitleLabel extends Component {

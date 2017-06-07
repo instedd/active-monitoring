@@ -10,10 +10,10 @@ import { routerMiddleware } from 'react-router-redux'
 import thunkMiddleware from 'redux-thunk'
 
 import reducers from './reducers'
-import Nav from './components/Nav.jsx'
-import Campaign from './components/campaigns/Campaign.jsx'
-import Campaigns from './components/campaigns/Campaigns.jsx'
-import Channels from './components/channels/Channels.jsx'
+import Nav from './components/Nav'
+import Campaign from './components/campaigns/Campaign'
+import Campaigns from './components/campaigns/Campaigns'
+import Channels from './components/channels/Channels'
 
 const history = createHistory()
 

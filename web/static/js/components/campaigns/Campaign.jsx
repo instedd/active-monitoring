@@ -3,9 +3,9 @@ import React, {Component} from 'react'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 
-import * as actions from '../../actions/campaign.js'
-import CampaignTitle from './CampaignTitle.jsx'
-import Subheader from '../Subheader.jsx'
+import * as actions from '../../actions/campaign'
+import CampaignTitle from './CampaignTitle'
+import Subheader from '../Subheader'
 
 class Campaign extends Component {
   componentWillMount() {
