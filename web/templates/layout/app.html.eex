@@ -11,9 +11,12 @@
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script>
-      window.mixEnv = "<%= Mix.env %>"
+     window.mixEnv = "<%= Mix.env %>"
     </script>
   </head>
 
   <%= render @view_module, @view_template, assigns %>
+  <%= {:safe, js_script_tag()} %>
+
+
 </html>

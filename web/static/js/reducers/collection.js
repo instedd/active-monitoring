@@ -1,4 +1,3 @@
-// @flow
 import isEqual from 'lodash/isEqual'
 import values from 'lodash/values'
 
