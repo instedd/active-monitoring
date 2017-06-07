@@ -5,7 +5,6 @@
     "watch": "webpack --watch-stdin --progress --color"
   },
   "dependencies": {
-    "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.4",
@@ -43,6 +42,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "eslint_d": "^4.2.5",
     "extract-text-webpack-plugin": "^2.1.0",
+    "flow-babel-webpack-plugin": "^1.0.1",
     "flow-bin": "^0.47.0",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.5",

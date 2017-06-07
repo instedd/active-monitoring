@@ -1,6 +1,7 @@
 var path = require('path')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
+var FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin')
 
 module.exports = {
   resolve: {
@@ -36,8 +37,8 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['es2015', 'react', 'flow'],
-            plugins: ['transform-object-rest-spread']
+            presets: ['es2015', 'react'],
+            plugins: ['transform-object-rest-spread', 'transform-flow-comments']
           }
         }
       },
@@ -57,13 +58,15 @@ module.exports = {
 
   plugins: [
     /* Extract all compiled styles into a separate stylesheet instead of
-    requiring CSS from javascript files as Webpack does by default. */
+       requiring CSS from javascript files as Webpack does by default. */
     new ExtractTextPlugin('css/app.css'),
 
     /* Copy static assets from web/static/assets.
-     Note that when new messages are added we still need to restart the webpack
-     watch.
+       Note that when new messages are added we still need to restart the webpack
+       watch.
      */
-    new CopyWebpackPlugin([{ from: './web/static/assets' }])
+    new CopyWebpackPlugin([{ from: './web/static/assets' }]),
+
+    new FlowBabelWebpackPlugin()
   ]
 }
