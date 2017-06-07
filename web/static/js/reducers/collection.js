@@ -2,22 +2,9 @@
 import isEqual from 'lodash/isEqual'
 import values from 'lodash/values'
 
-const defaultInitialState = {
-  fetching: false,
-  filter: null,
-  items: null,
-  order: null,
-  sortBy: null,
-  sortAsc: true,
-  page: {
-    index: 0,
-    size: 5
-  }
-}
+export const defaultFilterProvider = (_) => ({})
 
-export const defaultFilterProvider = (_: Action) => ({})
-
-export default (actions: any, itemsReducer: Reducer<any>, filterProvider: (action: FilteredAction) => Filter = defaultFilterProvider, initialState: ListStore<any> = defaultInitialState) => (state: ?ListStore<any>, action: any): ListStore<any> => {
+export default (actions, itemsReducer, filterProvider, initialState) => (state, action) => {
   state = state || initialState
   switch (action.type) {
     case actions.FETCH: return fetch(state, action, filterProvider)
@@ -30,7 +17,7 @@ export default (actions: any, itemsReducer: Reducer<any>, filterProvider: (actio
 }
 
 const items = (state, action, itemsReducer) => {
-  const newItems: any = state.items == null ? null : itemsReducer(state.items, action)
+  const newItems = state.items == null ? null : itemsReducer(state.items, action)
 
   if (newItems !== state.items) {
     let order = itemsOrder(newItems, state.sortBy, state.sortAsc)
@@ -44,7 +31,7 @@ const items = (state, action, itemsReducer) => {
   return state
 }
 
-const receive = (state: ListStore<any>, action: ReceiveFilteredItemsAction, filterProvider) => {
+const receive = (state, action, filterProvider) => {
   const itemsFilter = filterProvider(action)
 
   if (isEqual(state.filter, itemsFilter)) {
@@ -112,7 +99,7 @@ const itemsOrder = (items, sortBy, sortAsc) => {
   return itemsValues.map(p => p.id)
 }
 
-const sortItems = (state: ListStore<any>, action: any) => {
+const sortItems = (state, action) => {
   const sortAsc = state.sortBy == action.property ? !state.sortAsc : true
   const sortBy = action.property
   const order = itemsOrder(state.items, sortBy, sortAsc)
@@ -124,7 +111,7 @@ const sortItems = (state: ListStore<any>, action: any) => {
   }
 }
 
-const nextPage = (state: ListStore<any>) => ({
+const nextPage = (state) => ({
   ...state,
   page: {
     ...state.page,
@@ -132,7 +119,7 @@ const nextPage = (state: ListStore<any>) => ({
   }
 })
 
-const previousPage = (state: ListStore<any>) => ({
+const previousPage = (state) => ({
   ...state,
   page: {
     ...state.page,
@@ -140,7 +127,7 @@ const previousPage = (state: ListStore<any>) => ({
   }
 })
 
-export const orderedItems = (items: IndexedList<any>, order: string[]) => {
+export const orderedItems = (items, order) => {
   if (items && order) {
     return order.map(id => items[id])
   } else {

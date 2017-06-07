@@ -1,8 +1,7 @@
-// @flow
 import * as actions from '../actions/campaigns'
 import collectionReducer, {defaultFilterProvider} from './collection'
 
-const itemsReducer = (state: IndexedList<Campaign>, _): IndexedList<Campaign> => state
+const itemsReducer = (state) => state
 
 const initialState = {
   fetching: false,

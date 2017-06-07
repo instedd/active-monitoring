@@ -1,4 +1,3 @@
-// @flow
 import * as actions from '../actions/campaign'
 import * as symptomActions from '../actions/symptoms'
 import * as languageActions from '../actions/langs'
