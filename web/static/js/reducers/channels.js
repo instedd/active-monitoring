@@ -2,7 +2,7 @@
 import * as actions from '../actions/channels'
 import collectionReducer, {defaultFilterProvider} from './collection'
 
-const itemsReducer = (state: IndexedList<Channel>, _): IndexedList<Channel> => state
+const itemsReducer = (state, _) => state
 
 const initialState = {
   fetching: false,
