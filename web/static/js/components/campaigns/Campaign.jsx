@@ -6,6 +6,7 @@ import {connect} from 'react-redux'
 import * as actions from '../../actions/campaign'
 import CampaignTitle from './CampaignTitle'
 import Subheader from '../Subheader'
+import CampaignCreationForm from './CampaignCreationForm'
 
 class Campaign extends Component {
   componentWillMount() {
@@ -25,11 +26,13 @@ class Campaign extends Component {
           <Subheader>
             <CampaignTitle campaign={this.props.campaign.data} />
           </Subheader>
+          <CampaignCreationForm />
         </div>
       )
     }
   }
 }
+// <SurveyForm survey={survey} respondentGroups={respondentGroups} respondentGroupsUploading={respondentGroupsUploading} respondentGroupsUploadingExisting={respondentGroupsUploadingExisting} invalidRespondents={invalidRespondents} invalidGroup={invalidGroup} projectId={projectId} questionnaires={questionnaires} channels={channels} dispatch={dispatch} questionnaire={questionnaire} readOnly={readOnly} />
 
 Campaign.propTypes = {
   actions: PropTypes.object.isRequired,

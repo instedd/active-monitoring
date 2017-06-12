@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import UntitledIfEmpty from './UntitledIfEmpty'
 import TextField from 'react-md/lib/TextFields'
+import FontIcon from 'react-md/lib/FontIcons'
 
 export default class EditableTitleLabel extends Component {
   constructor(props) {
@@ -47,11 +48,11 @@ export default class EditableTitleLabel extends Component {
   }
 
   render() {
-    const { title, emptyText } = this.props
+    const { title, emptyText, maxLength, hideEditingIcon } = this.props
 
     let icon = null
-    if (!title || title.trim() == '') {
-      icon = <i className='material-icons'>mode_edit</i>
+    if ((!title || title.trim() == '') && !hideEditingIcon) {
+      icon = <FontIcon>mode_edit</FontIcon>
     }
 
     if (!this.state.editing) {
@@ -64,7 +65,7 @@ export default class EditableTitleLabel extends Component {
     } else {
       return (
         <TextField
-          maxLength={255}
+          maxLength={maxLength}
           defaultValue={title || ''}
           ref={node => this.setInput(node)}
           onKeyDown={e => this.onKeyDown(e)}
@@ -80,5 +81,7 @@ EditableTitleLabel.propTypes = {
   title: PropTypes.string,
   emptyText: PropTypes.string,
   editing: PropTypes.bool,
-  readOnly: PropTypes.bool
+  readOnly: PropTypes.bool,
+  hideEditingIcon: PropTypes.bool,
+  maxLength: PropTypes.number
 }

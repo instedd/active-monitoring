@@ -8,12 +8,14 @@ import { Router, Route, Redirect, Switch } from 'react-router'
 import createHistory from 'history/createBrowserHistory'
 import { routerMiddleware } from 'react-router-redux'
 import thunkMiddleware from 'redux-thunk'
+import logger from 'redux-logger'
 
 import reducers from './reducers'
 import Nav from './components/Nav'
 import Campaign from './components/campaigns/Campaign'
 import Campaigns from './components/campaigns/Campaigns'
 import Channels from './components/channels/Channels'
+import CampaignCreationForm from './components/campaigns/CampaignCreationForm'
 
 const history = createHistory()
 
@@ -21,7 +23,8 @@ const store = createStore(
   reducers,
   applyMiddleware(
     thunkMiddleware,
-    routerMiddleware(history)
+    routerMiddleware(history),
+    logger
   )
 )
 

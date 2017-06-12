@@ -3,12 +3,17 @@ defmodule ActiveMonitoring.Campaign do
 
   schema "campaigns" do
     field :name, :string
+    field :symptoms, {:array, :string}
+    # field :forwarding_condition, :string
+    # field :additional_information, :string
+    # field :alert_recipients, {:array, :string}
+    # field :additional_fields, {:array, :string}
 
     timestamps()
   end
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:name])
+    |> cast(params, [:name, :symptoms])
   end
 end

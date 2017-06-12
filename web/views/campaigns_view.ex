@@ -16,7 +16,8 @@ defmodule ActiveMonitoring.CampaignsView do
   defp render_one(campaign) do
     %{
       id: campaign.id,
-      name: campaign.name
+      name: campaign.name,
+      symptoms: campaign.symptoms
     }
   end
 end

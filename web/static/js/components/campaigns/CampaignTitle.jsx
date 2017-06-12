@@ -2,7 +2,6 @@ import * as actions from '../../actions/campaign'
 import EditableTitleLabel from '../EditableTitleLabel'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import merge from 'lodash/merge'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 
@@ -11,13 +10,8 @@ class CampaignTitle extends Component {
     const { campaign } = this.props
     if (campaign.name == newName) return
 
-    const newCampaign = merge({}, campaign, {name: newName})
-
-    // optimistic update of client-side data.
-    this.props.actions.campaignUpdated(newCampaign)
-
-    // trigger request to update in the server.
-    this.props.actions.campaignUpdate(newCampaign)
+    // trigger request to update in the server
+    this.props.actions.campaignUpdate({ name: newName })
   }
 
   render() {
@@ -26,7 +20,8 @@ class CampaignTitle extends Component {
         title={this.props.campaign.name}
         emptyText={'Untitled campaign'}
         readOnly={false}
-        onSubmit={(title) => this.handleSubmit(title)} />
+        onSubmit={(title) => this.handleSubmit(title)}
+        maxLength={255} />
     )
   }
 }

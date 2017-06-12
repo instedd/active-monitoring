@@ -1,5 +1,7 @@
 import * as api from '../api'
+import { SERVER_ERROR } from './shared'
 import { push } from 'react-router-redux'
+import assign from 'lodash/assign'
 
 export const CAMPAIGN_CREATE = 'CAMPAIGN_CREATE'
 export const CAMPAIGN_CREATED = 'CAMPAIGN_CREATED'
@@ -31,13 +33,14 @@ export const campaignFetch = (id) => (dispatch) => {
      })
 }
 
-export const campaignUpdate = (campaign) => (dispatch) => {
-  dispatch({type: CAMPAIGN_UPDATE, campaign})
+export const campaignUpdate = (attrs) => (dispatch, getState) => {
+  const newCampaign = assign({}, getState().campaign.data, attrs)
 
-  api.updateCampaign(campaign)
-     .then((campaign) => {
-       dispatch({ type: CAMPAIGN_UPDATED, campaign })
-     })
+  dispatch({type: CAMPAIGN_UPDATED, campaign: newCampaign})
+  api.updateCampaign(newCampaign)
+    .catch((message) => {
+      dispatch({type: SERVER_ERROR, message})
+    })
 }
 
 export const campaignUpdated = (campaign) => {
