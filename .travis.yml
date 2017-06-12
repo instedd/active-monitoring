@@ -1,0 +1,31 @@
+sudo: required
+services:
+  - docker
+
+env:
+  COMPOSE_VERSION: 1.8.0
+
+before_install:
+ - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+ - chmod +x docker-compose
+ - sudo mv docker-compose /usr/local/bin
+
+install:
+  - docker-compose pull
+
+before_script:
+  - docker-compose build
+  - docker-compose run --rm -e MIX_ENV=test app mix do local.rebar --force, deps.get, deps.compile
+  - docker-compose run --rm webpack yarn install --no-progress
+
+script:
+  - docker-compose run --rm app mix test
+  - docker-compose run --rm webpack yarn test
+  - docker-compose run --rm webpack yarn webpack
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: ./deploy.sh
+  on:
+    all_branches: true
