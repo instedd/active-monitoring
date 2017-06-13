@@ -29,3 +29,10 @@ deploy:
   script: ./deploy.sh
   on:
     all_branches: true
+
+notifications:
+  slack:
+    on_success: change
+    on_failure: always
+    rooms:
+      secure: W2d0VGweG/iKkiyILaYvbeJC45rXB46gNtfN1fCpzko+vJOCW3zzdgza5NBgAoCl62y8MJP+ywAgWQ0vFKnvPl1OFkqVbw8jQhVSBmN0DppJjp/9mr5xHlvtjZeM1V32z+7f5531u7shB5dl4TShKpWwN38/Ur4ZynWb7U6zk2NVhIkWzaTk1VQbbsqVM6TfokgzjGVg7hZDjGI/xn8lWBhn/WAM1ddu0IxiBbPsImLNhMIio11W2CMtdZqD+xENFIVOTNMZcD1rtO+Rf7zWo363bWU1n34u6hbgU7E1xVbi1/XcDM7ZJgjDRnmp5hDjqz7ZzvfnYphQafa/jn0ToZn8RiSVDNkuamjNPs2EASzl0velkntRb59qmksMxl+JyJ2Q267xHPPqIGCCdWgGyHvJ0fLPpEcBdxe0bFKivALWLLI2HsCyHTxajuJTU5xj9nL+R7YX5UsO3PZA5oZ4dja421vkpcBrZ87Wui+Y8zz3oAjVboVEd6lKhhoPR1QUfoaCYzv9FBF8Yhl2iNPdpOJ28RR+nXVErCn/ePAEDTk7H1TtW22xDKbsuydDDVsQ3IY/ZGvcYHXFY6i/jPx0ZHZo+xV8vn7/oXLEibW6Y6R5abLpLFIJ2JaC9x9G+LE/tAyD/pZ63rhoz63PSBu8l0gBL1LiFf5B2QNQWSSv1y8=
