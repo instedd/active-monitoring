@@ -4,7 +4,8 @@
   "scripts": {
     "deploy": "webpack -p --devtool source-map",
     "watch": "webpack --watch --progress --color",
-    "lint": "eslint --ext .jsx,.js web/static/js/ test/js"    
+    "lint": "eslint --ext .jsx,.js web/static/js/ test/js",
+    "format": "eslint --ext .jsx,.js --fix web/static/js/ test/js"
   },
   "dependencies": {
     "babel-plugin-transform-flow-strip-types": "^6.22.0",

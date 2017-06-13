@@ -1,16 +1,14 @@
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { addEmptySymptom, editSymptom, removeSymptom } from "../actions/symptoms"
+import { addEmptySymptom, editSymptom, removeSymptom } from '../actions/symptoms'
 import Button from 'react-md/lib/Buttons/Button'
 import List from 'react-md/lib/Lists/List'
 import ListItem from 'react-md/lib/Lists/ListItem'
 import EditableTitleLabel from './EditableTitleLabel'
 import FontIcon from 'react-md/lib/FontIcons'
 
-
 class SymptomSelectorComponent extends Component {
-
   render() {
     return (
       <div>
@@ -24,13 +22,20 @@ class SymptomSelectorComponent extends Component {
                 emptyText={'Insert symptom'}
                 readOnly={false}
                 onSubmit={(title) => this.props.onEdit(title, i)}
-                hideEditingIcon={true} />}
-            /> )}
+                hideEditingIcon />}
+            />)}
         </List>
-        <Button flat label="Add symptom" onClick={this.props.onAdd}>add</Button>
+        <Button flat label='Add symptom' onClick={this.props.onAdd}>add</Button>
       </div>
     )
   }
+}
+
+SymptomSelectorComponent.propTypes = {
+  symptoms: PropTypes.arrayOf(PropTypes.string),
+  onRemove: PropTypes.func,
+  onAdd: PropTypes.func,
+  onEdit: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

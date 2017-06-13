@@ -29,5 +29,5 @@ const campaignLoaded = (state, { campaign }) => {
 
 const addEmptySymptom = (state) => {
   let symptoms = state.data.symptoms || []
-  return { ...state, data: { ...state.data, symptoms: [...symptoms,""] } }
+  return { ...state, data: { ...state.data, symptoms: [...symptoms, ''] } }
 }

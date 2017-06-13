@@ -15,7 +15,6 @@ import Nav from './components/Nav'
 import Campaign from './components/campaigns/Campaign'
 import Campaigns from './components/campaigns/Campaigns'
 import Channels from './components/channels/Channels'
-import CampaignCreationForm from './components/campaigns/CampaignCreationForm'
 
 const history = createHistory()
 

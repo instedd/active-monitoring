@@ -1,15 +1,14 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 // import { connect } from 'react-redux'
-import { withRouter } from 'react-router'
+// import { withRouter } from 'react-router'
 import { ScrollToLink, animatedScrollTo } from '../ScrollToLink'
 import SymptomSelector from '../SymptomSelector'
 import List from 'react-md/lib/Lists/List'
 import ListItem from 'react-md/lib/Lists/ListItem'
-import Subheader from 'react-md/lib/Subheaders'
 import FontIcon from 'react-md/lib/FontIcons'
 import SelectField from 'react-md/lib/SelectFields'
-import TextField from 'react-md/lib/TextFields';
+import TextField from 'react-md/lib/TextFields'
 
 export default class CampaignCreationForm extends Component {
   // static propTypes = {
@@ -58,7 +57,6 @@ export default class CampaignCreationForm extends Component {
   //       ids && every(ids, id =>
   //         questionnaires[id] && questionnaires[id].modes && questionnaires[id].modes.indexOf(m) != -1)))
   // }
-
 
   render() {
     // const { survey, projectId, questionnaires, channels, respondentGroups, respondentGroupsUploading, respondentGroupsUploadingExisting, invalidRespondents, invalidGroup, errors, questionnaire, readOnly } = this.props
@@ -112,9 +110,11 @@ export default class CampaignCreationForm extends Component {
     // she can, for example, change their channel.
     // const surveyStarted = survey.state == 'running' || survey.state == 'terminated'
 
+    let completed = false
+
     return (
       <div className='md-grid'>
-        <div className="md-cell md-paper md-paper--1">
+        <div className='md-cell md-paper md-paper--1'>
           <h5>Progress <span className='right'>{30}</span></h5>
           <p>
             Complete the following tasks to get your Campaign ready.
@@ -123,9 +123,9 @@ export default class CampaignCreationForm extends Component {
             <div className='determinate' style={{ width: 30 }} />
           </div>
           <List className='wizard'>
-            <ListItem onClick={(e) => animatedScrollTo(e, 'identification')} leftIcon={<FontIcon>{false ? 'check_circle' : 'assignment'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Set up identification process'></ListItem>
-          <ListItem onClick={(e) => animatedScrollTo(e, 'symptoms')} leftIcon={<FontIcon>{false ? 'check_circle' : 'healing'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Define the symptoms'></ListItem>
-          <ListItem onClick={(e) => animatedScrollTo(e, 'information')} leftIcon={<FontIcon>{false ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Educational information'></ListItem>
+            <ListItem onClick={(e) => animatedScrollTo(e, 'identification')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'assignment'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Set up identification process' />
+            <ListItem onClick={(e) => animatedScrollTo(e, 'symptoms')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'healing'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Define the symptoms' />
+            <ListItem onClick={(e) => animatedScrollTo(e, 'information')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Educational information' />
           </List>
         </div>
         <div className='md-cell md-cell--8 wizard-content'>
@@ -143,19 +143,19 @@ export default class CampaignCreationForm extends Component {
             </div>
             <div className='md-grid'>
               <SelectField
-                id="forwarding-condition"
-                menuItems={[{value: "any", label: "Forward call if any symptom is positive"},{value: "all", label: "Forward call if all symptoms are positive"}]}
+                id='forwarding-condition'
+                menuItems={[{value: 'any', label: 'Forward call if any symptom is positive'}, {value: 'all', label: 'Forward call if all symptoms are positive'}]}
                 position={SelectField.Positions.BELOW}
-                className="md-cell md-cell--8  md-cell--bottom"
-                defaultValue="any"
+                className='md-cell md-cell--8  md-cell--bottom'
+                defaultValue='any'
               />
               <TextField
-                id="forwarding-number"
-                label="Forward number"
-                className="md-cell md-cell--4"
+                id='forwarding-number'
+                label='Forward number'
+                className='md-cell md-cell--4'
               />
             </div>
-            <div className="md-grid">
+            <div className='md-grid'>
               <SymptomSelector />
             </div>
             <ScrollToLink target='#symptoms'>NEXT: Educational information</ScrollToLink>

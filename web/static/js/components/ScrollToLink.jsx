@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
@@ -25,7 +26,7 @@ export const animatedScrollTo = (e: Event, target: String) => {
   // $('html, body').animate({
   //   scrollTop: $(target).offset().top
   // }, 500)
-  var el = document.getElementById(target);
-  var rect = el.getBoundingClientRect();
-  window.scrollTo(0, rect.top);
+  var el = document.getElementById(target)
+  var rect = el.getBoundingClientRect()
+  window.scrollTo(0, rect.top)
 }

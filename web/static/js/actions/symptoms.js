@@ -12,7 +12,6 @@ export const editSymptom = (symptom, index) => (dispatch, getState) => {
   dispatch(campaignUpdate({symptoms}))
 }
 
-
 export const removeSymptom = (index) => (dispatch, getState) => {
   let symptoms = getState().campaign.data.symptoms.slice()
   symptoms.splice(index, 1)

@@ -80,7 +80,6 @@ EditableTitleLabel.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   title: PropTypes.string,
   emptyText: PropTypes.string,
-  editing: PropTypes.bool,
   readOnly: PropTypes.bool,
   hideEditingIcon: PropTypes.bool,
   maxLength: PropTypes.number
