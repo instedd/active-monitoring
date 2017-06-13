@@ -17,7 +17,9 @@ defmodule ActiveMonitoring.CampaignsView do
     %{
       id: campaign.id,
       name: campaign.name,
-      symptoms: campaign.symptoms
+      symptoms: campaign.symptoms,
+      forwarding_number: campaign.forwarding_number,
+      forwarding_condition: campaign.forwarding_condition
     }
   end
 end

@@ -3,12 +3,10 @@ import React, { Component } from 'react'
 // import { connect } from 'react-redux'
 // import { withRouter } from 'react-router'
 import { ScrollToLink, animatedScrollTo } from '../ScrollToLink'
-import SymptomSelector from '../SymptomSelector'
+import SymptomStep from '../SymptomStep'
 import List from 'react-md/lib/Lists/List'
 import ListItem from 'react-md/lib/Lists/ListItem'
 import FontIcon from 'react-md/lib/FontIcons'
-import SelectField from 'react-md/lib/SelectFields'
-import TextField from 'react-md/lib/TextFields'
 
 export default class CampaignCreationForm extends Component {
   // static propTypes = {
@@ -133,31 +131,7 @@ export default class CampaignCreationForm extends Component {
             <ScrollToLink target='#identification'>NEXT: Define the symptoms</ScrollToLink>
           </div>
           <div id='symptoms'>
-            <div className='md-grid'>
-              <div className='md-cell md-cell--12'>
-                <h3>Define the symptoms</h3>
-                <p>
-                  The symptoms will be used to evaluate positive cases of the disease and send alerts to the persons responsible. Later you will be asked to upload audio explaining how to evaluate this symptoms.
-                </p>
-              </div>
-            </div>
-            <div className='md-grid'>
-              <SelectField
-                id='forwarding-condition'
-                menuItems={[{value: 'any', label: 'Forward call if any symptom is positive'}, {value: 'all', label: 'Forward call if all symptoms are positive'}]}
-                position={SelectField.Positions.BELOW}
-                className='md-cell md-cell--8  md-cell--bottom'
-                defaultValue='any'
-              />
-              <TextField
-                id='forwarding-number'
-                label='Forward number'
-                className='md-cell md-cell--4'
-              />
-            </div>
-            <div className='md-grid'>
-              <SymptomSelector />
-            </div>
+            <SymptomStep />
             <ScrollToLink target='#symptoms'>NEXT: Educational information</ScrollToLink>
           </div>
           <div id='information' className='row scrollspy'>
