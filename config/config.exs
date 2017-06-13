@@ -39,3 +39,7 @@ config :coherence,
 config :coherence, ActiveMonitoring.Coherence.Mailer,
   adapter: Swoosh.Adapters.Local
 # %% End Coherence Configuration %%
+
+# Encode JSON properties as camelCase before sending
+config :phoenix, :format_encoders,
+  json: ProperCase.JSONEncoder.CamelCase

@@ -22,6 +22,7 @@ defmodule ActiveMonitoring.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug ProperCase.Plug.SnakeCaseParams
     plug :fetch_session
     plug :fetch_flash
 
