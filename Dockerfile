@@ -11,6 +11,7 @@ ENV MIX_ENV=prod
 ADD mix.exs mix.lock /app/
 WORKDIR /app
 
+RUN mix local.rebar --force
 RUN mix deps.get --only prod
 RUN mix deps.compile
 
