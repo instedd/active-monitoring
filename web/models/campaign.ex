@@ -3,9 +3,10 @@ defmodule ActiveMonitoring.Campaign do
 
   schema "campaigns" do
     field :name, :string
-    field :symptoms, {:array, :string}
+    field :symptoms, {:array, {:array, :string}} # [{id, label}]
     field :forwarding_condition, :string
     field :forwarding_number, :string
+    field :audios, {:array, {:array, :string}} # [{(symptom:id|language|welcome|thanks), lang?, audio.uuid}]
     # field :additional_information, :string
     # field :alert_recipients, {:array, :string}
     # field :additional_fields, {:array, :string}
@@ -15,6 +16,6 @@ defmodule ActiveMonitoring.Campaign do
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:name, :symptoms, :forwarding_number, :forwarding_condition])
+    |> cast(params, [:name, :symptoms, :forwarding_number, :forwarding_condition, :audios])
   end
 end

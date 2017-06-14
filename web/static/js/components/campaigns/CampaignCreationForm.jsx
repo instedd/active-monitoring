@@ -3,7 +3,8 @@ import React, { Component } from 'react'
 // import { connect } from 'react-redux'
 // import { withRouter } from 'react-router'
 import { ScrollToLink, animatedScrollTo } from '../ScrollToLink'
-import SymptomStep from '../SymptomStep'
+import SymptomStep from './SymptomStep'
+import UploadAudioStep from './UploadAudioStep'
 import List from 'react-md/lib/Lists/List'
 import ListItem from 'react-md/lib/Lists/ListItem'
 import FontIcon from 'react-md/lib/FontIcons'
@@ -124,6 +125,7 @@ export default class CampaignCreationForm extends Component {
             <ListItem onClick={(e) => animatedScrollTo(e, 'identification')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'assignment'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Set up identification process' />
             <ListItem onClick={(e) => animatedScrollTo(e, 'symptoms')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'healing'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Define the symptoms' />
             <ListItem onClick={(e) => animatedScrollTo(e, 'information')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Educational information' />
+            <ListItem onClick={(e) => animatedScrollTo(e, 'audios')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'volume_up'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Upload audios' />
           </List>
         </div>
         <div className='md-cell md-cell--8 wizard-content'>
@@ -146,6 +148,9 @@ export default class CampaignCreationForm extends Component {
               </div>
             </div>
             <ScrollToLink target='#information'>NEXT: Setup a Schedule</ScrollToLink>
+          </div>
+          <div id='audios'>
+            <UploadAudioStep />
           </div>
         </div>
       </div>

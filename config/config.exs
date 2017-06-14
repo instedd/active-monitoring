@@ -9,6 +9,10 @@ use Mix.Config
 config :active_monitoring,
   ecto_repos: [ActiveMonitoring.Repo]
 
+# Path to sox binary for converting audios
+config :active_monitoring, :sox,
+  bin: System.get_env("SOX_BINARY") || "sox"
+
 # Configures the endpoint
 config :active_monitoring, ActiveMonitoring.Endpoint,
   url: [host: "localhost"],
