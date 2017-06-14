@@ -11,12 +11,12 @@ class AudioDropzone extends Component {
 
     return (
       <Dropzone className={className}
-                activeClassName='active'
-                rejectClassName='rejectedfile'
-                multiple={false}
-                onDrop={onDrop}
-                onDropRejected={onDropRejected}
-                accept='audio/*' >
+        activeClassName='active'
+        rejectClassName='rejectedfile'
+        multiple={false}
+        onDrop={onDrop}
+        onDropRejected={onDropRejected}
+        accept='audio/*' >
         {this.props.children}
       </Dropzone>
     )
@@ -26,7 +26,8 @@ class AudioDropzone extends Component {
 AudioDropzone.propTypes = {
   onDrop: PropTypes.func,
   onDropRejected: PropTypes.func,
-  error: PropTypes.bool
+  error: PropTypes.bool,
+  children: PropTypes.element
 }
 
 export default AudioDropzone

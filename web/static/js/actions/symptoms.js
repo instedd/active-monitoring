@@ -8,7 +8,7 @@ export const addEmptySymptom = () => {
 
 export const editSymptom = (newName, index) => (dispatch, getState) => {
   let symptoms = getState().campaign.data.symptoms.slice()
-  let [id, name] = symptoms[index]
+  let [id] = symptoms[index]
   symptoms[index] = [id, newName]
   dispatch(campaignUpdate({symptoms}))
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 // import { connect } from 'react-redux'
 // import { withRouter } from 'react-router'
 import { ScrollToLink, animatedScrollTo } from '../ScrollToLink'
@@ -57,9 +57,16 @@ export default class CampaignCreationForm extends Component {
   //         questionnaires[id] && questionnaires[id].modes && questionnaires[id].modes.indexOf(m) != -1)))
   // }
 
+  completedSymptomStep() {
+    return this.props.campaign.symptoms.length > 0 && this.props.campaign.forwardingNumber != null
+  }
+
+  completedAudioStep() {
+
+  }
+
   render() {
     // const { survey, projectId, questionnaires, channels, respondentGroups, respondentGroupsUploading, respondentGroupsUploadingExisting, invalidRespondents, invalidGroup, errors, questionnaire, readOnly } = this.props
-    // const questionnaireStepCompleted = survey.questionnaireIds != null && survey.questionnaireIds.length > 0 && this.questionnairesValid(survey.questionnaireIds, questionnaires)
     // const respondentsStepCompleted = respondentGroups && Object.keys(respondentGroups).length > 0 &&
     //   every(values(respondentGroups), group => {
     //     return group.channels.length > 0 && this.allModesHaveAChannel(survey.mode, group.channels)
@@ -123,7 +130,7 @@ export default class CampaignCreationForm extends Component {
           </div>
           <List className='wizard'>
             <ListItem onClick={(e) => animatedScrollTo(e, 'identification')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'assignment'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Set up identification process' />
-            <ListItem onClick={(e) => animatedScrollTo(e, 'symptoms')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'healing'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Define the symptoms' />
+            <ListItem onClick={(e) => animatedScrollTo(e, 'symptoms')} leftIcon={<FontIcon>{this.completedSymptomStep() ? 'check_circle' : 'healing'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Define the symptoms' className={this.completedSymptomStep() ? 'md-text-green' : ''} />
             <ListItem onClick={(e) => animatedScrollTo(e, 'information')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Educational information' />
             <ListItem onClick={(e) => animatedScrollTo(e, 'audios')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'volume_up'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Upload audios' />
           </List>
@@ -158,7 +165,11 @@ export default class CampaignCreationForm extends Component {
   }
 }
 
-// const mapStateToProps = (state, ownProps) => ({
-//   surveyId: ownProps.params.surveyId,
-//   errors: state.survey.errorsByPath
+CampaignCreationForm.propTypes = {
+  campaign: PropTypes.object
+}
+
+// const mapStateToProps = (state) => ({
+//   campaign: state.campaign.data,
+//   campaignId: state.campaignId
 // })

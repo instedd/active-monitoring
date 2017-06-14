@@ -26,7 +26,7 @@ class Campaign extends Component {
           <Subheader>
             <CampaignTitle campaign={this.props.campaign.data} />
           </Subheader>
-          <CampaignCreationForm />
+          <CampaignCreationForm campaign={this.props.campaign.data} />
         </div>
       )
     }

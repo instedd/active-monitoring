@@ -3,7 +3,6 @@ import * as actions from '../actions/campaign'
 import * as symptomActions from '../actions/symptoms'
 import uuid from 'uuid/v4'
 
-
 const initialState = {
   fetching: false,
   campaignId: null,
@@ -31,5 +30,5 @@ const campaignLoaded = (state, { campaign }) => {
 
 const addEmptySymptom = (state) => {
   let symptoms = state.data.symptoms || []
-  return { ...state, data: { ...state.data, symptoms: [...symptoms, [uuid(), ""]] } }
+  return { ...state, data: { ...state.data, symptoms: [...symptoms, [uuid(), '']] } }
 }

@@ -77,7 +77,7 @@ class Campaigns extends Component {
   }
 
   createCampaign() {
-    this.props.itemActions.createCampaign({name: ''})
+    this.props.itemActions.createCampaign()
   }
 
   goToCampaign(id) {

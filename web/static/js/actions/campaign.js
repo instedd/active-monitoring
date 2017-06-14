@@ -12,8 +12,10 @@ export const CAMPAIGN_UPDATED = 'CAMPAIGN_UPDATED'
 
 export const createCampaign = (campaignParams) => (dispatch) => {
   dispatch({type: CAMPAIGN_CREATE})
+  const defaultProps = { symptoms: [], langs: [], name: '', audios: [] }
+  const params = assign({}, defaultProps, campaignParams)
 
-  api.createCampaign(campaignParams)
+  api.createCampaign(params)
      .then((campaign) => {
        dispatch(campaignCreated(campaign))
        dispatch(push(`/campaigns/${campaign.id}`))

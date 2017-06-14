@@ -5,27 +5,20 @@ import values from 'lodash/values'
 import flatten from 'lodash/flatten'
 import capitalize from 'lodash/capitalize'
 
-import { addEmptySymptom, editSymptom, removeSymptom } from '../../actions/symptoms'
-import { campaignUpdate } from '../../actions/campaign'
+// import { campaignUpdate } from '../../actions/campaign'
 import { audioEntries, getAudioFileFor } from '../../selectors/campaign'
 import { codeToName } from '../../langs'
 
-import Button from 'react-md/lib/Buttons/Button'
-import List from 'react-md/lib/Lists/List'
-import ListItem from 'react-md/lib/Lists/ListItem'
-import EditableTitleLabel from '../EditableTitleLabel'
+// import Button from 'react-md/lib/Buttons/Button'
 import FontIcon from 'react-md/lib/FontIcons'
-import SelectField from 'react-md/lib/SelectFields'
-import Tabs from 'react-md/lib/Tabs/Tabs';
-import Tab from 'react-md/lib/Tabs/Tab';
-import TabsContainer from 'react-md/lib/Tabs/TabsContainer';
+import Tabs from 'react-md/lib/Tabs/Tabs'
+import Tab from 'react-md/lib/Tabs/Tab'
+import TabsContainer from 'react-md/lib/Tabs/TabsContainer'
 
-import TextField from '../TextField'
 import AudioPicker from '../AudioPicker'
 
-
 const AudiosUploadedCounter = ({uploaded, total}) => (
-  <div className="md-cell md-cell--12">
+  <div className='md-cell md-cell--12'>
     <FontIcon>volume_up</FontIcon>
     <span>{uploaded}/{total} audio files uploaded</span>
   </div>
@@ -37,25 +30,24 @@ AudiosUploadedCounter.propTypes = {
 }
 
 class UploadAudioStepComponent extends Component {
-
   getTopicTexts(topic) {
-    if (topic == "welcome") {
-      return { title: "Welcome message", description: "Present the objectives of this call" }
-    } else if (topic == "forward") {
-      return { title: "Forward call message", description: "Explain that the current call will be forwarded to an agent due to positive symptoms" }
-    } else if (topic == "educational") {
-      return { title: "Educational information", description: "Inform the caller about additional information such as prevention measures" }
-    } else if (topic == "thanks") {
-      return { title: "Thank you message", description: "Thank the caller for participating" }
-    } else if (topic == "language") {
-      const description = this.props.langs.map((iso, i) => `${i+1} for ${codeToName(iso)}`).join(', ')
-      return { title: "Language options", description: `List the options: ${description}` }
-    } else if (topic.startsWith("symptom:")) {
-      const id = topic.split(":", 2)[1]
+    if (topic == 'welcome') {
+      return { title: 'Welcome message', description: 'Present the objectives of this call' }
+    } else if (topic == 'forward') {
+      return { title: 'Forward call message', description: 'Explain that the current call will be forwarded to an agent due to positive symptoms' }
+    } else if (topic == 'educational') {
+      return { title: 'Educational information', description: 'Inform the caller about additional information such as prevention measures' }
+    } else if (topic == 'thanks') {
+      return { title: 'Thank you message', description: 'Thank the caller for participating' }
+    } else if (topic == 'language') {
+      const description = this.props.langs.map((iso, i) => `${i + 1} for ${codeToName(iso)}`).join(', ')
+      return { title: 'Language options', description: `List the options: ${description}` }
+    } else if (topic.startsWith('symptom:')) {
+      const id = topic.split(':', 2)[1]
       const name = this.props.symptoms.find(([_id, _name]) => id == _id)[1]
-      return { title: `${capitalize(name)} symptom question`, description: "Ask if there are any signs of this symptom: 1 for Yes, 2 for No"}
+      return { title: `${capitalize(name)} symptom question`, description: 'Ask if there are any signs of this symptom: 1 for Yes, 2 for No' }
     } else {
-      throw `Unexpected topic: ${topic}`
+      throw new Error(`Unexpected topic: ${topic}`)
     }
   }
 
@@ -84,9 +76,9 @@ class UploadAudioStepComponent extends Component {
         </div>
         <div className='md-grid'>
           <AudiosUploadedCounter uploaded={this.props.audios.length} total={totalAudios} />
-          <AudioPicker topic="language" file={getAudioFileFor(this.props.audios, "language", null)} {...this.getTopicTexts("language")} />
-          <TabsContainer panelClassName="md-grid">
-            <Tabs tabId="langs">
+          <AudioPicker topic='language' file={getAudioFileFor(this.props.audios, 'language', null)} {...this.getTopicTexts('language')} />
+          <TabsContainer panelClassName='md-grid'>
+            <Tabs tabId='langs'>
               {this.props.langs.map(lang => this.renderLangTab(lang))}
             </Tabs>
           </TabsContainer>
@@ -97,15 +89,18 @@ class UploadAudioStepComponent extends Component {
 }
 
 UploadAudioStepComponent.propTypes = {
-
+  langs: PropTypes.arrayOf(PropTypes.string),
+  symptoms: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+  entries: PropTypes.object,
+  audios: PropTypes.array
 }
 
 const mapStateToProps = (state) => {
   return {
     entries: audioEntries(state),
     audios: state.campaign.data.audios || [],
-    symptoms: state.campaign.data.symptoms || [],
-    langs: state.campaign.data.langs || ["en", "es"]
+    symptoms: state.campaign.data.symptoms,
+    langs: state.campaign.data.langs || ['en', 'es']
   }
 }
 
