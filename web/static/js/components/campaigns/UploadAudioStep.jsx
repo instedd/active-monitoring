@@ -55,7 +55,7 @@ class UploadAudioStepComponent extends Component {
     return (
       <Tab label={codeToName(lang)} key={lang}>
         {this.props.entries[lang].map(topic => (
-          <AudioPicker topic={topic} file={getAudioFileFor(this.props.audios, topic, lang)} {...this.getTopicTexts(topic)} key={topic} />
+          <AudioPicker lang={lang} topic={topic} file={getAudioFileFor(this.props.audios, topic, lang)} {...this.getTopicTexts(topic)} key={topic} />
         ))}
       </Tab>
     )

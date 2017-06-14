@@ -79,6 +79,19 @@ const apiDelete = (url) => {
   return apiFetch(url, {method: 'DELETE'})
 }
 
+const apiPostFile = (url, schema, file) => {
+  return apiFetchJSON(url, schema, {
+    method: 'POST',
+    body: newFormData(file)
+  })
+}
+
+const newFormData = (file) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  return formData
+}
+
 export const createCampaign = (campaign) => {
   return apiPostJSON('campaigns', { campaign })
 }
@@ -101,4 +114,9 @@ export const fetchCampaigns = () => {
 
 export const fetchChannels = () => {
   return apiFetchJSON('channels')
+}
+
+export const createAudio = (files) => {
+  let audioSchema = null
+  return apiPostFile('audios', audioSchema, files[0])
 }

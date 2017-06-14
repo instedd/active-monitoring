@@ -3,12 +3,18 @@ import AudioDropzone from './AudioDropzone'
 import PropTypes from 'prop-types'
 import FontIcon from 'react-md/lib/FontIcons'
 import Paper from 'react-md/lib/Papers'
+import { createAudio } from '../api.js'
 
 export class AudioPicker extends Component {
+  onUpload(files) {
+    console.log(files)
+    createAudio(files)
+  }
+
   render() {
     return (
       <Paper zDepth={1} className='md-cell md-cell--12'>
-        <AudioDropzone>
+        <AudioDropzone onDrop={this.onUpload}>
           <div className='md-grid'>
             <div className='md-cell md-cell--10'>
               <h3>{this.props.title}</h3>

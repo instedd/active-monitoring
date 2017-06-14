@@ -62,7 +62,7 @@ export default class CampaignCreationForm extends Component {
   }
 
   completedAudioStep() {
-
+    return false
   }
 
   render() {
@@ -87,14 +87,9 @@ export default class CampaignCreationForm extends Component {
     //   ) && validRetryConfiguration
     // let comparisonsStepCompleted = false
 
-    // const mandatorySteps = [questionnaireStepCompleted, respondentsStepCompleted, modeStepCompleted, scheduleStepCompleted]
-    // if (survey.comparisons.length > 0) {
-    //   comparisonsStepCompleted = sumBy(survey.comparisons, c => c.ratio) == 100
-    //   mandatorySteps.push(comparisonsStepCompleted)
-    // }
-
-    // const numberOfCompletedSteps = mandatorySteps.filter(item => item == true).length
-    // const percentage = `${(100 / mandatorySteps.length * numberOfCompletedSteps).toFixed(0)}%`
+    const steps = [this.completedSymptomStep(), this.completedAudioStep()]
+    const numberOfCompletedSteps = steps.filter(item => item == true).length
+    const percentage = `${(100 / steps.length * numberOfCompletedSteps).toFixed(0)}%`
 
     // let launchComponent = null
     // if (survey.state == 'ready' && !readOnly) {
@@ -121,12 +116,12 @@ export default class CampaignCreationForm extends Component {
     return (
       <div className='md-grid'>
         <div className='md-cell md-paper md-paper--1'>
-          <h5>Progress <span className='right'>{30}</span></h5>
+          <h5>Progress <span className='right'>{percentage}</span></h5>
           <p>
             Complete the following tasks to get your Campaign ready.
           </p>
           <div className='progress'>
-            <div className='determinate' style={{ width: 30 }} />
+            <div className='determinate' style={{ width: percentage }} />
           </div>
           <List className='wizard'>
             <ListItem onClick={(e) => animatedScrollTo(e, 'identification')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'assignment'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Set up identification process' />
