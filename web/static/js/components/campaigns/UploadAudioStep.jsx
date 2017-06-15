@@ -57,7 +57,7 @@ class UploadAudioStepComponent extends Component {
         {this.props.entries[lang].map(topic => (
           <AudioPicker
             file={getAudioFileFor(this.props.audios, topic, lang)}
-            onUpload={(file) => this.props.onUploadAudio(file, lang, topic)}
+            onUpload={(file) => this.props.onUploadAudio(file, topic, lang)}
             key={topic}
             {...this.getTopicTexts(topic)} />
         ))}
@@ -80,7 +80,7 @@ class UploadAudioStepComponent extends Component {
         </div>
         <div className='md-grid'>
           <AudiosUploadedCounter uploaded={this.props.audios.length} total={totalAudios} />
-          <AudioPicker onUpload={(file) => this.props.onUploadAudio(file, "language")} file={getAudioFileFor(this.props.audios, 'language', null)} {...this.getTopicTexts('language')} />
+          <AudioPicker onUpload={(file) => this.props.onUploadAudio(file, 'language')} file={getAudioFileFor(this.props.audios, 'language', null)} {...this.getTopicTexts('language')} />
           <TabsContainer panelClassName='md-grid'>
             <Tabs tabId='langs'>
               {this.props.langs.map(lang => this.renderLangTab(lang))}
@@ -96,7 +96,8 @@ UploadAudioStepComponent.propTypes = {
   langs: PropTypes.arrayOf(PropTypes.string),
   symptoms: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
   entries: PropTypes.object,
-  audios: PropTypes.array
+  audios: PropTypes.array,
+  onUploadAudio: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

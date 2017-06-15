@@ -19,7 +19,8 @@ defmodule ActiveMonitoring.CampaignsView do
       name: campaign.name,
       symptoms: campaign.symptoms,
       forwarding_number: campaign.forwarding_number,
-      forwarding_condition: campaign.forwarding_condition
+      forwarding_condition: campaign.forwarding_condition,
+      audios: campaign.audios
     }
   end
 end
