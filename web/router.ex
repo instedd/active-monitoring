@@ -22,7 +22,7 @@ defmodule ActiveMonitoring.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-    plug ProperCase.Plug.SnakeCaseParams
+    plug ActiveMonitoring.SnakeCaseParams
     plug :fetch_session
     plug :fetch_flash
 
@@ -44,6 +44,7 @@ defmodule ActiveMonitoring.Router do
 
       resources "/campaigns", CampaignsController, only: [:index, :create, :show, :update, :delete]
       resources "/channels", ChannelsController, only: [:index]
+      resources "/audios", AudioController, only: [:create, :show]
     end
   end
 

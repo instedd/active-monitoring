@@ -26,8 +26,8 @@ defmodule ActiveMonitoring.Audio do
 
   def upload_changeset(upload) do
     %{size: size} = File.stat!(upload.path)
-    data = %{name: upload.filename, size: size}
-    types = %{name: :string, size: :integer}
+    data = %{filename: upload.filename, size: size}
+    types = %{filename: :string, size: :integer}
 
     {%{}, types}
     |> cast(data, Map.keys(types))

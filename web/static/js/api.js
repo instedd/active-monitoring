@@ -79,8 +79,8 @@ const apiDelete = (url) => {
   return apiFetch(url, {method: 'DELETE'})
 }
 
-const apiPostFile = (url, schema, file) => {
-  return apiFetchJSON(url, schema, {
+const apiPostFile = (url, file) => {
+  return apiFetchJSON(url, {
     method: 'POST',
     body: newFormData(file)
   })
@@ -117,6 +117,5 @@ export const fetchChannels = () => {
 }
 
 export const createAudio = (files) => {
-  let audioSchema = null
-  return apiPostFile('audios', audioSchema, files[0])
+  return apiPostFile('audios', files[0])
 }

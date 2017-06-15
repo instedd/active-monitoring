@@ -7,9 +7,9 @@ import capitalize from 'lodash/capitalize'
 
 // import { campaignUpdate } from '../../actions/campaign'
 import { audioEntries, getAudioFileFor } from '../../selectors/campaign'
+import { uploadCampaignAudio } from '../../actions/audios'
 import { codeToName } from '../../langs'
 
-// import Button from 'react-md/lib/Buttons/Button'
 import FontIcon from 'react-md/lib/FontIcons'
 import Tabs from 'react-md/lib/Tabs/Tabs'
 import Tab from 'react-md/lib/Tabs/Tab'
@@ -55,7 +55,11 @@ class UploadAudioStepComponent extends Component {
     return (
       <Tab label={codeToName(lang)} key={lang}>
         {this.props.entries[lang].map(topic => (
-          <AudioPicker lang={lang} topic={topic} file={getAudioFileFor(this.props.audios, topic, lang)} {...this.getTopicTexts(topic)} key={topic} />
+          <AudioPicker
+            file={getAudioFileFor(this.props.audios, topic, lang)}
+            onUpload={(file) => this.props.onUploadAudio(file, lang, topic)}
+            key={topic}
+            {...this.getTopicTexts(topic)} />
         ))}
       </Tab>
     )
@@ -76,7 +80,7 @@ class UploadAudioStepComponent extends Component {
         </div>
         <div className='md-grid'>
           <AudiosUploadedCounter uploaded={this.props.audios.length} total={totalAudios} />
-          <AudioPicker topic='language' file={getAudioFileFor(this.props.audios, 'language', null)} {...this.getTopicTexts('language')} />
+          <AudioPicker onUpload={(file) => this.props.onUploadAudio(file, "language")} file={getAudioFileFor(this.props.audios, 'language', null)} {...this.getTopicTexts('language')} />
           <TabsContainer panelClassName='md-grid'>
             <Tabs tabId='langs'>
               {this.props.langs.map(lang => this.renderLangTab(lang))}
@@ -106,7 +110,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-
+    onUploadAudio: (file, topic, language) => dispatch(uploadCampaignAudio(file, topic, language))
   }
 }
 
