@@ -42,8 +42,6 @@ services:
       context: ./
       dockerfile: Dockerfile.webpack
     command: yarn run webpack-dev-server
-    stdin_open: true
-    tty: true
     restart: always
     working_dir: /app
     stop_signal: SIGKILL
