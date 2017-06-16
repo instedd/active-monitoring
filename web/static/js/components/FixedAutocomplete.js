@@ -1,4 +1,3 @@
-import React, { Component } from 'react'
 import Autocomplete from 'react-md/lib/Autocompletes'
 
 export default class FixedAutocomplete extends Autocomplete {

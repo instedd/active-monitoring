@@ -32,14 +32,6 @@ export default class CampaignCreationForm extends Component {
     return false
   }
 
-  completedSymptomStep() {
-    return this.props.campaign.symptoms.length > 0 && this.props.campaign.forwardingNumber != null
-  }
-
-  completedAudioStep() {
-    return false
-  }
-
   render() {
     // const { survey, projectId, questionnaires, channels, respondentGroups, respondentGroupsUploading, respondentGroupsUploadingExisting, invalidRespondents, invalidGroup, errors, questionnaire, readOnly } = this.props
 

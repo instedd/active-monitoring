@@ -9,7 +9,6 @@ import Button from 'react-md/lib/Buttons/Button'
 import List from 'react-md/lib/Lists/List'
 import ListItemControl from 'react-md/lib/Lists/ListItemControl'
 import FontIcon from 'react-md/lib/FontIcons'
-import EditableTitleLabel from '../EditableTitleLabel'
 import FixedAutocomplete from '../FixedAutocomplete'
 
 class LanguageStepComponent extends Component {
@@ -41,11 +40,11 @@ class LanguageStepComponent extends Component {
                     id={`autocomplete${i}`}
                     data={languages}
                     filter={FixedAutocomplete.caseInsensitiveFilter}
-                    onAutocomplete={(lbl,j,obj) => this.props.onEdit(obj[0].value,i)}
+                    onAutocomplete={(lbl, j, obj) => this.props.onEdit(obj[0].value, i)}
                     block={false}
                     dataLabel='label'
                     dataValue='value'
-                    defaultValue={codeToName(id) || ""}
+                    defaultValue={codeToName(id) || ''}
                   />}
               />)}
           </List>
@@ -57,7 +56,10 @@ class LanguageStepComponent extends Component {
 }
 
 LanguageStepComponent.propTypes = {
-
+  onRemove: PropTypes.func,
+  onEdit: PropTypes.func,
+  onAdd: PropTypes.func,
+  langs: PropTypes.arrayOf(PropTypes.string)
 }
 
 const mapStateToProps = (state) => {
