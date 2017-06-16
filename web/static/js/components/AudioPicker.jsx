@@ -13,7 +13,7 @@ export class AudioPicker extends Component {
     )
 
     const action = this.props.file ? (
-      <FontIcon onClick={(e) => { e.stopPropagation(); this.props.onRemove(); }} className='md-cell md-cell--2 md-cell--right md-text-right'>close</FontIcon>
+      <FontIcon onClick={(e) => { e.stopPropagation(); this.props.onRemove() }} className='md-cell md-cell--2 md-cell--right md-text-right'>close</FontIcon>
     ) : (
       <FontIcon className='md-cell md-cell--2 md-cell--right md-text-right'>file_upload</FontIcon>
     )

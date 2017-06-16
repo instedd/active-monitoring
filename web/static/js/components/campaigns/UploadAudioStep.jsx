@@ -102,7 +102,8 @@ UploadAudioStepComponent.propTypes = {
   symptoms: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
   entries: PropTypes.object,
   audios: PropTypes.array,
-  onUploadAudio: PropTypes.func
+  onUploadAudio: PropTypes.func,
+  onRemoveAudio: PropTypes.func
 }
 
 const mapStateToProps = (state) => {
@@ -117,7 +118,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onUploadAudio: (file, topic, language) => dispatch(uploadCampaignAudio(file, topic, language)),
-    onRemoveAudio: (topic, language) => dispatch(removeCampaignAudio(topic, language)),
+    onRemoveAudio: (topic, language) => dispatch(removeCampaignAudio(topic, language))
   }
 }
 
