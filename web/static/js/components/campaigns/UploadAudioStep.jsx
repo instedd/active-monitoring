@@ -7,7 +7,7 @@ import capitalize from 'lodash/capitalize'
 
 // import { campaignUpdate } from '../../actions/campaign'
 import { audioEntries, getAudioFileFor } from '../../selectors/campaign'
-import { uploadCampaignAudio } from '../../actions/audios'
+import { uploadCampaignAudio, removeCampaignAudio } from '../../actions/audios'
 import { codeToName } from '../../langs'
 
 import FontIcon from 'react-md/lib/FontIcons'
@@ -58,6 +58,7 @@ class UploadAudioStepComponent extends Component {
           <AudioPicker
             file={getAudioFileFor(this.props.audios, topic, lang)}
             onUpload={(file) => this.props.onUploadAudio(file, topic, lang)}
+            onRemove={() => this.props.onRemoveAudio(topic, lang)}
             key={topic}
             {...this.getTopicTexts(topic)} />
         ))}
@@ -80,7 +81,11 @@ class UploadAudioStepComponent extends Component {
         </div>
         <div className='md-grid'>
           <AudiosUploadedCounter uploaded={this.props.audios.length} total={totalAudios} />
-          <AudioPicker onUpload={(file) => this.props.onUploadAudio(file, 'language')} file={getAudioFileFor(this.props.audios, 'language', null)} {...this.getTopicTexts('language')} />
+          <AudioPicker
+            onUpload={(file) => this.props.onUploadAudio(file, 'language')}
+            onRemove={() => this.props.onRemoveAudio('language')}
+            file={getAudioFileFor(this.props.audios, 'language')}
+            {...this.getTopicTexts('language')} />
           <TabsContainer panelClassName='md-grid'>
             <Tabs tabId='langs'>
               {this.props.langs.map(lang => this.renderLangTab(lang))}
@@ -111,7 +116,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onUploadAudio: (file, topic, language) => dispatch(uploadCampaignAudio(file, topic, language))
+    onUploadAudio: (file, topic, language) => dispatch(uploadCampaignAudio(file, topic, language)),
+    onRemoveAudio: (topic, language) => dispatch(removeCampaignAudio(topic, language)),
   }
 }
 

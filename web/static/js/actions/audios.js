@@ -9,8 +9,12 @@ export const campaignAudioUploaded = (audioId, topic, language) => {
   return { type: CAMPAIGN_AUDIO_UPLOADED, audio: audioId, topic: topic, language: language }
 }
 
+const removeAudio = (topic, language, audios) => {
+  return reject(audios, ([_topic, _language, _uuid]) => (topic == _topic && language == _language))
+}
+
 const mergeAudio = (id, topic, language, audios) => {
-  let updatedAudios = reject(audios, ([_topic, _language, _uuid]) => (topic == _topic && language == _language))
+  let updatedAudios = removeAudio(topic, language, audios)
   return [...updatedAudios, [topic, language, id]]
 }
 
@@ -20,4 +24,9 @@ export const uploadCampaignAudio = (file, topic, language) => (dispatch, getStat
     const updatedAudios = mergeAudio(response.id, topic, language, getState().campaign.data.audios)
     dispatch(campaignUpdate({audios: updatedAudios}))
   })
+}
+
+export const removeCampaignAudio = (topic, language) => (dispatch, getState) => {
+  const updatedAudios = removeAudio(topic, language, getState().campaign.data.audios)
+  dispatch(campaignUpdate({audios: updatedAudios}))
 }

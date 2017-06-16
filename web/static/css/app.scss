@@ -143,3 +143,15 @@ ul.app-menu {
 .clear {
   clear: both;
 }
+
+.audio-picker {
+  .md-icon {
+    cursor: pointer;
+  }
+}
+
+.dropfile {
+  &.active {
+    background-color: #CCDDEE !important;
+  }
+}
