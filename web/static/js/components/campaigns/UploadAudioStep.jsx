@@ -44,7 +44,7 @@ class UploadAudioStepComponent extends Component {
     } else if (topic.startsWith('symptom:')) {
       const id = topic.split(':', 2)[1]
       const name = this.props.symptoms.find(([_id, _name]) => id == _id)[1]
-      return { title: `${capitalize(name)} symptom question`, description: 'Ask if there are any signs of this symptom: 1 for Yes, 2 for No' }
+      return { title: `${capitalize(name)} symptom question`, description: 'Ask if there are any signs of this symptom: 1 for Yes, 3 for No' }
     } else {
       throw new Error(`Unexpected topic: ${topic}`)
     }
