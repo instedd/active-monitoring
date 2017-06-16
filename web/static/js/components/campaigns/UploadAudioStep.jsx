@@ -5,13 +5,8 @@ import values from 'lodash/values'
 import flatten from 'lodash/flatten'
 import capitalize from 'lodash/capitalize'
 
-<<<<<<< ed8568e9b780e835fa4f2e4322592198ec851756
-// import { campaignUpdate } from '../../actions/campaign'
 import { audioEntries, getAudioFileFor } from '../../selectors/campaign'
 import { uploadCampaignAudio, removeCampaignAudio } from '../../actions/audios'
-=======
-import { audioEntries, getAudioFileFor } from '../../selectors/campaign'
->>>>>>> Language step + merge
 import { codeToName } from '../../langs'
 
 import FontIcon from 'react-md/lib/FontIcons'
@@ -59,16 +54,12 @@ class UploadAudioStepComponent extends Component {
     return (
       <Tab label={codeToName(lang)} key={lang}>
         {this.props.entries[lang].map(topic => (
-<<<<<<< ed8568e9b780e835fa4f2e4322592198ec851756
           <AudioPicker
             file={getAudioFileFor(this.props.audios, topic, lang)}
             onUpload={(file) => this.props.onUploadAudio(file, topic, lang)}
             onRemove={() => this.props.onRemoveAudio(topic, lang)}
             key={topic}
             {...this.getTopicTexts(topic)} />
-=======
-          <AudioPicker lang={lang} topic={topic} file={getAudioFileFor(this.props.audios, topic, lang)} {...this.getTopicTexts(topic)} key={topic} />
->>>>>>> Language step + merge
         ))}
       </Tab>
     )

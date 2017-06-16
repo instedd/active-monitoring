@@ -20,7 +20,7 @@ defmodule ActiveMonitoring.CampaignsView do
       symptoms: campaign.symptoms,
       forwarding_number: campaign.forwarding_number,
       forwarding_condition: campaign.forwarding_condition,
-      audios: campaign.audios
+      audios: campaign.audios,
       langs: campaign.langs
     }
   end
