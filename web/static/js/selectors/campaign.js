@@ -1,5 +1,5 @@
 export const audioEntries = (state) => {
-  const langs = ['en', 'es']
+  const langs = state.campaign.data.langs
   const symptoms = (state.campaign.data.symptoms || []).map(([id, name]) => `symptom:${id}`)
   const topics = ['welcome'].concat(symptoms).concat(['forward', 'educational', 'thanks'])
 

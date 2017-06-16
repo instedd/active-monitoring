@@ -1,6 +1,7 @@
 // @flow
 import * as actions from '../actions/campaign'
 import * as symptomActions from '../actions/symptoms'
+import * as languageActions from '../actions/langs'
 import uuid from 'uuid/v4'
 
 const initialState = {
@@ -16,6 +17,7 @@ export default (state = initialState, action) => {
     case actions.CAMPAIGN_FETCHED: return campaignLoaded(state, action)
     case actions.CAMPAIGN_UPDATED: return campaignLoaded(state, action)
     case symptomActions.EMPTY_SYMPTOM_ADD: return addEmptySymptom(state)
+    case languageActions.EMPTY_LANG_ADD: return addEmptyLang(state)
     default: return state
   }
 }
@@ -31,4 +33,9 @@ const campaignLoaded = (state, { campaign }) => {
 const addEmptySymptom = (state) => {
   let symptoms = state.data.symptoms || []
   return { ...state, data: { ...state.data, symptoms: [...symptoms, [uuid(), '']] } }
+}
+
+const addEmptyLang = (state) => {
+  let langs = state.data.langs || []
+  return { ...state, data: { ...state.data, langs: [...langs, ''] } }
 }

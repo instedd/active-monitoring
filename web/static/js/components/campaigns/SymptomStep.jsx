@@ -3,13 +3,13 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { addEmptySymptom, editSymptom, removeSymptom } from '../../actions/symptoms'
 import { campaignUpdate } from '../../actions/campaign'
+import SelectField from 'react-md/lib/SelectFields'
+import TextField from '../TextField'
 import Button from 'react-md/lib/Buttons/Button'
 import List from 'react-md/lib/Lists/List'
 import ListItem from 'react-md/lib/Lists/ListItem'
 import EditableTitleLabel from '../EditableTitleLabel'
 import FontIcon from 'react-md/lib/FontIcons'
-import SelectField from 'react-md/lib/SelectFields'
-import TextField from '../TextField'
 
 class SymptomStepComponent extends Component {
   render() {

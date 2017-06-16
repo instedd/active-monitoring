@@ -4,40 +4,18 @@ import PropTypes from 'prop-types'
 // import { withRouter } from 'react-router'
 import { ScrollToLink, animatedScrollTo } from '../ScrollToLink'
 import SymptomStep from './SymptomStep'
+import LanguageStep from './LanguageStep'
 import UploadAudioStep from './UploadAudioStep'
 import List from 'react-md/lib/Lists/List'
 import ListItem from 'react-md/lib/Lists/ListItem'
 import FontIcon from 'react-md/lib/FontIcons'
 
 export default class CampaignCreationForm extends Component {
-  // static propTypes = {
-  //   projectId: PropTypes.any.isRequired,
-  //   survey: PropTypes.object.isRequired,
-  //   surveyId: PropTypes.any.isRequired,
-  //   router: PropTypes.object.isRequired,
-  //   questionnaires: PropTypes.object,
-  //   questionnaire: PropTypes.object,
-  //   respondentGroups: PropTypes.object,
-  //   respondentGroupsUploading: PropTypes.bool,
-  //   respondentGroupsUploadingExisting: PropTypes.object,
-  //   invalidRespondents: PropTypes.object,
-  //   invalidGroup: PropTypes.bool,
-  //   channels: PropTypes.object,
-  //   errors: PropTypes.object,
-  //   readOnly: PropTypes.bool.isRequired
-  // }
-
   // componentDidMount() {
   //   window.scrollTo(0, 0)
   //   $('.scrollspy').scrollSpy()
   //   const sidebar = $(this.refs.sidebar)
   //   sidebar.pushpin({ top: sidebar.offset().top, offset: 60 })
-  // }
-
-  // allModesHaveAChannel(modes, channels) {
-  //   const selectedTypes = channels.map(channel => channel.mode)
-  //   modes = uniq(flatMap(modes))
-  //   return modes.filter(mode => selectedTypes.indexOf(mode) != -1).length == modes.length
   // }
 
   // launchSurvey() {
@@ -46,16 +24,13 @@ export default class CampaignCreationForm extends Component {
   //     .then(() => router.push(routes.survey(projectId, surveyId)))
   // }
 
-  // questionnairesValid(ids, questionnaires) {
-  //   return every(ids, id => questionnaires[id] && questionnaires[id].valid)
-  // }
+  completedSymptomStep() {
+    return this.props.campaign.symptoms.length > 0 && this.props.campaign.forwardingNumber != null
+  }
 
-  // questionnairesMatchModes(modes, ids, questionnaires) {
-  //   return every(modes, mode =>
-  //     every(mode, m =>
-  //       ids && every(ids, id =>
-  //         questionnaires[id] && questionnaires[id].modes && questionnaires[id].modes.indexOf(m) != -1)))
-  // }
+  completedAudioStep() {
+    return false
+  }
 
   completedSymptomStep() {
     return this.props.campaign.symptoms.length > 0 && this.props.campaign.forwardingNumber != null
@@ -67,25 +42,6 @@ export default class CampaignCreationForm extends Component {
 
   render() {
     // const { survey, projectId, questionnaires, channels, respondentGroups, respondentGroupsUploading, respondentGroupsUploadingExisting, invalidRespondents, invalidGroup, errors, questionnaire, readOnly } = this.props
-    // const respondentsStepCompleted = respondentGroups && Object.keys(respondentGroups).length > 0 &&
-    //   every(values(respondentGroups), group => {
-    //     return group.channels.length > 0 && this.allModesHaveAChannel(survey.mode, group.channels)
-    //   })
-
-    // const modeStepCompleted = survey.mode != null && survey.mode.length > 0 && this.questionnairesMatchModes(survey.mode, survey.questionnaireIds, questionnaires)
-    // const cutoffStepCompleted = survey.cutoff != null && survey.cutoff != ''
-    // const validRetryConfiguration = !errors || (!errors.smsRetryConfiguration && !errors.ivrRetryConfiguration && !errors.fallbackDelay)
-    // const scheduleStepCompleted =
-    //   survey.scheduleDayOfWeek != null && (
-    //     survey.scheduleDayOfWeek.sun ||
-    //     survey.scheduleDayOfWeek.mon ||
-    //     survey.scheduleDayOfWeek.tue ||
-    //     survey.scheduleDayOfWeek.wed ||
-    //     survey.scheduleDayOfWeek.thu ||
-    //     survey.scheduleDayOfWeek.fri ||
-    //     survey.scheduleDayOfWeek.sat
-    //   ) && validRetryConfiguration
-    // let comparisonsStepCompleted = false
 
     const steps = [this.completedSymptomStep(), this.completedAudioStep()]
     const numberOfCompletedSteps = steps.filter(item => item == true).length
@@ -127,6 +83,7 @@ export default class CampaignCreationForm extends Component {
             <ListItem onClick={(e) => animatedScrollTo(e, 'identification')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'assignment'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Set up identification process' />
             <ListItem onClick={(e) => animatedScrollTo(e, 'symptoms')} leftIcon={<FontIcon>{this.completedSymptomStep() ? 'check_circle' : 'healing'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Define the symptoms' className={this.completedSymptomStep() ? 'md-text-green' : ''} />
             <ListItem onClick={(e) => animatedScrollTo(e, 'information')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Educational information' />
+            <ListItem onClick={(e) => animatedScrollTo(e, 'languages')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'translate'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select languages' />
             <ListItem onClick={(e) => animatedScrollTo(e, 'audios')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'volume_up'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Upload audios' />
           </List>
         </div>
@@ -150,6 +107,10 @@ export default class CampaignCreationForm extends Component {
               </div>
             </div>
             <ScrollToLink target='#information'>NEXT: Setup a Schedule</ScrollToLink>
+          </div>
+          <div id='languages'>
+            <LanguageStep />
+            <ScrollToLink target='#audios'>NEXT: Upload audio files</ScrollToLink>
           </div>
           <div id='audios'>
             <UploadAudioStep />
