@@ -12,6 +12,7 @@ defmodule ActiveMonitoring.Channel do
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:name])
+    |> cast(params, [:name, :user_id])
+    |> assoc_constraint(:user)
   end
 end
