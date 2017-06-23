@@ -18,7 +18,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
   end
 
   describe "new call" do
-    setup context do
+    setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
       response = Flow.handle(campaign.channel_id, "CALL_SID_1", "9990001", "")
@@ -26,7 +26,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
 
     test "it should create a new call", %{campaign: campaign} do
-      assert call = Repo.one!(Call)
+      call = Repo.one!(Call)
       assert %Call{sid: "CALL_SID_1", from: "9990001", current_step: "language"} = call
       assert call.campaign_id == campaign.id
       assert call.channel_id == campaign.channel_id
@@ -51,7 +51,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
   end
 
   describe "answer language" do
-    setup context do
+    setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
       call = build(:call, campaign: campaign, channel: campaign.channel) |> on_step("language") |> Repo.insert!
@@ -77,7 +77,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
   end
 
   describe "callback on welcome message" do
-    setup context do
+    setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
       call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("welcome") |> Repo.insert!
@@ -99,7 +99,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
   end
 
   describe "answer positive symptom" do
-    setup context do
+    setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
       call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-fever") |> Repo.insert!
@@ -125,7 +125,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
   end
 
   describe "answer negative symptom" do
-    setup context do
+    setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
       call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-fever") |> Repo.insert!
@@ -151,7 +151,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
   end
 
   describe "forwarding call on all symptoms" do
-    setup context do
+    setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner, forwarding_condition: "all") |> with_audios |> with_channel |> Repo.insert!
       call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
@@ -175,7 +175,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
   end
 
   describe "forwarding call on any positive symptom" do
-    setup context do
+    setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner, forwarding_condition: "any") |> with_audios |> with_channel |> Repo.insert!
       call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
@@ -199,7 +199,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
   end
 
   describe "callback on educational message" do
-    setup context do
+    setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
       call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("educational") |> Repo.insert!
