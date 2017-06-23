@@ -150,4 +150,52 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
   end
 
+  describe "forwarding call on all symptoms" do
+    setup context do
+      owner = build(:user) |> Repo.insert!
+      campaign = build(:campaign, user: owner, forwarding_condition: "all") |> with_audios |> with_channel |> Repo.insert!
+      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
+      build(:call_answer, symptom: "id-fever", response: true) |> for_call(call) |> Repo.insert!
+      {:ok, campaign: campaign, call: call}
+    end
+
+    test "it should forward the call on all symptoms positive", %{campaign: campaign, call: call} do
+      response = Flow.handle(campaign.channel_id, call.sid, call.from, "1")
+
+      assert %Call{current_step: "forward"} = Repo.one!(Call)
+      assert {:ok, {:forward, "id-forward-es"}} = response
+    end
+
+    test "it should not forward the call if not all symptoms are positive", %{campaign: campaign, call: call} do
+      response = Flow.handle(campaign.channel_id, call.sid, call.from, "3")
+
+      assert %Call{current_step: "educational"} = Repo.one!(Call)
+      assert {:ok, {:play, "id-educational-es"}} = response
+    end
+  end
+
+  describe "forwarding call on any positive symptom" do
+    setup context do
+      owner = build(:user) |> Repo.insert!
+      campaign = build(:campaign, user: owner, forwarding_condition: "any") |> with_audios |> with_channel |> Repo.insert!
+      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
+      build(:call_answer, symptom: "id-fever", response: false) |> for_call(call) |> Repo.insert!
+      {:ok, campaign: campaign, call: call}
+    end
+
+    test "it should forward the call if any symptom is positive", %{campaign: campaign, call: call} do
+      response = Flow.handle(campaign.channel_id, call.sid, call.from, "1")
+
+      assert %Call{current_step: "forward"} = Repo.one!(Call)
+      assert {:ok, {:forward, "id-forward-es"}} = response
+    end
+
+    test "it should not forward the call if not no symptom is positive", %{campaign: campaign, call: call} do
+      response = Flow.handle(campaign.channel_id, call.sid, call.from, "3")
+
+      assert %Call{current_step: "educational"} = Repo.one!(Call)
+      assert {:ok, {:play, "id-educational-es"}} = response
+    end
+  end
+
 end

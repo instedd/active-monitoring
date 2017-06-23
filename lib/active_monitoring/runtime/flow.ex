@@ -1,7 +1,6 @@
 defmodule ActiveMonitoring.Runtime.Flow do
 
   alias ActiveMonitoring.{Call, CallLog, CallAnswer, Repo, Campaign}
-  alias ActiveMonitoring.Router.Helpers
 
   def handle(channel_id, call_sid, from, digits) do
     campaign = fetch_campaign(channel_id)
@@ -11,8 +10,7 @@ defmodule ActiveMonitoring.Runtime.Flow do
     insert_call_answer(call, digits)
 
     language = fetch_or_choose_language(call, digits, campaign)
-    step = next_step(campaign, call)
-
+    step = next_step(campaign, call.current_step) |> check_forward(campaign, call)
     Call.changeset(call, %{current_step: step, language: language}) |> Repo.update!
 
     action = action_for(step)
@@ -21,10 +19,27 @@ defmodule ActiveMonitoring.Runtime.Flow do
     {:ok, {action, audio}}
   end
 
-  def next_step(campaign, %Call{current_step: step}) do
+  defp next_step(campaign, step) do
     steps = Campaign.steps(campaign)
     index = Enum.find_index(steps, fn(s) -> s == step end) || -1
     Enum.fetch!(steps, index + 1)
+  end
+
+  defp check_forward("forward", campaign, call) do
+    call = Repo.preload call, :call_answers
+    if should_forward(campaign.forwarding_condition, call.call_answers) do
+      "forward"
+    else
+      next_step(campaign, "forward")
+    end
+  end
+  defp check_forward(step, _campaign, _call), do: step
+
+  defp should_forward("any", call_answers) do
+    Enum.any?(call_answers, fn(%{response: response}) -> response end)
+  end
+  defp should_forward("all", call_answers) do
+    Enum.all?(call_answers, fn(%{response: response}) -> response end)
   end
 
   defp action_for(step) do

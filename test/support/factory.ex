@@ -1,7 +1,7 @@
 defmodule ActiveMonitoring.Factory do
   use ExMachina.Ecto, repo: ActiveMonitoring.Repo
 
-  alias ActiveMonitoring.{User, Campaign, Channel, Call}
+  alias ActiveMonitoring.{User, Campaign, Channel, Call, CallAnswer}
 
   def user_factory do
     %User{
@@ -60,6 +60,17 @@ defmodule ActiveMonitoring.Factory do
 
   def on_step(call, step) do
     %{call | current_step: step}
+  end
+
+  def call_answer_factory do
+    %CallAnswer{
+      symptom: "id-fever",
+      response: true
+    }
+  end
+
+  def for_call(call_answer, call) do
+    %{call_answer | call: call, campaign: call.campaign}
   end
 
 end
