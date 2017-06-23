@@ -2,9 +2,9 @@ defmodule ActiveMonitoring.Runtime.Flow do
 
   alias ActiveMonitoring.{Call, CallLog, CallAnswer, Repo, Campaign}
 
-  def handle(channel_id, call_sid, from, digits) do
+  def handle(channel_id, call_sid, digits) do
     campaign = fetch_campaign(channel_id)
-    call = fetch_or_insert_call(call_sid, from, channel_id, campaign.id)
+    call = fetch_call(call_sid)
 
     insert_call_log(call, digits)
     insert_call_answer(call, digits)
@@ -17,6 +17,12 @@ defmodule ActiveMonitoring.Runtime.Flow do
     audio = Campaign.audio_for(campaign, step, language)
 
     {:ok, {action, audio}}
+  end
+
+  def handle_status(channel_id, call_sid, from, _status) do
+    campaign = fetch_campaign(channel_id)
+    fetch_or_insert_call(call_sid, from, channel_id, campaign.id)
+    :ok
   end
 
   defp next_step(campaign, step) do
@@ -69,8 +75,12 @@ defmodule ActiveMonitoring.Runtime.Flow do
     Campaign |> Repo.get_by!(channel_id: channel_id)
   end
 
+  defp fetch_call(call_sid) do
+    Call |> Repo.get_by(sid: call_sid)
+  end
+
   defp fetch_or_insert_call(call_sid, from, channel_id, campaign_id) do
-    case Call |> Repo.get_by(sid: call_sid) do
+    case fetch_call(call_sid) do
       nil ->
         Call.changeset(%Call{}, %{sid: call_sid, from: from, channel_id: channel_id, campaign_id: campaign_id}) |> Repo.insert!
       call ->

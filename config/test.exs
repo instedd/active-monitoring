@@ -4,6 +4,7 @@ use Mix.Config
 # you can enable the server option below.
 config :active_monitoring, ActiveMonitoring.Endpoint,
   http: [port: 4001],
+  url: [host: "test.example.com", port: 80],
   server: false
 
 # Print only warnings and errors during test

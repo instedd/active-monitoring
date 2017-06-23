@@ -5,6 +5,7 @@ defmodule ActiveMonitoring.Channel do
 
   schema "channels" do
     field :name, :string
+    field :uuid, Ecto.UUID
     belongs_to :user, User
 
     timestamps()
@@ -12,7 +13,7 @@ defmodule ActiveMonitoring.Channel do
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:name, :user_id])
+    |> cast(params, [:name, :uuid, :user_id])
     |> assoc_constraint(:user)
   end
 end
