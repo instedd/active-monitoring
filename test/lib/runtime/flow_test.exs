@@ -198,4 +198,22 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
   end
 
+  describe "callback on educational message" do
+    setup context do
+      owner = build(:user) |> Repo.insert!
+      campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
+      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("educational") |> Repo.insert!
+      response = Flow.handle(campaign.channel_id, call.sid, call.from, "")
+      {:ok, campaign: campaign, call: call, response: response}
+    end
+
+    test "it should advance current step" do
+      assert %Call{current_step: "thanks"} = Repo.one!(Call)
+    end
+
+    test "it should answer with last message", %{response: response} do
+      assert {:ok, {:hangup, "id-thanks-es"}} = response
+    end
+  end
+
 end
