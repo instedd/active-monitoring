@@ -5,7 +5,27 @@ import FontIcon from 'react-md/lib/FontIcons'
 import Paper from 'react-md/lib/Papers'
 
 export class AudioPicker extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {}
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.file != this.file) {
+      this.setState({uploading: false})
+    }
+  }
+
   render() {
+    const handleUpload = (file) => {
+      this.setState({uploading: true})
+      this.props.onUpload(file)
+    }
+
+    const uploadingControl = this.state.uploading && (
+      <span>Uploading...</span>
+    )
+
     const audioPlayer = this.props.file && (
       <audio controls>
         <source src={`/api/v1/audios/${this.props.file}`} type='audio/mpeg' />
@@ -20,7 +40,7 @@ export class AudioPicker extends Component {
 
     return (
       <Paper zDepth={1} className='md-cell md-cell--12 audio-picker'>
-        <AudioDropzone onDrop={this.props.onUpload}>
+        <AudioDropzone onDrop={handleUpload}>
           <div>
             <div className='md-grid'>
               <div className='md-cell md-cell--10'>
@@ -31,7 +51,7 @@ export class AudioPicker extends Component {
             </div>
             <div className='md-grid'>
               <div className='md-cell md-cell--10'>
-                {audioPlayer}
+                {uploadingControl || audioPlayer}
               </div>
             </div>
           </div>
