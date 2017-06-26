@@ -1,7 +1,7 @@
 defmodule ActiveMonitoring.Call do
   use ActiveMonitoring.Web, :model
 
-  alias ActiveMonitoring.{Repo, Campaign, Channel, CallLog, CallAnswer}
+  alias ActiveMonitoring.{Campaign, Channel, CallLog, CallAnswer}
 
   schema "calls" do
     field :sid, :string

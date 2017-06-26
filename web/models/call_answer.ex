@@ -1,7 +1,7 @@
 defmodule ActiveMonitoring.CallAnswer do
   use ActiveMonitoring.Web, :model
 
-  alias ActiveMonitoring.{Repo, Campaign, Call}
+  alias ActiveMonitoring.{Campaign, Call}
 
   schema "call_answers" do
     field :symptom, :string

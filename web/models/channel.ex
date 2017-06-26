@@ -1,7 +1,7 @@
 defmodule ActiveMonitoring.Channel do
   use ActiveMonitoring.Web, :model
 
-  alias ActiveMonitoring.{Repo,User}
+  alias ActiveMonitoring.{User}
 
   schema "channels" do
     field :name, :string

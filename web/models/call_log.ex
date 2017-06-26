@@ -1,7 +1,7 @@
 defmodule ActiveMonitoring.CallLog do
   use ActiveMonitoring.Web, :model
 
-  alias ActiveMonitoring.{Repo, Call}
+  alias ActiveMonitoring.{Call}
 
   schema "call_logs" do
     field :step, :string
