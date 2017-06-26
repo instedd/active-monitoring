@@ -4,27 +4,27 @@ defmodule ActiveMonitoring.Runtime.TwiML do
 
   alias ActiveMonitoring.Router.Helpers
 
-  def translate({:play, %{audio: audio_uuid}}, callback_url) do
+  def build({:play, %{audio: audio_uuid}}, callback_url) do
     [ play(audio_uuid),
       redirect(callback_url) ]
         |> response
         |> generate
   end
 
-  def translate({:gather, %{audio: audio_uuid}}, callback_url) do
+  def build({:gather, %{audio: audio_uuid}}, callback_url) do
     gather(callback_url, [ play(audio_uuid) ])
       |> response
       |> generate
   end
 
-  def translate({:forward, %{audio: audio_uuid, number: number}}, _callback_url) do
+  def build({:forward, %{audio: audio_uuid, number: number}}, _callback_url) do
     [ play(audio_uuid),
       dial(number) ]
         |> response
         |> generate
   end
 
-  def translate({:hangup, %{audio: audio_uuid}}, _callback_url) do
+  def build({:hangup, %{audio: audio_uuid}}, _callback_url) do
     [ play(audio_uuid),
       hangup() ]
         |> response
