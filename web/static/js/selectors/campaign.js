@@ -1,7 +1,11 @@
 export const audioEntries = (state) => {
   const langs = state.campaign.data.langs || []
   const symptoms = (state.campaign.data.symptoms || []).map(([id, name]) => `symptom:${id}`)
-  const topics = ['welcome'].concat(symptoms).concat(['forward', 'educational', 'thanks'])
+  let topics = ['welcome'].concat(symptoms).concat(['forward', 'educational', 'thanks'])
+  if (state.campaign.data.additionalInformation != 'compulsory' && state.campaign.data.additionalInformation != 'optional') {
+    const i = topics.indexOf('educational')
+    topics.splice(i, 1)
+  }
 
   const entries = {}
   langs.forEach((lang) => {

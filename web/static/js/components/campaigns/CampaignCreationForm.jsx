@@ -6,6 +6,7 @@ import { ScrollToLink, animatedScrollTo } from '../ScrollToLink'
 import SymptomStep from './SymptomStep'
 import LanguageStep from './LanguageStep'
 import UploadAudioStep from './UploadAudioStep'
+import EducationalInformationStep from './EducationalInformationStep'
 import List from 'react-md/lib/Lists/List'
 import ListItem from 'react-md/lib/Lists/ListItem'
 import FontIcon from 'react-md/lib/FontIcons'
@@ -32,10 +33,18 @@ export default class CampaignCreationForm extends Component {
     return false
   }
 
+  completedEducationalInformationStep() {
+    return this.props.campaign.additionalInformation != null
+  }
+
+  completedLanguageStep() {
+    return this.props.campaign.langs.length > 0
+  }
+
   render() {
     // const { survey, projectId, questionnaires, channels, respondentGroups, respondentGroupsUploading, respondentGroupsUploadingExisting, invalidRespondents, invalidGroup, errors, questionnaire, readOnly } = this.props
 
-    const steps = [this.completedSymptomStep(), this.completedAudioStep()]
+    const steps = [this.completedSymptomStep(), this.completedAudioStep(), this.completedEducationalInformationStep(), this.completedLanguageStep()]
     const numberOfCompletedSteps = steps.filter(item => item == true).length
     const percentage = `${(100 / steps.length * numberOfCompletedSteps).toFixed(0)}%`
 
@@ -74,30 +83,21 @@ export default class CampaignCreationForm extends Component {
           <List className='wizard'>
             <ListItem onClick={(e) => animatedScrollTo(e, 'identification')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'assignment'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Set up identification process' />
             <ListItem onClick={(e) => animatedScrollTo(e, 'symptoms')} leftIcon={<FontIcon>{this.completedSymptomStep() ? 'check_circle' : 'healing'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Define the symptoms' className={this.completedSymptomStep() ? 'md-text-green' : ''} />
-            <ListItem onClick={(e) => animatedScrollTo(e, 'information')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Educational information' />
-            <ListItem onClick={(e) => animatedScrollTo(e, 'languages')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'translate'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select languages' />
+            <ListItem onClick={(e) => animatedScrollTo(e, 'information')} leftIcon={<FontIcon>{this.completedEducationalInformationStep() ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Educational information' />
+            <ListItem onClick={(e) => animatedScrollTo(e, 'languages')} leftIcon={<FontIcon>{this.completedLanguageStep() ? 'check_circle' : 'translate'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select languages' />
             <ListItem onClick={(e) => animatedScrollTo(e, 'audios')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'volume_up'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Upload audios' />
           </List>
         </div>
         <div className='md-cell md-cell--8 wizard-content'>
-          <div id='identification' className='row scrollspy'>
+          <div id='identification'>
             <ScrollToLink target='#identification'>NEXT: Define the symptoms</ScrollToLink>
           </div>
           <div id='symptoms'>
             <SymptomStep />
             <ScrollToLink target='#symptoms'>NEXT: Educational information</ScrollToLink>
           </div>
-          <div id='information' className='row scrollspy'>
-            <div>
-              <div className='row'>
-                <div className='col s12'>
-                  <h4>Educational information</h4>
-                  <p className='flow-text'>
-                    In case of asymptomatic subjects you can offer additional information to prevent contagion after symptoms evaluation.
-                  </p>
-                </div>
-              </div>
-            </div>
+          <div id='information'>
+            <EducationalInformationStep />
             <ScrollToLink target='#information'>NEXT: Setup a Schedule</ScrollToLink>
           </div>
           <div id='languages'>
