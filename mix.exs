@@ -44,7 +44,9 @@ defmodule ActiveMonitoring.Mixfile do
       {:cowboy, "~> 1.0"},
       {:httpoison, "~> 0.11"},
       {:joken, "~> 1.4.1"},
-      {:proper_case, "~> 1.0.2"}
+      {:proper_case, "~> 1.0.2"},
+      {:xml_builder, "~> 0.1.1"},
+      {:ex_machina, "~> 2.0", only: :test}
     ]
   end
 

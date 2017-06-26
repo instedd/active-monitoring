@@ -23,7 +23,7 @@ defmodule ActiveMonitoring.CampaignsController do
     changeset = Campaign.changeset(%Campaign{}, campaign_params)
 
     case Repo.insert(changeset) do
-      {ok, campaign} ->
+      {:ok, campaign} ->
         render(conn, "show.json", campaign: campaign)
 
       {:error, changeset} ->
@@ -36,7 +36,7 @@ defmodule ActiveMonitoring.CampaignsController do
     changeset = Campaign.changeset(campaign, campaign_params)
 
     case Repo.update(changeset) do
-      {ok, campaign} ->
+      {:ok, campaign} ->
         render(conn, "show.json", campaign: campaign)
 
       {:error, changeset} ->

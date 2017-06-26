@@ -6,7 +6,7 @@ defmodule ActiveMonitoring.SnakeCaseParams do
       %{conn | params: ProperCase.to_snake_case(params)}
     rescue
       # Handle non-enumerables, such as Plug.Uploads
-      e in Protocol.UndefinedError ->
+      _e in Protocol.UndefinedError ->
         conn
     end
   end

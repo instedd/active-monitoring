@@ -37,13 +37,14 @@ defmodule ActiveMonitoring.Audio do
 
   def params_from_converted_upload(upload) do
     case Path.extname(upload.filename) do
-      ".wav" -> case Sox.convert("wav", upload.path, "mp3") do
-                  {:ok, data} ->
-                    %{"uuid" => Ecto.UUID.generate, "data" => data, "filename" => "#{Path.basename(upload.filename, ".wav")}.mp3"}
-                  {:error, error} ->
-                    Logger.warn("Error converting file #{upload.path}: #{error}")
-                    params_from_upload(upload)
-                end
+      extname when extname in [".wav"] ->
+        case Sox.convert(extname, upload.path, "mp3") do
+          {:ok, data} ->
+            %{"uuid" => Ecto.UUID.generate, "data" => data, "filename" => "#{Path.basename(upload.filename, extname)}.mp3"}
+          {:error, error} ->
+            Logger.warn("Error converting file #{upload.path}: #{error}")
+            params_from_upload(upload)
+        end
       _ -> params_from_upload(upload)
     end
   end

@@ -29,11 +29,22 @@ defmodule ActiveMonitoring.Router do
     plug Coherence.Authentication.Session, db_model: ActiveMonitoring.User, protected: true
   end
 
+  pipeline :verboice do
+    plug :accepts, ["xml"]
+  end
+
   if Mix.env == :dev do
     scope "/dev" do
       pipe_through [:browser]
       forward "/mailbox", Plug.Swoosh.MailboxPreview, [base_path: "/dev/mailbox"]
     end
+  end
+
+  scope "/callbacks", ActiveMonitoring do
+    pipe_through :verboice
+
+    get "/verboice/:uuid/status", VerboiceCallbacksController, :status
+    post "/verboice/:uuid", VerboiceCallbacksController, :callback
   end
 
   scope "/api", ActiveMonitoring do
@@ -44,9 +55,11 @@ defmodule ActiveMonitoring.Router do
 
       resources "/campaigns", CampaignsController, only: [:index, :create, :show, :update, :delete]
       resources "/channels", ChannelsController, only: [:index]
-      resources "/audios", AudioController, only: [:create, :show]
+      resources "/audios", AudioController, only: [:create]
     end
   end
+
+  resources "/api/v1/audios", ActiveMonitoring.AudioController, only: [:show]
 
   scope "/", ActiveMonitoring do
     pipe_through :browser
