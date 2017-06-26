@@ -7,6 +7,7 @@ import SymptomStep from './SymptomStep'
 import LanguageStep from './LanguageStep'
 import UploadAudioStep from './UploadAudioStep'
 import EducationalInformationStep from './EducationalInformationStep'
+import SelectChannelStep from './SelectChannelStep'
 import List from 'react-md/lib/Lists/List'
 import ListItem from 'react-md/lib/Lists/ListItem'
 import FontIcon from 'react-md/lib/FontIcons'
@@ -86,6 +87,7 @@ export default class CampaignCreationForm extends Component {
             <ListItem onClick={(e) => animatedScrollTo(e, 'information')} leftIcon={<FontIcon>{this.completedEducationalInformationStep() ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Educational information' />
             <ListItem onClick={(e) => animatedScrollTo(e, 'languages')} leftIcon={<FontIcon>{this.completedLanguageStep() ? 'check_circle' : 'translate'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select languages' />
             <ListItem onClick={(e) => animatedScrollTo(e, 'audios')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'volume_up'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Upload audios' />
+            <ListItem onClick={(e) => animatedScrollTo(e, 'select-channel')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'settings_input_antenna'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select channel' />
           </List>
         </div>
         <div className='md-cell md-cell--8 wizard-content'>
@@ -106,6 +108,10 @@ export default class CampaignCreationForm extends Component {
           </div>
           <div id='audios'>
             <UploadAudioStep />
+            <ScrollToLink target='#select-channel'>NEXT: Select channel</ScrollToLink>
+          </div>
+          <div id='select-channel'>
+            <SelectChannelStep />
           </div>
         </div>
       </div>

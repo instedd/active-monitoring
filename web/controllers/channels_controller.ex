@@ -7,7 +7,7 @@ defmodule ActiveMonitoring.ChannelsController do
   }
 
   def index(conn, _) do
-    channels = Channel |> Repo.all
+    channels = Channel |> Channel.with_active_campaign |> Repo.all
 
     render(conn, "index.json", channels: channels)
   end
