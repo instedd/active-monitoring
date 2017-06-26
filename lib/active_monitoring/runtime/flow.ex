@@ -14,9 +14,7 @@ defmodule ActiveMonitoring.Runtime.Flow do
     Call.changeset(call, %{current_step: step, language: language}) |> Repo.update!
 
     action = action_for(step)
-    audio = Campaign.audio_for(campaign, step, language)
-
-    {:ok, {action, audio}}
+    {action, data_for(action, campaign, step, language)}
   end
 
   def handle_status(channel_id, call_sid, from, _status) do
@@ -30,6 +28,11 @@ defmodule ActiveMonitoring.Runtime.Flow do
     index = Enum.find_index(steps, fn(s) -> s == step end) || -1
     Enum.fetch!(steps, index + 1)
   end
+
+  defp data_for(:forward, campaign, step, language), do:
+    %{audio: Campaign.audio_for(campaign, step, language), number: campaign.forwarding_number}
+  defp data_for(_action, campaign, step, language), do:
+    %{audio: Campaign.audio_for(campaign, step, language)}
 
   defp check_forward("forward", campaign, call) do
     call = Repo.preload call, :call_answers

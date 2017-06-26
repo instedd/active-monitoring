@@ -2,7 +2,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
   use ExUnit.Case
 
   alias ActiveMonitoring.Runtime.{Flow}
-  alias ActiveMonitoring.{Call, CallLog, CallAnswer, Campaign, Repo}
+  alias ActiveMonitoring.{Call, CallLog, CallAnswer, Repo}
   alias Ecto.Query
 
   import ActiveMonitoring.Factory
@@ -59,7 +59,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
 
     test "it should answer with language audio", %{response: response} do
-      assert {:ok, {:gather, "id-language"}} = response
+      assert {:gather, %{audio: "id-language"}} = response
     end
 
     test "it should create a call log" do
@@ -85,11 +85,11 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
 
     test "it should create a call log", %{call: %Call{id: call_id}} do
-      assert %CallLog{step: "language", digits: "2", call_id: call_id} = (CallLog |> Query.last |> Repo.one!)
+      assert %CallLog{step: "language", digits: "2", call_id: ^call_id} = (CallLog |> Query.last |> Repo.one!)
     end
 
     test "it should answer with welcome message", %{response: response} do
-      assert {:ok, {:play, "id-welcome-es"}} = response
+      assert {:play, %{audio: "id-welcome-es"}} = response
     end
   end
 
@@ -107,11 +107,11 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
 
     test "it should create a call log", %{call: %Call{id: call_id}} do
-      assert %CallLog{step: "welcome", call_id: call_id} = (CallLog |> Query.last |> Repo.one!)
+      assert %CallLog{step: "welcome", call_id: ^call_id} = (CallLog |> Query.last |> Repo.one!)
     end
 
     test "it should answer with symptom message", %{response: response} do
-      assert {:ok, {:gather, "id-symptom:id-fever-es"}} = response
+      assert {:gather, %{audio: "id-symptom:id-fever-es"}} = response
     end
   end
 
@@ -129,15 +129,15 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
 
     test "it should create a call log", %{call: %Call{id: call_id}} do
-      assert %CallLog{step: "symptom:id-fever", call_id: call_id, digits: "1"} = (CallLog |> Query.last |> Repo.one!)
+      assert %CallLog{step: "symptom:id-fever", call_id: ^call_id, digits: "1"} = (CallLog |> Query.last |> Repo.one!)
     end
 
     test "it should answer with symptom message", %{response: response} do
-      assert {:ok, {:gather, "id-symptom:id-rash-es"}} = response
+      assert {:gather, %{audio: "id-symptom:id-rash-es"}} = response
     end
 
     test "it should store answer for symptom", %{call: %Call{id: call_id, campaign_id: campaign_id}} do
-      assert %CallAnswer{symptom: "id-fever", response: true, call_id: call_id, campaign_id: campaign_id} = (CallAnswer |> Query.last |> Repo.one!)
+      assert %CallAnswer{symptom: "id-fever", response: true, call_id: ^call_id, campaign_id: ^campaign_id} = (CallAnswer |> Query.last |> Repo.one!)
     end
   end
 
@@ -155,15 +155,15 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
 
     test "it should create a call log", %{call: %Call{id: call_id}} do
-      assert %CallLog{step: "symptom:id-fever", call_id: call_id, digits: "3"} = (CallLog |> Query.last |> Repo.one!)
+      assert %CallLog{step: "symptom:id-fever", call_id: ^call_id, digits: "3"} = (CallLog |> Query.last |> Repo.one!)
     end
 
     test "it should answer with symptom message", %{response: response} do
-      assert {:ok, {:gather, "id-symptom:id-rash-es"}} = response
+      assert {:gather, %{audio: "id-symptom:id-rash-es"}} = response
     end
 
     test "it should store answer for symptom", %{call: %Call{id: call_id, campaign_id: campaign_id}} do
-      assert %CallAnswer{symptom: "id-fever", response: false, call_id: call_id, campaign_id: campaign_id} = (CallAnswer |> Query.last |> Repo.one!)
+      assert %CallAnswer{symptom: "id-fever", response: false, call_id: ^call_id, campaign_id: ^campaign_id} = (CallAnswer |> Query.last |> Repo.one!)
     end
   end
 
@@ -180,14 +180,14 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
       response = Flow.handle(campaign.channel_id, call.sid, "1")
 
       assert %Call{current_step: "forward"} = Repo.one!(Call)
-      assert {:ok, {:forward, "id-forward-es"}} = response
+      assert {:forward, %{audio: "id-forward-es"}} = response
     end
 
     test "it should not forward the call if not all symptoms are positive", %{campaign: campaign, call: call} do
       response = Flow.handle(campaign.channel_id, call.sid, "3")
 
       assert %Call{current_step: "educational"} = Repo.one!(Call)
-      assert {:ok, {:play, "id-educational-es"}} = response
+      assert {:play, %{audio: "id-educational-es"}} = response
     end
   end
 
@@ -204,14 +204,14 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
       response = Flow.handle(campaign.channel_id, call.sid, "1")
 
       assert %Call{current_step: "forward"} = Repo.one!(Call)
-      assert {:ok, {:forward, "id-forward-es"}} = response
+      assert {:forward, %{audio: "id-forward-es"}} = response
     end
 
     test "it should not forward the call if not no symptom is positive", %{campaign: campaign, call: call} do
       response = Flow.handle(campaign.channel_id, call.sid, "3")
 
       assert %Call{current_step: "educational"} = Repo.one!(Call)
-      assert {:ok, {:play, "id-educational-es"}} = response
+      assert {:play, %{audio: "id-educational-es"}} = response
     end
   end
 
@@ -229,7 +229,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
 
     test "it should answer with last message", %{response: response} do
-      assert {:ok, {:hangup, "id-thanks-es"}} = response
+      assert {:hangup, %{audio: "id-thanks-es"}} = response
     end
   end
 

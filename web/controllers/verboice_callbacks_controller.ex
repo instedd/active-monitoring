@@ -8,13 +8,9 @@ defmodule ActiveMonitoring.VerboiceCallbacksController do
   def callback(conn, params = %{"uuid" => uuid, "CallSid" => sid}) do
     channel = Channel |> Repo.get_by!(uuid: uuid)
     callback_url = Helpers.verboice_callbacks_url(ActiveMonitoring.Endpoint, :callback, uuid)
-    {:ok, response} = Flow.handle(channel.id, sid, params["Digits"])
-
-    IO.inspect(response)
+    response = Flow.handle(channel.id, sid, params["Digits"])
 
     xml = response |> TwiML.translate(callback_url)
-
-    IO.inspect(xml)
 
     conn
       |> put_resp_content_type("text/xml")
