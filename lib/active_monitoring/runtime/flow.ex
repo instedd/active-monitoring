@@ -36,20 +36,9 @@ defmodule ActiveMonitoring.Runtime.Flow do
 
   defp check_forward("forward", campaign, call) do
     call = Repo.preload call, :call_answers
-    if should_forward(campaign.forwarding_condition, call.call_answers) do
-      "forward"
-    else
-      next_step(campaign, "forward")
-    end
+    if Campaign.should_forward(campaign, call.call_answers), do: "forward", else: next_step(campaign, "forward")
   end
   defp check_forward(step, _campaign, _call), do: step
-
-  defp should_forward("any", call_answers) do
-    Enum.any?(call_answers, fn(%{response: response}) -> response end)
-  end
-  defp should_forward("all", call_answers) do
-    Enum.all?(call_answers, fn(%{response: response}) -> response end)
-  end
 
   defp action_for(step) do
     case step do

@@ -1,7 +1,7 @@
 defmodule ActiveMonitoring.Campaign do
   use ActiveMonitoring.Web, :model
 
-  alias ActiveMonitoring.{Channel, User}
+  alias ActiveMonitoring.{Channel, User, Campaign}
 
   schema "campaigns" do
     field :name, :string
@@ -43,6 +43,14 @@ defmodule ActiveMonitoring.Campaign do
       [_, id] = String.split(step, ":", parts: 2)
       id
     end
+  end
+
+  def should_forward(%Campaign{forwarding_condition: "any"}, call_answers) do
+    Enum.any?(call_answers, fn(%{response: response}) -> response end)
+  end
+
+  def should_forward(%Campaign{forwarding_condition: "all"}, call_answers) do
+    Enum.all?(call_answers, fn(%{response: response}) -> response end)
   end
 
   def audio_for(%{audios: audios}, topic, language), do: audio_for(audios, topic, language)
