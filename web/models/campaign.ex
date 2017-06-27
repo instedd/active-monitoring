@@ -1,6 +1,8 @@
 defmodule ActiveMonitoring.Campaign do
   use ActiveMonitoring.Web, :model
 
+  import Ecto.Query, only: [from: 2]
+
   alias ActiveMonitoring.{Channel, User, Campaign}
 
   schema "campaigns" do
@@ -11,6 +13,9 @@ defmodule ActiveMonitoring.Campaign do
     field :audios, {:array, {:array, :string}} # [{(symptom:id|language|welcome|thanks), lang?, audio.uuid}]
     field :langs, {:array, :string}
     field :additional_information, :string
+    field :started_at, Ecto.DateTime
+    field :ended_at, Ecto.DateTime
+    # field :additional_information, :string
     # field :alert_recipients, {:array, :string}
     # field :additional_fields, {:array, :string}
 
@@ -22,7 +27,7 @@ defmodule ActiveMonitoring.Campaign do
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:name, :symptoms, :forwarding_number, :forwarding_condition, :audios, :langs, :channel_id, :user_id, :additional_information])
+    |> cast(params, [:name, :symptoms, :forwarding_number, :forwarding_condition, :audios, :langs, :started_at, :ended_at, :channel_id, :user_id, :additional_information])
     |> assoc_constraint(:user)
     |> assoc_constraint(:channel)
   end
@@ -58,4 +63,10 @@ defmodule ActiveMonitoring.Campaign do
   def audio_for(audios, topic, language) when is_list(audios) do
     Enum.find_value(audios, fn([t, l, id]) -> t == topic && l == language && id end)
   end
+
+  def active(query) do
+    from c in query,
+      where: (is_nil(c.ended_at) and not is_nil(c.started_at))
+  end
+
 end

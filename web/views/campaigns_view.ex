@@ -13,7 +13,7 @@ defmodule ActiveMonitoring.CampaignsView do
   end
 
 
-  defp render_one(campaign) do
+  def render_one(campaign) do
     %{
       id: campaign.id,
       name: campaign.name,
@@ -22,7 +22,8 @@ defmodule ActiveMonitoring.CampaignsView do
       forwarding_condition: campaign.forwarding_condition,
       audios: campaign.audios,
       langs: campaign.langs,
-      additional_information: campaign.additional_information
+      additional_information: campaign.additional_information,
+      channel_id: campaign.channel_id
     }
   end
 end
