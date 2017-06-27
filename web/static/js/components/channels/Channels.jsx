@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
+import Card from 'react-md/lib/Cards/Card';
 import DataTable from 'react-md/lib/DataTables/DataTable'
 import TableHeader from 'react-md/lib/DataTables/TableHeader'
 import TableBody from 'react-md/lib/DataTables/TableBody'
@@ -29,18 +30,24 @@ class ChannelsList extends Component {
     const rows = channels.map(c => <ChannelItem key={c.id} channel={c} />)
 
     return (
-      <DataTable plain className='app-listing'>
-        <TableHeader>
-          <TableRow>
-            <TableColumn>Name</TableColumn>
-            <TableColumn>Provider</TableColumn>
-            <TableColumn>Active campaign</TableColumn>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {rows}
-        </TableBody>
-      </DataTable>
+       <div className='md-grid'>
+        <div className='md-cell--12'>
+          <Card tableCard>
+            <DataTable plain className='app-listing'>
+              <TableHeader>
+                <TableRow>
+                  <TableColumn>Name</TableColumn>
+                  <TableColumn>Provider</TableColumn>
+                  <TableColumn>Active campaign</TableColumn>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {rows}
+              </TableBody>
+            </DataTable>
+          </Card>
+        </div>
+      </div>
     )
   }
 }
@@ -82,7 +89,7 @@ class Channels extends Component {
 
   render() {
     return (
-      <div>
+      <div className='md-grid--no-spacing'>
         <Subheader addButtonHandler={() => this.addChannels()}>
           Channels
         </Subheader>

@@ -37,7 +37,7 @@ UserNav.propTypes = {
   displayName: PropTypes.string
 }
 
-export default () =>
+export default ({data}) =>
   <Toolbar
     className='mainToolbar'
     colored

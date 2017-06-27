@@ -13,17 +13,17 @@ export default class Subheader extends Component {
     }
 
     return (
-      <div className='sub-nav'>
+      <nav className='sub-nav'>
         <IconActive />
         <h1>{this.props.children}</h1>
         { addButton }
-      </div>
+      </nav>
     )
   }
 }
 
 Subheader.propTypes = {
   addButtonHandler: PropTypes.func,
-  children: PropTypes.node.isRequired
+  children: PropTypes.node
 }
 

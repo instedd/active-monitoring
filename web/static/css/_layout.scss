@@ -14,9 +14,10 @@ body {
 main {
   display: flex;
   flex: 1;
-  padding-top: 3rem;
+  > div {
+    width: 100%;
+  }
 }
-
 
 .mainToolbar {
   flex-direction: column;
@@ -47,10 +48,11 @@ main {
     text-transform: none;
   }
 }
-.sub-nav {
+nav.sub-nav {
+  @extend .md-background--primary;
   line-height: 0;
-  padding-top: 1.3rem;
-  padding-bottom: 1.3rem;
+  padding: 1.3rem 10%;
+  display: flex;
   > * {
     display: inline-block;
     vertical-align: middle;
@@ -59,5 +61,10 @@ main {
     font-size: 1.5rem;
     color: white;
     margin: 0 0 0 1rem;
+  }
+  + [class^="md-"] {
+    margin-top: 5rem;
+    padding-left: 10%;
+    padding-right: 10%;
   }
 }

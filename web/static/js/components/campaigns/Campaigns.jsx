@@ -30,20 +30,24 @@ class CampaignsList extends Component {
     }
 
     return (
-      <Card tableCard>
-        <DataTable plain className='app-listing'>
-          <TableHeader>
-            <TableRow>
-              <TableColumn>Name</TableColumn>
-              <TableColumn>Role</TableColumn>
-              <TableColumn>Last Activity</TableColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            { campaigns.map(c => <CampaignItem key={c.id} campaign={c} onClick={this.props.onCampaignClick} />) }
-          </TableBody>
-        </DataTable>
-      </Card>
+      <div className='md-grid'>
+        <div className='md-cell--12'>
+          <Card tableCard>
+            <DataTable plain className='app-listing'>
+              <TableHeader>
+                <TableRow>
+                  <TableColumn>Name</TableColumn>
+                  <TableColumn>Role</TableColumn>
+                  <TableColumn>Last Activity</TableColumn>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                { campaigns.map(c => <CampaignItem key={c.id} campaign={c} onClick={this.props.onCampaignClick} />) }
+              </TableBody>
+            </DataTable>
+          </Card>
+        </div>
+      </div>
     )
   }
 }
@@ -93,10 +97,10 @@ class Campaigns extends Component {
 
   render() {
     return (
-      <div className='md-cell--10 md-cell--1-offset '>
-{/*        <Subheader addButtonHandler={() => this.createCampaign()}>
+      <div className='md-grid--no-spacing'>
+        <Subheader addButtonHandler={() => this.createCampaign()}>
           Campaigns
-        </Subheader>*/}
+        </Subheader>
         <CampaignsList
           items={this.props.campaigns.items}
           createCampaign={() => this.createCampaign()}

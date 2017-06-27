@@ -9,8 +9,7 @@ export default class AddButton extends Component {
         onClick={this.props.onClick}
         floating
         secondary
-        style={{position: 'relative', bottom: '-38px'}}
-        className='md-cell--right md-cell--bottom'>
+        className='md-cell--right md-cell--bottom add-button'>
       add
     </Button>
     )
