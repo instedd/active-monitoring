@@ -36,6 +36,8 @@ class UploadAudioStepComponent extends Component {
       return { title: 'Forward call message', description: 'Explain that the current call will be forwarded to an agent due to positive symptoms' }
     } else if (topic == 'educational') {
       return { title: 'Educational information', description: 'Inform the caller about additional information such as prevention measures' }
+    } else if (topic == 'additional_information_intro') {
+      return { title: 'Additional information introduction', description: 'Ask the caller whether they want to listen to educational information: 1 for Yes, 3 for No' }
     } else if (topic == 'thanks') {
       return { title: 'Thank you message', description: 'Thank the caller for participating' }
     } else if (topic == 'language') {
