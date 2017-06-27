@@ -2,6 +2,9 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import AddButton from './AddButton'
 
+const IconActive = () =>
+  <object type='image/svg+xml' data='/images/icon.svg' width='60' height='60'/>
+
 export default class Subheader extends Component {
   render() {
     let addButton = null
@@ -10,17 +13,11 @@ export default class Subheader extends Component {
     }
 
     return (
-      <section className='md-grid app-subheader'>
-        <div className='md-cell--4 md-cell--middle' style={{position: 'relative', height: '66px'}}>
-          <div style={{position: 'absolute', left: '-80px'}}>
-            <object type='image/svg+xml' data='/images/icon.svg' width='60' height='60' />
-          </div>
-          <h3 className='app-header-title'>
-            {this.props.children}
-          </h3>
-        </div>
+      <div className='sub-nav'>
+        <IconActive />
+        <h1>{this.props.children}</h1>
         { addButton }
-      </section>
+      </div>
     )
   }
 }
@@ -29,3 +26,4 @@ Subheader.propTypes = {
   addButtonHandler: PropTypes.func,
   children: PropTypes.node.isRequired
 }
+

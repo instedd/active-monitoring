@@ -1,0 +1,22 @@
+.md-icon-separator {
+  > i {
+    order: 2;
+  }
+}
+
+#Logos {
+  margin-left: -60px;
+  .st0{enable-background:new}
+  .st1{fill:#03A9F4}
+  .st2{fill:#F44336}
+  .st3{opacity:0.1; enable-background:new}
+  .st4{opacity:0.25;enable-background:new}
+  .st5{fill:#FFFFFF}
+}
+
+#user-menuList {
+  .md-tile-content {
+    white-space: nowrap;
+    flex: none;
+  }
+}

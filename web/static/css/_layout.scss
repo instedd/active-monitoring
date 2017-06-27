@@ -1,0 +1,63 @@
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+}
+#root .App {
+  display: inline;
+}
+.react-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+main {
+  display: flex;
+  flex: 1;
+  padding-top: 3rem;
+}
+
+
+.mainToolbar {
+  flex-direction: column;
+  nav {
+    flex-direction: row;
+    display: flex;
+    border-bottom: 1px solid black;
+    .sections {
+      flex-grow: 1;
+      .md-btn--text {
+        text-transform: none;
+      }
+    }
+    #user-menu {
+      color: $md-grey-400;
+      display: flex;
+      button {
+        font-size: 1rem;
+      }
+    }
+  }
+  > * {
+    margin: 0;
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+  .md-btn--text {
+    text-transform: none;
+  }
+}
+.sub-nav {
+  line-height: 0;
+  padding-top: 1.3rem;
+  padding-bottom: 1.3rem;
+  > * {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  h1 {
+    font-size: 1.5rem;
+    color: white;
+    margin: 0 0 0 1rem;
+  }
+}

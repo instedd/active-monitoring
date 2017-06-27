@@ -22,12 +22,10 @@ class Campaign extends Component {
       return <div />
     } else {
       return (
-        <div>
-          <Subheader>
-            <CampaignTitle campaign={this.props.campaign.data} />
-          </Subheader>
+        <Subheader>
+          <CampaignTitle campaign={this.props.campaign.data} />
           <CampaignCreationForm campaign={this.props.campaign.data} />
-        </div>
+        </Subheader>
       )
     }
   }

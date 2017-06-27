@@ -12,7 +12,7 @@ import thunkMiddleware from 'redux-thunk'
 import logger from 'redux-logger'
 
 import reducers from './reducers'
-import Nav from './components/Nav'
+import Header from './components/Header'
 import Campaign from './components/campaigns/Campaign'
 import Campaigns from './components/campaigns/Campaigns'
 import Channels from './components/channels/Channels'
@@ -34,18 +34,22 @@ if (root) {
   render(
     <Provider store={store}>
       <Router history={history}>
-        <div>
-          <Nav />
-          <Switch>
-            <Route exact path='/'>
-              <Redirect to='/campaigns' />
-            </Route>
+        <div className='react-container'>
+          <Header />
+          <main>
+            <div className='md-grid'>
+              <Switch>
+                <Route exact path='/'>
+                  <Redirect to='/campaigns' />
+                </Route>
 
-            <Route exact path='/campaigns' component={Campaigns} />
-            <Route exact path='/campaigns/:id' component={Campaign} />
+                <Route exact path='/campaigns' component={Campaigns} />
+                <Route exact path='/campaigns/:id' component={Campaign} />
 
-            <Route exact path='/channels' component={Channels} />
-          </Switch>
+                <Route exact path='/channels' component={Channels} />
+              </Switch>
+            </div>
+          </main>
         </div>
       </Router>
     </Provider>,

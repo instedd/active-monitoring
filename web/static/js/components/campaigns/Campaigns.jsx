@@ -4,6 +4,7 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 import { push } from 'react-router-redux'
+import Card from 'react-md/lib/Cards/Card';
 import DataTable from 'react-md/lib/DataTables/DataTable'
 import TableHeader from 'react-md/lib/DataTables/TableHeader'
 import TableBody from 'react-md/lib/DataTables/TableBody'
@@ -29,18 +30,20 @@ class CampaignsList extends Component {
     }
 
     return (
-      <DataTable plain className='app-listing'>
-        <TableHeader>
-          <TableRow>
-            <TableColumn>Name</TableColumn>
-            <TableColumn>Role</TableColumn>
-            <TableColumn>Last Activity</TableColumn>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          { campaigns.map(c => <CampaignItem key={c.id} campaign={c} onClick={this.props.onCampaignClick} />) }
-        </TableBody>
-      </DataTable>
+      <Card tableCard>
+        <DataTable plain className='app-listing'>
+          <TableHeader>
+            <TableRow>
+              <TableColumn>Name</TableColumn>
+              <TableColumn>Role</TableColumn>
+              <TableColumn>Last Activity</TableColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            { campaigns.map(c => <CampaignItem key={c.id} campaign={c} onClick={this.props.onCampaignClick} />) }
+          </TableBody>
+        </DataTable>
+      </Card>
     )
   }
 }
@@ -84,12 +87,16 @@ class Campaigns extends Component {
     this.props.navigate(`/campaigns/${id}`)
   }
 
+  pageTitle() {
+    return "Campaigns!"
+  }
+
   render() {
     return (
-      <div>
-        <Subheader addButtonHandler={() => this.createCampaign()}>
+      <div className='md-cell--10 md-cell--1-offset '>
+{/*        <Subheader addButtonHandler={() => this.createCampaign()}>
           Campaigns
-        </Subheader>
+        </Subheader>*/}
         <CampaignsList
           items={this.props.campaigns.items}
           createCampaign={() => this.createCampaign()}
