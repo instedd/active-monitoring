@@ -11,6 +11,7 @@ defmodule ActiveMonitoring.Campaign do
     field :audios, {:array, {:array, :string}} # [{(symptom:id|language|welcome|thanks), lang?, audio.uuid}]
     field :langs, {:array, :string}
     field :additional_information, :string
+    field :started_at, Ecto.DateTime
     # field :alert_recipients, {:array, :string}
     # field :additional_fields, {:array, :string}
 

@@ -7,6 +7,7 @@ import * as actions from '../../actions/campaign'
 import CampaignTitle from './CampaignTitle'
 import SubNav from '../SubNav'
 import CampaignCreationForm from './CampaignCreationForm'
+import CampaignDashboard from './CampaignDashboard'
 
 class Campaign extends Component {
   componentWillMount() {
@@ -21,12 +22,19 @@ class Campaign extends Component {
     if (this.props.campaign.fetching || !this.props.campaign.data) {
       return <div />
     } else {
+      let content = null
+      if(this.props.campaign.data.startedAt != undefined) {
+        content = <CampaignDashboard campaign={this.props.campaign.data} />
+      } else {
+        content = <CampaignCreationForm campaign={this.props.campaign.data} />
+      }
+
       return (
         <div className='md-grid--no-spacing'>
           <SubNav>
             <CampaignTitle campaign={this.props.campaign.data} />
           </SubNav>
-          <CampaignCreationForm campaign={this.props.campaign.data} />
+          {content}
         </div>
       )
     }
