@@ -20,7 +20,7 @@ class ChannelsList extends Component {
 
     if (channels.length == 0) {
       return (
-        <EmptyListing image='http://localhost:4001/images/campaign.svg'>
+        <EmptyListing image='/images/campaign.svg'>
           You have no channels yet
           <NavLink to='#' onClick={this.props.addChannels}>Add channels</NavLink>
         </EmptyListing>
