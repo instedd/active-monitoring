@@ -4,7 +4,7 @@ import MenuButton from 'react-md/lib/Menus/MenuButton'
 import Button from 'react-md/lib/Buttons/Button'
 import ListItem from 'react-md/lib/Lists/ListItem'
 import PropTypes from 'prop-types'
-import Subheader from './Subheader'
+import SubNav from './SubNav'
 import { NavLink } from 'react-router-dom'
 import { logout } from '../api'
 

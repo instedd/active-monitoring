@@ -9,4 +9,12 @@ defmodule ActiveMonitoring.LayoutView do
     end
   end
 
+  def css_script_tag do
+    if Mix.env == :prod do
+      "<link rel=\"stylesheet\" href=\"/css/app.css\">"
+    else
+      "<link rel=\"stylesheet\" href=\"http://localhost:4001/css/app.css\">"
+    end
+  end
+
 end

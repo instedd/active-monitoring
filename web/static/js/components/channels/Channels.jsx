@@ -12,7 +12,7 @@ import TableColumn from 'react-md/lib/DataTables/TableColumn'
 
 import * as collectionActions from '../../actions/channels'
 import EmptyListing from '../EmptyListing'
-import Subheader from '../Subheader'
+import SubNav from '../SubNav'
 
 class ChannelsList extends Component {
   render() {
@@ -20,7 +20,7 @@ class ChannelsList extends Component {
 
     if (channels.length == 0) {
       return (
-        <EmptyListing image='/images/campaign.svg'>
+        <EmptyListing image='http://localhost:4001/images/campaign.svg'>
           You have no channels yet
           <NavLink to='#' onClick={this.props.addChannels}>Add channels</NavLink>
         </EmptyListing>
@@ -90,9 +90,9 @@ class Channels extends Component {
   render() {
     return (
       <div className='md-grid--no-spacing'>
-        <Subheader addButtonHandler={() => this.addChannels()}>
+        <SubNav addButtonHandler={() => this.addChannels()}>
           Channels
-        </Subheader>
+        </SubNav>
         <ChannelsList
           items={this.props.channels.items}
           addChannels={() => this.addChannels()} />

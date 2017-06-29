@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 
 import * as actions from '../../actions/campaign'
 import CampaignTitle from './CampaignTitle'
-import Subheader from '../Subheader'
+import SubNav from '../SubNav'
 import CampaignCreationForm from './CampaignCreationForm'
 
 class Campaign extends Component {
@@ -22,10 +22,12 @@ class Campaign extends Component {
       return <div />
     } else {
       return (
-        <Subheader>
-          <CampaignTitle campaign={this.props.campaign.data} />
+        <div className='md-grid--no-spacing'>
+          <SubNav>
+            <CampaignTitle campaign={this.props.campaign.data} />
+          </SubNav>
           <CampaignCreationForm campaign={this.props.campaign.data} />
-        </Subheader>
+        </div>
       )
     }
   }

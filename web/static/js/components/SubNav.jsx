@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import AddButton from './AddButton'
 
 const IconActive = () =>
-  <object type='image/svg+xml' data='/images/icon.svg' width='60' height='60'/>
+  <img src='http://localhost:4001/images/icon.svg' width='60' height='60'/>
 
-export default class Subheader extends Component {
+export default class SubNav extends Component {
   render() {
     let addButton = null
     if (this.props.addButtonHandler) {
@@ -22,7 +22,7 @@ export default class Subheader extends Component {
   }
 }
 
-Subheader.propTypes = {
+SubNav.propTypes = {
   addButtonHandler: PropTypes.func,
   children: PropTypes.node
 }

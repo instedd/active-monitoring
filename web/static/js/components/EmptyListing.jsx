@@ -6,7 +6,7 @@ export default class EmptyListing extends Component {
     return (
       <div className='md-text-center app-listing-no-data'>
         <div className='app-listing-no-data-image'>
-          <object type='image/svg+xml' data={this.props.image} width='150px' />
+          <img src={this.props.image} width='150px' />
         </div>
         <div className='app-listing-no-data-text'>
           {this.props.children}

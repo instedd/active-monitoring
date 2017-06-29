@@ -14,7 +14,7 @@ import TableColumn from 'react-md/lib/DataTables/TableColumn'
 import * as collectionActions from '../../actions/campaigns'
 import * as itemActions from '../../actions/campaign'
 import EmptyListing from '../EmptyListing'
-import Subheader from '../Subheader'
+import SubNav from '../SubNav'
 
 class CampaignsList extends Component {
   render() {
@@ -22,7 +22,7 @@ class CampaignsList extends Component {
 
     if (campaigns.length == 0) {
       return (
-        <EmptyListing image='/images/campaign.svg'>
+        <EmptyListing image='http://localhost:4001/images/campaign.svg'>
           You have no campaigns yet
           <NavLink to='#' onClick={this.props.createCampaign}>Create one</NavLink>
         </EmptyListing>
@@ -98,9 +98,9 @@ class Campaigns extends Component {
   render() {
     return (
       <div className='md-grid--no-spacing'>
-        <Subheader addButtonHandler={() => this.createCampaign()}>
+        <SubNav addButtonHandler={() => this.createCampaign()}>
           Campaigns
-        </Subheader>
+        </SubNav>
         <CampaignsList
           items={this.props.campaigns.items}
           createCampaign={() => this.createCampaign()}
