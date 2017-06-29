@@ -1,7 +1,7 @@
 defmodule ActiveMonitoring.Call do
   use ActiveMonitoring.Web, :model
 
-  alias ActiveMonitoring.{Campaign, Channel, CallLog, CallAnswer}
+  alias ActiveMonitoring.{Campaign, Channel, CallLog, CallAnswer, Subject}
 
   schema "calls" do
     field :sid, :string
@@ -14,6 +14,7 @@ defmodule ActiveMonitoring.Call do
 
     has_many :call_logs, CallLog
     has_many :call_answers, CallAnswer
+    belongs_to :subject, Subject
 
     timestamps()
   end
@@ -21,6 +22,7 @@ defmodule ActiveMonitoring.Call do
   def changeset(model, params \\ %{}) do
     model
     |> cast(params, [:sid, :from, :current_step, :language, :campaign_id, :channel_id])
+    |> cast_assoc(:subject)
     |> assoc_constraint(:channel)
     |> assoc_constraint(:campaign)
   end

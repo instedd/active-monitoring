@@ -1,6 +1,6 @@
 defmodule ActiveMonitoring.Runtime.Flow do
 
-  alias ActiveMonitoring.{Call, CallLog, CallAnswer, Repo, Campaign}
+  alias ActiveMonitoring.{Call, CallLog, CallAnswer, Repo, Campaign, Subject}
 
   def handle(channel_id, call_sid, digits) do
     campaign = fetch_campaign(channel_id)
@@ -71,10 +71,20 @@ defmodule ActiveMonitoring.Runtime.Flow do
     Call |> Repo.get_by(sid: call_sid)
   end
 
+  defp fetch_subject(from) do
+    Subject |> Repo.get_by(phone_number: from)
+  end
+
   defp fetch_or_insert_call(call_sid, from, channel_id, campaign_id) do
     case fetch_call(call_sid) do
       nil ->
-        Call.changeset(%Call{}, %{sid: call_sid, from: from, channel_id: channel_id, campaign_id: campaign_id}) |> Repo.insert!
+        case fetch_subject(from) do
+          nil ->
+            s = %{phone_number: from}
+            Call.changeset(%Call{}, %{sid: call_sid, subject: s, channel_id: channel_id, campaign_id: campaign_id}) |> Repo.insert!
+          subject ->
+            Call.changeset(%Call{}, %{sid: call_sid, subject_id: subject.id, channel_id: channel_id, campaign_id: campaign_id}) |> Repo.insert!
+        end
       call ->
         call
     end

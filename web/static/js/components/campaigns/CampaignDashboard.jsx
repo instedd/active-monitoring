@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Paper from 'react-md/lib/Papers';
+// import PropTypes from 'prop-types'
+import Paper from 'react-md/lib/Papers'
 
 export default class CampaignCreationForm extends Component {
-
   render() {
     return (
       <div>

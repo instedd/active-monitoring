@@ -23,7 +23,7 @@ class Campaign extends Component {
       return <div />
     } else {
       let content = null
-      if(this.props.campaign.data.startedAt != undefined) {
+      if (this.props.campaign.data.startedAt != undefined) {
         content = <CampaignDashboard campaign={this.props.campaign.data} />
       } else {
         content = <CampaignCreationForm campaign={this.props.campaign.data} />

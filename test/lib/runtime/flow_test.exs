@@ -2,7 +2,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
   use ExUnit.Case
 
   alias ActiveMonitoring.Runtime.{Flow}
-  alias ActiveMonitoring.{Call, CallLog, CallAnswer, Repo}
+  alias ActiveMonitoring.{Call, CallLog, CallAnswer, Repo, Subject}
   alias Ecto.Query
 
   import ActiveMonitoring.Factory
@@ -27,9 +27,24 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
 
     test "it should create a new call", %{campaign: campaign} do
       call = Repo.one!(Call)
-      assert %Call{sid: "CALL_SID_1", from: "9990001", current_step: nil} = call
+      assert %Call{sid: "CALL_SID_1", current_step: nil} = call
       assert call.campaign_id == campaign.id
       assert call.channel_id == campaign.channel_id
+    end
+
+    test "it should create a new subject for new number", %{campaign: campaign} do
+      subject = Repo.one!(Subject) |> Repo.preload(:calls)
+      assert %Subject{phone_number: "9990001"} = subject
+      [call | _tail] = subject.calls
+      assert call.sid == "CALL_SID_1"
+      assert call.campaign_id == campaign.id
+      assert subject.phone_number == "9990001"
+    end
+
+    test "it should find subject if same phone number is used", %{campaign: campaign} do
+      Flow.handle_status(campaign.channel_id, "CALL_SID_2", "9990001", "ringing")
+      subjects = Repo.all(Subject)
+      assert length(subjects) == 1
     end
   end
 
