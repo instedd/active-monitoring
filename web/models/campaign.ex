@@ -23,18 +23,22 @@ defmodule ActiveMonitoring.Campaign do
   def changeset(model, params \\ %{}) do
     model
     |> cast(params, [:name, :symptoms, :forwarding_number, :forwarding_condition, :audios, :langs, :channel_id, :user_id, :additional_information])
+    |> validate_inclusion(:additional_information, ["zero", "optional", "compulsory"])
+    |> validate_inclusion(:forwarding_condition, ["any", "all"])
     |> assoc_constraint(:user)
     |> assoc_constraint(:channel)
   end
 
-  def steps(%{symptoms: symptoms}), do: steps(symptoms)
-
-  def steps(symptoms) when is_list(symptoms) do
+  def steps(%{symptoms: symptoms, additional_information: additional_information}) do
     Enum.concat([
-      ["language", "welcome"],
+      ["language",
+       "welcome"],
       Enum.map(symptoms, fn([id, _]) -> "symptom:#{id}" end),
-      ["forward", "educational", "thanks"]
-    ])
+      ["forward",
+       (if additional_information == "optional", do: "additional_information_intro"),
+       (if additional_information in ["optional", "compulsory"], do: "educational"),
+       "thanks"]
+    ]) |> Enum.reject(&is_nil/1)
   end
 
   def symptom_id(nil), do: nil

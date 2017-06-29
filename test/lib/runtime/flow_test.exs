@@ -215,6 +215,58 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
   end
 
+  describe "additional information" do
+    setup do
+      owner = build(:user) |> Repo.insert!
+      {:ok, owner: owner}
+    end
+
+    test "it should play educational message if compulsory", %{owner: owner} do
+      campaign = build(:campaign, user: owner, forwarding_condition: "any", additional_information: "compulsory") |> with_audios |> with_channel |> Repo.insert!
+      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
+      response = Flow.handle(campaign.channel_id, call.sid, "3")
+
+      assert %Call{current_step: "educational"} = Repo.one!(Call)
+      assert {:play, %{audio: "id-educational-es"}} = response
+    end
+
+    test "it should skip educational message if disabled", %{owner: owner} do
+      campaign = build(:campaign, user: owner, forwarding_condition: "any", additional_information: "zero") |> with_audios |> with_channel |> Repo.insert!
+      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
+      response = Flow.handle(campaign.channel_id, call.sid, "3")
+
+      assert %Call{current_step: "thanks"} = Repo.one!(Call)
+      assert {:hangup, %{audio: "id-thanks-es"}} = response
+    end
+
+    test "it should ask for confirmation if optional", %{owner: owner} do
+      campaign = build(:campaign, user: owner, forwarding_condition: "any", additional_information: "optional") |> with_audios |> with_channel |> Repo.insert!
+      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
+      response = Flow.handle(campaign.channel_id, call.sid, "3")
+
+      assert %Call{current_step: "additional_information_intro"} = Repo.one!(Call)
+      assert {:gather, %{audio: "id-additional_information_intro-es"}} = response
+    end
+
+    test "it should play educational message if user chooses to", %{owner: owner} do
+      campaign = build(:campaign, user: owner, forwarding_condition: "any", additional_information: "optional") |> with_audios |> with_channel |> Repo.insert!
+      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("additional_information_intro") |> Repo.insert!
+      response = Flow.handle(campaign.channel_id, call.sid, "1")
+
+      assert %Call{current_step: "educational"} = Repo.one!(Call)
+      assert {:play, %{audio: "id-educational-es"}} = response
+    end
+
+    test "it should skip educational message if user chooses to", %{owner: owner} do
+      campaign = build(:campaign, user: owner, forwarding_condition: "any", additional_information: "optional") |> with_audios |> with_channel |> Repo.insert!
+      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("additional_information_intro") |> Repo.insert!
+      response = Flow.handle(campaign.channel_id, call.sid, "3")
+
+      assert %Call{current_step: "thanks"} = Repo.one!(Call)
+      assert {:hangup, %{audio: "id-thanks-es"}} = response
+    end
+  end
+
   describe "callback on educational message" do
     setup do
       owner = build(:user) |> Repo.insert!
