@@ -76,11 +76,8 @@ export default class CampaignCreationForm extends Component {
         <div className='md-cell--12-tablet md-cell--4-desktop'>
           <div className='md-paper md-paper--1 rounded-corners'>
             <List className='wizard'>
-              <Subheader>
+              <Subheader primaryText={<p>Complete the following tasks to get your Campaign ready.</p>}>
                 <h2>Progress <span className='right'>{percentage}</span></h2>
-                <p>
-                  Complete the following tasks to get your Campaign ready.
-                </p>
                 <div className='progress'>
                   <div className='determinate' style={{ width: percentage }} />
                 </div>

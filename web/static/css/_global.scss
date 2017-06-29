@@ -29,6 +29,8 @@
   padding: 0;
   .md-subheader {
     background: $md-grey-200;
+    display: flex;
+    flex-direction: column-reverse;
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
     position: relative;
