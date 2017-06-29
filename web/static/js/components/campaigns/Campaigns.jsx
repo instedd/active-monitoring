@@ -4,7 +4,7 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 import { push } from 'react-router-redux'
-import Card from 'react-md/lib/Cards/Card';
+import Card from 'react-md/lib/Cards/Card'
 import DataTable from 'react-md/lib/DataTables/DataTable'
 import TableHeader from 'react-md/lib/DataTables/TableHeader'
 import TableBody from 'react-md/lib/DataTables/TableBody'
@@ -92,7 +92,7 @@ class Campaigns extends Component {
   }
 
   pageTitle() {
-    return "Campaigns!"
+    return 'Campaigns!'
   }
 
   render() {

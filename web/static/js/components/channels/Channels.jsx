@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
-import Card from 'react-md/lib/Cards/Card';
+import Card from 'react-md/lib/Cards/Card'
 import DataTable from 'react-md/lib/DataTables/DataTable'
 import TableHeader from 'react-md/lib/DataTables/TableHeader'
 import TableBody from 'react-md/lib/DataTables/TableBody'
@@ -30,7 +30,7 @@ class ChannelsList extends Component {
     const rows = channels.map(c => <ChannelItem key={c.id} channel={c} />)
 
     return (
-       <div className='md-grid'>
+      <div className='md-grid'>
         <div className='md-cell--12'>
           <Card tableCard>
             <DataTable plain className='app-listing'>

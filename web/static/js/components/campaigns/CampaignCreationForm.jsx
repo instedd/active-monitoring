@@ -10,7 +10,7 @@ import EducationalInformationStep from './EducationalInformationStep'
 import List from 'react-md/lib/Lists/List'
 import ListItem from 'react-md/lib/Lists/ListItem'
 import FontIcon from 'react-md/lib/FontIcons'
-import Subheader from 'react-md/lib/Subheaders';
+import Subheader from 'react-md/lib/Subheaders'
 
 export default class CampaignCreationForm extends Component {
   // componentDidMount() {
