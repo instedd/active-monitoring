@@ -24,3 +24,48 @@
 .add-button {
   bottom: -45px;
 }
+
+.wizard {
+  padding: 0;
+  .md-subheader {
+    background: $md-grey-200;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    position: relative;
+
+    p {
+      font-size: 1.1rem;
+      color: $md-grey-600;
+    }
+
+    .progress {
+      background: $md-grey-300;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      .determinate {
+        background: $md-green-400;
+        height: 6px;
+      }
+    }
+  }
+  .md-list-item > div {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
+.md-paper.rounded-corners {
+  overflow: hidden;
+}
+
+
+
+
+
+//------------- Helper classes ------------- //
+
+.rounded-corners {
+  border-radius: 4px;
+}

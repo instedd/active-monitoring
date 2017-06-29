@@ -10,6 +10,7 @@ import EducationalInformationStep from './EducationalInformationStep'
 import List from 'react-md/lib/Lists/List'
 import ListItem from 'react-md/lib/Lists/ListItem'
 import FontIcon from 'react-md/lib/FontIcons'
+import Subheader from 'react-md/lib/Subheaders';
 
 export default class CampaignCreationForm extends Component {
   // componentDidMount() {
@@ -71,17 +72,19 @@ export default class CampaignCreationForm extends Component {
     let completed = false
 
     return (
-      <div className='md-grid'>
+      <div className='md-grid md-white-base'>
         <div className='md-cell--12-tablet md-cell--4-desktop'>
-          <div className='md-paper md-paper--1'>
-            <h5>Progress <span className='right'>{percentage}</span></h5>
-            <p>
-              Complete the following tasks to get your Campaign ready.
-            </p>
-            <div className='progress'>
-              <div className='determinate' style={{ width: percentage }} />
-            </div>
+          <div className='md-paper md-paper--1 rounded-corners'>
             <List className='wizard'>
+              <Subheader>
+                <h2>Progress <span className='right'>{percentage}</span></h2>
+                <p>
+                  Complete the following tasks to get your Campaign ready.
+                </p>
+                <div className='progress'>
+                  <div className='determinate' style={{ width: percentage }} />
+                </div>
+              </Subheader>
               <ListItem onClick={(e) => animatedScrollTo(e, 'identification')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'assignment'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Set up identification process' />
               <ListItem onClick={(e) => animatedScrollTo(e, 'symptoms')} leftIcon={<FontIcon>{this.completedSymptomStep() ? 'check_circle' : 'healing'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Define the symptoms' className={this.completedSymptomStep() ? 'md-text-green' : ''} />
               <ListItem onClick={(e) => animatedScrollTo(e, 'information')} leftIcon={<FontIcon>{this.completedEducationalInformationStep() ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Educational information' />

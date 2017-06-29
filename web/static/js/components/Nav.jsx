@@ -41,6 +41,5 @@ export default ({data}) =>
   <Toolbar
     className='mainToolbar'
     colored
-    nav={<UserNav displayName="Lara"/>}
-    prominent
+    nav={<UserNav displayName="User Name"/>}
   />
