@@ -11,6 +11,7 @@ const UserInfo = ({displayName}) =>
     id='user-menu'
     buttonChildren='arrow_drop_down'
     className='app-user-menu'
+    iconBefore={false}
     label={displayName}
     position={MenuButton.Positions.BELOW}
     flat

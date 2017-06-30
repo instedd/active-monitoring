@@ -1,16 +1,15 @@
-// @flow
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Button from 'react-md/lib/Buttons/Button'
 
 export class ScrollToLink extends Component {
   render() {
     const { children, target } = this.props
 
     return (
-      <a href='#' className='scrollToLink' onClick={(e) => animatedScrollTo(e, target)}>
-        <i className='material-icons'>keyboard_arrow_down</i>
-        <span>{children}</span>
-      </a>
+      <Button flat primary className='scrollToLink' onClick={(e) => animatedScrollTo(e, target)} label={children}>
+        keyboard_arrow_down
+      </Button>
     )
   }
 }
