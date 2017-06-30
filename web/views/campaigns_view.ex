@@ -8,10 +8,14 @@ defmodule ActiveMonitoring.CampaignsView do
     %{data: rendered}
   end
 
+
+  def render("show.json", %{campaign: campaign, calls: calls}) do
+    %{data: Map.merge(render_one(campaign), %{calls: calls})}
+  end
+
   def render("show.json", %{campaign: campaign}) do
     %{data: render_one(campaign)}
   end
-
 
   defp render_one(campaign) do
     %{

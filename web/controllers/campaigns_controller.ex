@@ -4,7 +4,8 @@ defmodule ActiveMonitoring.CampaignsController do
   alias ActiveMonitoring.{
     Campaign,
     ChangesetView,
-    Repo
+    Repo,
+    Call
   }
 
   def index(conn, _) do
@@ -15,8 +16,8 @@ defmodule ActiveMonitoring.CampaignsController do
 
   def show(conn, %{"id" => id}) do
     campaign = Repo.get!(Campaign, id)
-
-    render(conn, "show.json", campaign: campaign)
+    calls = Call.stats()
+    render(conn, "show.json", campaign: campaign, calls: calls)
   end
 
   def create(conn, %{"campaign" => campaign_params}) do

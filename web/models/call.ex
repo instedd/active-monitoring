@@ -1,7 +1,11 @@
 defmodule ActiveMonitoring.Call do
   use ActiveMonitoring.Web, :model
+  use Timex.Ecto.Timestamps
 
-  alias ActiveMonitoring.{Campaign, Channel, CallLog, CallAnswer, Subject}
+  alias ActiveMonitoring.{Campaign, Channel, CallLog, CallAnswer, Subject, Repo, Call}
+  import Ecto.Query
+  import Timex
+  # @timestamps_opts [type: Timex.Ecto.DateTime]
 
   schema "calls" do
     field :sid, :string
@@ -25,5 +29,12 @@ defmodule ActiveMonitoring.Call do
     |> cast_assoc(:subject)
     |> assoc_constraint(:channel)
     |> assoc_constraint(:campaign)
+  end
+
+  def stats() do
+    today = Repo.one(from c in Call, where: c.inserted_at == ^today(), select: count("sid"))
+    successful_overall = Repo.one(from c in Call, select: count("sid"), where: c.current_step in ["educational","thanks","forward"])
+    last_week = Repo.one(from c in Call, where: c.inserted_at > ^subtract(now(), Timex.Duration.from_days(7)), select: count("sid"))
+    %{today: today, successful_overall: successful_overall, last_week: last_week}
   end
 end

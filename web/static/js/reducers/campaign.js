@@ -25,7 +25,7 @@ const campaignFetch = (state, id) => {
   return { fetching: true, campaignId: id, data: null }
 }
 
-const campaignLoaded = (state, { campaign }) => {
+const campaignLoaded = (state, { campaign, calls }) => {
   return { fetching: false, campaignId: campaign.id, data: campaign }
 }
 
