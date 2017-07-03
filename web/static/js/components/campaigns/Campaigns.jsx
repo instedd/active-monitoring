@@ -31,7 +31,7 @@ class CampaignsList extends Component {
 
     return (
       <div className='md-grid'>
-        <div className='md-cell--12'>
+        <div className='md-cell md-cell--12'>
           <Card tableCard>
             <DataTable plain className='app-listing'>
               <TableHeader>

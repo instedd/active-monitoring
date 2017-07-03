@@ -19,20 +19,9 @@
   bottom: -45px;
 }
 
-.scrollToLink {
-  color: $md-grey-500;
-  border: 2px solid $md-grey-400;
-  border-radius: 3px;
-  padding: 1.5rem 1rem;
-  .md-icon-separator .md-icon,
-  .md-icon-text {
-    align-self: center;
-  }
-  .md-icon-text {
-    font-size: 1.15rem;
-    padding-left: .7rem;
-  }
-}
+
+//------------- Campaign Form ------------- //
+
 
 .wizard {
   padding: 0;
@@ -74,12 +63,39 @@
   overflow: hidden;
 }
 
+.scrollToLink {
+  color: $md-grey-500;
+  border: 2px solid $md-grey-400;
+  border-radius: 3px;
+  padding: 1.5rem 1rem;
+  .md-icon-separator .md-icon,
+  .md-icon-text {
+    align-self: center;
+  }
+  .md-icon-text {
+    font-size: 1.15rem;
+    padding-left: .7rem;
+  }
+}
+
+section {
+  min-height: calc(100vh - 160px);
+  h1 {
+    color: $md-black-base;
+    font-size: 2.2rem;
+  }
+}
+
+//------------- /Campaign Form ------------- //
 
 
 
 
 //------------- Helper classes ------------- //
 
+.white {
+  background-color: $md-white-base !important;
+}
 .rounded-corners {
   border-radius: 4px;
 }

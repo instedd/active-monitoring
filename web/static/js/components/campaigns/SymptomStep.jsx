@@ -14,10 +14,10 @@ import FontIcon from 'react-md/lib/FontIcons'
 class SymptomStepComponent extends Component {
   render() {
     return (
-      <div>
+      <section id='symptoms'>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
-            <h3>Define the symptoms</h3>
+            <h1>Define the symptoms</h1>
             <p>
               The symptoms will be used to evaluate positive cases of the disease and send alerts to the persons responsible. Later you will be asked to upload audio explaining how to evaluate this symptoms.
             </p>
@@ -56,7 +56,8 @@ class SymptomStepComponent extends Component {
           </List>
           <Button flat label='Add symptom' onClick={this.props.onAdd}>add</Button>
         </div>
-      </div>
+        {this.props.children}
+      </section>
     )
   }
 }
@@ -68,7 +69,8 @@ SymptomStepComponent.propTypes = {
   onEdit: PropTypes.func,
   forwardingNumber: PropTypes.string,
   forwardingCondition: PropTypes.string,
-  onEditForwarding: PropTypes.func
+  onEditForwarding: PropTypes.func,
+  children: PropTypes.element
 }
 
 const mapStateToProps = (state) => {
