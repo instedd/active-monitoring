@@ -9,15 +9,14 @@ type Props = {
 export default class PositionFixer extends Component {
   recalculate: Function
   props: Props
+  static defaultProps: Object;
 
   constructor(props: Props) {
     super(props)
     this.recalculate = this.recalculate.bind(this)
   }
 
-  static defaultProps = {
-    offset: 0
-  }
+  // static defaultProps() { offset: 0 }
 
   componentDidMount() {
     window.addEventListener('scroll', this.recalculate)
@@ -69,3 +68,5 @@ export default class PositionFixer extends Component {
     )
   }
 }
+
+PositionFixer.defaultProps = { offset: 0 }

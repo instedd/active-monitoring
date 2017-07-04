@@ -5,7 +5,6 @@ defmodule ActiveMonitoring.Call do
   alias ActiveMonitoring.{Campaign, Channel, CallLog, CallAnswer, Subject, Repo, Call}
   import Ecto.Query
   import Timex
-  # @timestamps_opts [type: Timex.Ecto.DateTime]
 
   schema "calls" do
     field :sid, :string

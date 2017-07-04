@@ -1,8 +1,16 @@
 import React, { Component } from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 import Paper from 'react-md/lib/Papers'
+import 'react-vis/dist/styles/radial-chart.scss'
+import {
+  XYPlot,
+  XAxis,
+  YAxis,
+  HorizontalGridLines,
+  VerticalBarSeries
+} from 'react-vis'
 
-export default class CampaignCreationForm extends Component {
+export default class CampaignDashboard extends Component {
   render() {
     return (
       <div>
@@ -21,11 +29,37 @@ export default class CampaignCreationForm extends Component {
           </div>
           <div className='md-cell md-cell--10'>
             <Paper zDepth={2}>
-              Chart
+              <XYPlot
+                xType='ordinal'
+                width={300}
+                height={300}
+                xDistance={100}
+                stackBy='y'>
+                <HorizontalGridLines />
+                <XAxis />
+                <YAxis />
+                <VerticalBarSeries
+                  className='vertical-bar-series-example'
+                  data={[
+                    {x: 'A', y: 10},
+                    {x: 'B', y: 5},
+                    {x: 'C', y: 15}
+                  ]} />
+                <VerticalBarSeries
+                  data={[
+                    {x: 'A', y: 12},
+                    {x: 'B', y: 2},
+                    {x: 'C', y: 11}
+                  ]} />
+              </XYPlot>
             </Paper>
           </div>
         </div>
       </div>
     )
   }
+}
+
+CampaignDashboard.propTypes = {
+  call_stats: PropTypes.object
 }
