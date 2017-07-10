@@ -28,7 +28,7 @@ export default class CampaignDashboard extends Component {
             </div>
           </div>
           <div className='md-cell md-cell--10'>
-            <Paper zDepth={2}>
+            <Paper zDepth={2} className='white'>
               <XYPlot
                 xType='ordinal'
                 width={300}
@@ -39,18 +39,13 @@ export default class CampaignDashboard extends Component {
                 <XAxis />
                 <YAxis />
                 <VerticalBarSeries
-                  className='vertical-bar-series-example'
-                  data={[
-                    {x: 'A', y: 10},
-                    {x: 'B', y: 5},
-                    {x: 'C', y: 15}
-                  ]} />
+                  className='success'
+                  data={this.props.call_stats.timeline[0]}
+                  color='#4FAF54' />
                 <VerticalBarSeries
-                  data={[
-                    {x: 'A', y: 12},
-                    {x: 'B', y: 2},
-                    {x: 'C', y: 11}
-                  ]} />
+                  className='partial'
+                  data={this.props.call_stats.timeline[0]}
+                  color='#FEC12E' />
               </XYPlot>
             </Paper>
           </div>
