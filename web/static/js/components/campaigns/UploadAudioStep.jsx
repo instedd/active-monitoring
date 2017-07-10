@@ -71,10 +71,10 @@ class UploadAudioStepComponent extends Component {
     const totalAudios = flatten(values(this.props.entries)).length + 1
 
     return (
-      <div>
+      <section id='audios'>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
-            <h3>Upload audio files</h3>
+            <h1>Upload audio files</h1>
             <p>
               Upload an audio file for each message. After that you will be able to test the call flow.
             </p>
@@ -93,7 +93,12 @@ class UploadAudioStepComponent extends Component {
             </Tabs>
           </TabsContainer>
         </div>
-      </div>
+        <div className='md-grid'>
+          <div className='md-cell md-cell--12'>
+            {this.props.children}
+          </div>
+        </div>
+      </section>
     )
   }
 }
@@ -104,7 +109,8 @@ UploadAudioStepComponent.propTypes = {
   entries: PropTypes.object,
   audios: PropTypes.array,
   onUploadAudio: PropTypes.func,
-  onRemoveAudio: PropTypes.func
+  onRemoveAudio: PropTypes.func,
+  children: PropTypes.element
 }
 
 const mapStateToProps = (state) => {

@@ -17,24 +17,24 @@ class LanguageStepComponent extends Component {
                              .filter(obj => obj.value != null)
 
     return (
-      <div>
+      <section id='languages'>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
-            <h3>Select languages</h3>
+            <h1>Select languages</h1>
             <p>
               Select all the languages the caller can choose between. Each will have their own set of audios.
             </p>
           </div>
         </div>
         <div className='md-grid'>
-          <List className='md-cell md-cell--12'>
+          <List className='md-cell md-cell--12 add-language'>
             {(this.props.langs || []).map((id, i) =>
               // List item control is necessary for the autocomplete to work, and it requires primaryText
               // Issue on this is pending: https://github.com/mlaursen/react-md/issues/412
               <ListItemControl
                 key={i}
                 primaryText=''
-                rightIcon={<FontIcon onClick={() => this.props.onRemove(i)}>remove_circle</FontIcon>}
+                rightIcon={<FontIcon className='cursor' onClick={() => this.props.onRemove(i)}>cancel</FontIcon>}
                 primaryAction={
                   <FixedAutocomplete
                     id={`autocomplete${i}`}
@@ -48,9 +48,14 @@ class LanguageStepComponent extends Component {
                   />}
               />)}
           </List>
-          <Button flat label='Add another language' onClick={this.props.onAdd}>add</Button>
+          <Button flat icon label='Add another language' className='btn-add-grey' onClick={this.props.onAdd}>add</Button>
         </div>
-      </div>
+        <div className='md-grid'>
+          <div className='md-cell md-cell--12'>
+            {this.props.children}
+          </div>
+        </div>
+      </section>
     )
   }
 }
@@ -59,7 +64,8 @@ LanguageStepComponent.propTypes = {
   onRemove: PropTypes.func,
   onEdit: PropTypes.func,
   onAdd: PropTypes.func,
-  langs: PropTypes.arrayOf(PropTypes.string)
+  langs: PropTypes.arrayOf(PropTypes.string),
+  children: PropTypes.element
 }
 
 const mapStateToProps = (state) => {

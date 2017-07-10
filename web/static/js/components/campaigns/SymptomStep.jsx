@@ -54,9 +54,13 @@ class SymptomStepComponent extends Component {
                   hideEditingIcon />}
               />)}
           </List>
-          <Button flat label='Add symptom' onClick={this.props.onAdd}>add</Button>
+          <Button flat label='Add symptom' className='btn-add-grey' onClick={this.props.onAdd}>add</Button>
         </div>
-        {this.props.children}
+        <div className='md-grid'>
+          <div className='md-cell md-cell--12'>
+            {this.props.children}
+          </div>
+        </div>
       </section>
     )
   }

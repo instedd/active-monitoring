@@ -7,53 +7,60 @@ import Radio from 'react-md/lib/SelectionControls/Radio'
 class EducationalInformationComponent extends Component {
   render() {
     return (
-      <div>
+      <section id='information'>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
-            <h4>Educational information</h4>
-            <p className='flow-text'>
+            <h1>Educational information</h1>
+            <p>
               In case of asymptomatic subjects you can offer additional information to prevent contagion after symptoms evaluation.
             </p>
           </div>
         </div>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
-            <fieldset>
-              <Radio
-                id='zero'
-                name='zero'
-                value='zero'
-                label='No additional information'
-                checked={this.props.additionalInformation === 'zero'}
-                onChange={() => this.props.onEdit('zero')}
-              />
-              <Radio
-                id='optional'
-                name='optional'
-                value='optional'
-                label='Optional additional information'
-                checked={this.props.additionalInformation === 'optional'}
-                onChange={() => this.props.onEdit('optional')}
-              />
-              <Radio
-                id='compulsory'
-                name='compulsory'
-                value='compulsory'
-                label='Compulsory additional information'
-                checked={this.props.additionalInformation === 'compulsory'}
-                onChange={() => this.props.onEdit('compulsory')}
-              />
-            </fieldset>
+            <Radio
+              id='zero'
+              name='zero'
+              value='zero'
+              label='No additional information'
+              checked={this.props.additionalInformation === 'zero'}
+              onChange={() => this.props.onEdit('zero')}
+              className='margin-left-none'
+            />
+            <Radio
+              id='optional'
+              name='optional'
+              value='optional'
+              label='Optional additional information'
+              checked={this.props.additionalInformation === 'optional'}
+              onChange={() => this.props.onEdit('optional')}
+              className='margin-left-none'
+            />
+            <Radio
+              id='compulsory'
+              name='compulsory'
+              value='compulsory'
+              label='Compulsory additional information'
+              checked={this.props.additionalInformation === 'compulsory'}
+              onChange={() => this.props.onEdit('compulsory')}
+              className='margin-left-none'
+            />
           </div>
         </div>
-      </div>
+        <div className='md-grid'>
+          <div className='md-cell md-cell--12'>
+            {this.props.children}
+          </div>
+        </div>
+      </section>
     )
   }
 }
 
 EducationalInformationComponent.propTypes = {
   additionalInformation: PropTypes.string,
-  onEdit: PropTypes.func
+  onEdit: PropTypes.func,
+  children: PropTypes.element
 }
 
 const mapStateToProps = (state) => {

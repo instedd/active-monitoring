@@ -74,7 +74,7 @@ export default class CampaignCreationForm extends Component {
 
     return (
       <div className='md-grid white'>
-        <div className='md-cell md-cell--12-tablet md-cell--4-desktop'>
+        <div className='md-cell md-cell--12-tablet md-cell--4-desktop md-cell--tablet-hidden '>
           <PositionFixer offset={60}>
             <div className='md-paper md-paper--1 rounded-corners'>
               <List className='wizard'>
@@ -96,28 +96,23 @@ export default class CampaignCreationForm extends Component {
         <div className='md-cell md-cell--12-tablet md-cell--7-desktop md-cell--1-desktop-offset wizard-content'>
           <section id='identification'>
             <h1> Set up identification process</h1>
-            <ScrollToLink target='#identification'>NEXT: Define the symptoms</ScrollToLink>
+            <ScrollToLink target='#symptoms'>NEXT: Define the symptoms</ScrollToLink>
           </section>
           <SymptomStep>
-            <ScrollToLink target='#symptoms'>NEXT: Educational information</ScrollToLink>
+            <ScrollToLink target='#information'>NEXT: Educational information</ScrollToLink>
           </SymptomStep>
-          <section id='information'>
-            <EducationalInformationStep />
-            <ScrollToLink target='#information'>NEXT: Setup a Schedule</ScrollToLink>
-          </section>
-          <section id='languages'>
-            <LanguageStep />
+          <EducationalInformationStep>
+            <ScrollToLink target='#languages'>NEXT: Setup a Schedule</ScrollToLink>
+          </EducationalInformationStep>
+          <LanguageStep>
             <ScrollToLink target='#audios'>NEXT: Upload audio files</ScrollToLink>
-          </section>
-          <section id='audios'>
-            <UploadAudioStep />
-          </section>
+          </LanguageStep>
+          <UploadAudioStep />
         </div>
       </div>
     )
   }
 }
-
 CampaignCreationForm.propTypes = {
   campaign: PropTypes.object
 }

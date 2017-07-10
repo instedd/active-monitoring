@@ -68,6 +68,8 @@
   border: 2px solid $md-grey-400;
   border-radius: 3px;
   padding: 1.5rem 1rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
   .md-icon-separator .md-icon,
   .md-icon-text {
     align-self: center;
@@ -79,10 +81,16 @@
 }
 
 section {
-  min-height: calc(100vh - 160px);
+  min-height: 100vh;
   h1 {
     color: $md-black-base;
     font-size: 2.2rem;
+  }
+}
+
+.add-language {
+  .md-list-item {
+    min-height: 4.5rem;
   }
 }
 
@@ -98,4 +106,20 @@ section {
 }
 .rounded-corners {
   border-radius: 4px;
+}
+.margin-left-none {
+  margin-left: -12px;
+}
+.cursor {
+  cursor: pointer;
+}
+.btn-add-grey {
+  font-size: 1.35rem;
+  font-weight: 300;
+  color: $md-grey-500;
+  text-transform: none;
+  &:hover {
+    background: transparent;
+    color:  $md-grey-700;
+  }
 }

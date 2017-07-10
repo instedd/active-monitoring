@@ -25,3 +25,14 @@
 .md-subheader {
   height: auto;
 }
+p {
+  font-size: 1.2rem;
+}
+.md-text-field,
+.md-floating-label {
+  font-size: 1.1rem;
+}
+
+.md-select-field--btn.md-select-field--btn {
+  border-bottom: 1px solid $md-grey-300;
+}
