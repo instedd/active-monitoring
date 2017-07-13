@@ -1,7 +1,7 @@
 defmodule ActiveMonitoring.Campaign do
   use ActiveMonitoring.Web, :model
 
-  alias ActiveMonitoring.{Channel, User, Campaign}
+  alias ActiveMonitoring.{Channel, User, Campaign, Subject}
 
   schema "campaigns" do
     field :name, :string
@@ -17,6 +17,7 @@ defmodule ActiveMonitoring.Campaign do
 
     belongs_to :channel, Channel
     belongs_to :user, User
+    has_many :subjects, Subject
 
     timestamps()
   end

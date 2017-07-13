@@ -5,7 +5,8 @@ defmodule ActiveMonitoring.CampaignsController do
     Campaign,
     ChangesetView,
     Repo,
-    Call
+    Call,
+    Subject
   }
 
   def index(conn, _) do
@@ -17,7 +18,8 @@ defmodule ActiveMonitoring.CampaignsController do
   def show(conn, %{"id" => id}) do
     campaign = Repo.get!(Campaign, id)
     calls = Call.stats()
-    render(conn, "show.json", campaign: campaign, calls: calls)
+    subjects = Subject.stats(id)
+    render(conn, "show.json", campaign: campaign, calls: calls, subjects: subjects)
   end
 
   def create(conn, %{"campaign" => campaign_params}) do
