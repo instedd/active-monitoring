@@ -36,3 +36,23 @@ p {
 .md-select-field--btn.md-select-field--btn {
   border-bottom: 1px solid $md-grey-300;
 }
+
+
+
+//------------ Tabs -----------------
+
+.md-tabs {
+  border-bottom: 1px solid $md-grey-400;
+  padding-left: 0 !important;
+  .md-tab-indicator {
+    background: black;
+  }
+  .md-tab--inactive {
+    .md-tab-label {
+      color: $md-grey-400;
+    }
+  }
+}
+
+
+//------------ /Tabs -----------------

@@ -94,6 +94,17 @@ section {
   }
 }
 
+.uploaded-files {
+  font-weight: 400;
+  color: $md-grey-500;
+  i {
+    color: inherit;
+    vertical-align: bottom;
+    margin-right: .5rem;
+  }
+}
+
+
 //------------- /Campaign Form ------------- //
 
 
@@ -112,6 +123,12 @@ section {
 }
 .cursor {
   cursor: pointer;
+}
+.pull-right {
+  float: right;
+}
+.pull-left {
+  float: left;
 }
 .btn-add-grey {
   font-size: 1.35rem;

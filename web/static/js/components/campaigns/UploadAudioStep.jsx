@@ -18,8 +18,10 @@ import AudioPicker from '../AudioPicker'
 
 const AudiosUploadedCounter = ({uploaded, total}) => (
   <div className='md-cell md-cell--12'>
-    <FontIcon>volume_up</FontIcon>
-    <span>{uploaded}/{total} audio files uploaded</span>
+    <h3 className='uploaded-files'>
+      <FontIcon>volume_up</FontIcon>
+      {uploaded}/{total} audio files uploaded
+    </h3>
   </div>
 )
 
@@ -82,20 +84,23 @@ class UploadAudioStepComponent extends Component {
         </div>
         <div className='md-grid'>
           <AudiosUploadedCounter uploaded={this.props.audios.length} total={totalAudios} />
-          <AudioPicker
-            onUpload={(file) => this.props.onUploadAudio(file, 'language')}
-            onRemove={() => this.props.onRemoveAudio('language')}
-            file={getAudioFileFor(this.props.audios, 'language')}
-            {...this.getTopicTexts('language')} />
-          <TabsContainer panelClassName='md-grid'>
-            <Tabs tabId='langs'>
-              {this.props.langs.map(lang => this.renderLangTab(lang))}
-            </Tabs>
-          </TabsContainer>
         </div>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
-            {this.props.children}
+            <AudioPicker
+              onUpload={(file) => this.props.onUploadAudio(file, 'language')}
+              onRemove={() => this.props.onRemoveAudio('language')}
+              file={getAudioFileFor(this.props.audios, 'language')}
+              {...this.getTopicTexts('language')} />
+          </div>
+        </div>
+        <div className='md-grid'>
+          <div className='md-cell md-cell--12'>
+            <TabsContainer component={'div'} panelClassName='md-grid'>
+              <Tabs tabId='langs'>
+                {this.props.langs.map(lang => this.renderLangTab(lang))}
+              </Tabs>
+            </TabsContainer>
           </div>
         </div>
       </section>
@@ -109,8 +114,7 @@ UploadAudioStepComponent.propTypes = {
   entries: PropTypes.object,
   audios: PropTypes.array,
   onUploadAudio: PropTypes.func,
-  onRemoveAudio: PropTypes.func,
-  children: PropTypes.element
+  onRemoveAudio: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

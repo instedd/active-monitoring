@@ -3,7 +3,6 @@ body {
   padding: 0;
   min-width: 320px;
 }
-
 #root .App {
   display: inline;
 }
@@ -19,7 +18,6 @@ main {
     width: 100%;
   }
 }
-
 .mainToolbar {
   flex-direction: column;
   nav {
@@ -45,7 +43,6 @@ main {
     padding-left: 10%;
     padding-right: 10%;
   }
-
   .md-btn--text {
     text-transform: none;
   }
@@ -68,5 +65,23 @@ nav.sub-nav {
     padding-top: 5rem;
     padding-left: 10%;
     padding-right: 10%;
+  }
+}
+
+
+//============ Layout Media Queries ============
+
+@media screen and (max-width: 840px) {
+  .mainToolbar > * {
+      padding-left: 5%;
+      padding-right: 5%;
+  }
+  nav.sub-nav {
+    padding: 1.3rem 5%;
+
+    + [class^="md-"] {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
   }
 }

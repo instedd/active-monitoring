@@ -33,26 +33,24 @@ export class AudioPicker extends Component {
     )
 
     const action = this.props.file ? (
-      <FontIcon onClick={(e) => { e.stopPropagation(); this.props.onRemove() }} className='md-cell md-cell--2 md-cell--right md-text-right'>close</FontIcon>
+      <FontIcon onClick={(e) => { e.stopPropagation(); this.props.onRemove() }} className='pull-right cursor'>close</FontIcon>
     ) : (
-      <FontIcon className='md-cell md-cell--2 md-cell--right md-text-right'>file_upload</FontIcon>
+      <FontIcon className='pull-right cursor'>file_upload</FontIcon>
     )
 
     return (
       <Paper zDepth={1} className='md-cell md-cell--12 audio-picker'>
         <AudioDropzone onDrop={handleUpload}>
-          <div>
-            <div className='md-grid'>
-              <div className='md-cell md-cell--10'>
-                <h3>{this.props.title}</h3>
-                <p>{this.props.description}</p>
-              </div>
+          <div className='md-grid'>
+            <div className='md-cell md-cell--12'>
               {action}
+              <h3>{this.props.title}</h3>
+              <p>{this.props.description}</p>
             </div>
-            <div className='md-grid'>
-              <div className='md-cell md-cell--10'>
-                {uploadingControl || audioPlayer}
-              </div>
+          </div>
+          <div className='md-grid'>
+            <div className='md-cell md-cell--12'>
+              {uploadingControl || audioPlayer}
             </div>
           </div>
         </AudioDropzone>
