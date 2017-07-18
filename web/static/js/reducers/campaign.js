@@ -17,6 +17,7 @@ export default (state = initialState, action) => {
     case actions.CAMPAIGN_UPDATED: return campaignLoaded(state, action)
     case symptomActions.EMPTY_SYMPTOM_ADD: return addEmptySymptom(state)
     case languageActions.EMPTY_LANG_ADD: return addEmptyLang(state)
+    case actions.CAMPAIGN_LAUNCH: return launchCampaign(state)
     default: return state
   }
 }
@@ -37,4 +38,8 @@ const addEmptySymptom = (state) => {
 const addEmptyLang = (state) => {
   let langs = state.data.langs || []
   return { ...state, data: { ...state.data, langs: [...langs, ''] } }
+}
+
+const launchCampaign = (state) => {
+  return { ...state, data: { ...state.data, started_at: new Date() } }
 }

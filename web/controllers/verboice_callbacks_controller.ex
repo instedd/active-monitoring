@@ -19,7 +19,12 @@ defmodule ActiveMonitoring.VerboiceCallbacksController do
 
   def status(conn, %{"uuid" => uuid, "From" => from, "CallSid" => sid, "CallStatus" => status}) do
     channel = Channel |> Repo.get_by!(uuid: uuid)
-    Flow.handle_status(channel.id, sid, from, status)
-    send_resp(conn, :no_content, "")
+    c = Campaign |> Repo.get_by!(channel_id: channel.id)
+    if c.started_at != nil do
+      Flow.handle_status(channel.id, sid, from, status)
+      send_resp(conn, :no_content, "")
+    else
+      send_resp(conn, 503, "")
+    end
   end
 end

@@ -104,6 +104,10 @@ export const updateCampaign = (campaign) => {
   return apiPutJSON(`campaigns/${campaign.id}`, { campaign })
 }
 
+export const launchCampaign = (id) => {
+  return apiPutJSON(`campaigns/${id}/launch`)
+}
+
 export const fetchCampaign = (id) => {
   return apiFetchJSON(`campaigns/${id}`)
 }

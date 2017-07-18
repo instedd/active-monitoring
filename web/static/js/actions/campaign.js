@@ -9,6 +9,7 @@ export const CAMPAIGN_FETCH = 'CAMPAIGN_FETCH'
 export const CAMPAIGN_FETCHED = 'CAMPAIGN_FETCHED'
 export const CAMPAIGN_UPDATE = 'CAMPAIGN_UPDATE'
 export const CAMPAIGN_UPDATED = 'CAMPAIGN_UPDATED'
+export const CAMPAIGN_LAUNCH = 'CAMPAIGN_LAUNCH'
 
 export const createCampaign = (campaignParams) => (dispatch) => {
   dispatch({type: CAMPAIGN_CREATE})
@@ -47,4 +48,13 @@ export const campaignUpdate = (attrs) => (dispatch, getState) => {
 
 export const campaignUpdated = (campaign) => {
   return { type: CAMPAIGN_UPDATED, campaign }
+}
+
+export const campaignLaunch = (id) => (dispatch) => {
+  dispatch({type: CAMPAIGN_LAUNCH, id: id})
+
+  api.launchCampaign(id)
+     .then((campaign) => {
+       dispatch({ type: CAMPAIGN_FETCHED, campaign })
+     })
 }

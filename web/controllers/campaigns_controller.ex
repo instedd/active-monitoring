@@ -34,6 +34,22 @@ defmodule ActiveMonitoring.CampaignsController do
     end
   end
 
+  def launch(conn, %{"campaigns_id" => id}) do
+    campaign = Repo.get!(Campaign, id)
+    changeset = Campaign.changeset(campaign, %{})
+    changeset = Ecto.Changeset.put_change(changeset, :started_at, Ecto.DateTime.utc())
+    calls = Call.stats()
+    subjects = Subject.stats(id)
+
+    case Repo.update(changeset) do
+      {:ok, campaign} ->
+        render(conn, "show.json", campaign: campaign, calls: calls, subjects: subjects)
+
+      {:error, changeset} ->
+        render(conn, ChangesetView, "error.json", changeset: changeset)
+    end
+  end
+
   def update(conn, %{"id" => id, "campaign" => campaign_params}) do
     campaign = Repo.get!(Campaign, id)
     changeset = Campaign.changeset(campaign, campaign_params)
