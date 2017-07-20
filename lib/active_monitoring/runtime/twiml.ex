@@ -31,6 +31,11 @@ defmodule ActiveMonitoring.Runtime.TwiML do
         |> generate
   end
 
+  def build(:hangup) do
+    [ hangup() ]
+    |> generate
+  end
+
   defp play(audio_uuid) do
     element(:Play, audio_url_for(audio_uuid))
   end

@@ -48,7 +48,7 @@ defmodule ActiveMonitoring.Factory do
   end
 
   def with_channel(campaign) do
-    %{campaign | channel: build(:channel, user: campaign.user)}
+    %{campaign | channel: build(:channel, user: campaign.user, uuid: Ecto.UUID.generate())}
   end
 
   def call_factory do
