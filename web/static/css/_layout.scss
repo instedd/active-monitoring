@@ -57,9 +57,20 @@ nav.sub-nav {
     vertical-align: middle;
   }
   h1 {
-    font-size: 1.5rem;
-    color: white;
+    font-size: 1.7rem;
+    color: $md-white-base;
     margin: 0 0 0 1rem;
+    .md-text-field {
+      font-size: 1.4rem;
+      color: inherit;
+      margin-top: 0;
+    }
+    .md-divider--text-field:after {
+      background: $md-secondary-color;
+    }
+    .md-text-field-message {
+      color: $md-white-base;
+    }
   }
   + [class^="md-"] {
     padding-top: 5rem;
