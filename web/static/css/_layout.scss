@@ -60,6 +60,9 @@ nav.sub-nav {
     font-size: 1.7rem;
     color: $md-white-base;
     margin: 0 0 0 1rem;
+    .md-text-field-container {
+      margin: 0;
+    }
     .md-text-field {
       font-size: 1.4rem;
       color: inherit;
