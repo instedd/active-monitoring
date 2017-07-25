@@ -57,6 +57,7 @@ class CampaignCreationFormComponent extends Component {
               <List className='wizard'>
                 <Subheader primaryText={<p>Complete the following tasks to get your Campaign ready.</p>}>
                   <h2>Progress <span className='right'>{percentage}</span></h2>
+                  <h2>Progress <span className='pull-right'>{percentage}</span></h2>
                   <div className='progress'>
                     <div className='determinate' style={{ width: percentage }} />
                   </div>
@@ -67,6 +68,7 @@ class CampaignCreationFormComponent extends Component {
                 <ListItem onClick={(e) => animatedScrollTo(e, 'information')} leftIcon={<FontIcon>{this.completedEducationalInformationStep() ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Educational information' />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'languages')} leftIcon={<FontIcon>{this.completedLanguageStep() ? 'check_circle' : 'translate'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select languages' />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'audios')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'volume_up'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Upload audios' />
+                <ListItem onClick={(e) => animatedScrollTo(e, 'audios')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'volume_up'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Upload audio files' />
               </List>
             </div>
           </PositionFixer>
