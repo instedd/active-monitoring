@@ -85,6 +85,10 @@ section {
   h1 {
     color: $md-black-base;
     font-size: 2.2rem;
+    margin-bottom: 40px;
+    + p {
+      font-size: 1.5rem;
+    }
   }
 }
 
