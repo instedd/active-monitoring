@@ -97,6 +97,12 @@ section {
   }
 }
 
+#audios {
+  .md-tab--inactive .md-tab-label {
+    color: $md-grey-500;
+  }
+}
+
 .add-language {
   .md-list-item {
     min-height: 4.5rem;
@@ -104,12 +110,34 @@ section {
 }
 
 .uploaded-files {
-  font-weight: 400;
   color: $md-grey-500;
   i {
     color: inherit;
     vertical-align: bottom;
     margin-right: .5rem;
+  }
+}
+
+.audio-picker {
+  h3 {
+    margin: 0;
+  }
+  p {
+    color: $md-grey-500;
+    font-size: 1rem;
+    margin-bottom: 0;
+  }
+  &.md-paper--0{
+    border: 2px $md-grey-300 dashed;
+    .md-icon {
+    color: $md-grey-300;
+    }
+  }
+  .md-icon {
+    color: $md-grey-500;
+  }
+  .md-grid {
+    padding: 0;
   }
 }
 

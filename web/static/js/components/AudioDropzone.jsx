@@ -27,7 +27,7 @@ AudioDropzone.propTypes = {
   onDrop: PropTypes.func,
   onDropRejected: PropTypes.func,
   error: PropTypes.bool,
-  children: PropTypes.element
+  children: PropTypes.array
 }
 
 export default AudioDropzone
