@@ -38,10 +38,10 @@ export class AudioPicker extends Component {
       <FontIcon className='pull-right cursor'>file_upload</FontIcon>
     )
 
-    var paper_depth = this.props.file ? 1 : 0
+    var paperDepth = this.props.file ? 1 : 0
 
     return (
-      <Paper zDepth={paper_depth} className='md-cell md-cell--12 audio-picker rounded-corners'>
+      <Paper zDepth={paperDepth} className='md-cell md-cell--12 audio-picker rounded-corners'>
         <AudioDropzone onDrop={handleUpload}>
           <div className='md-grid'>
             <div className='md-cell md-cell--12'>
