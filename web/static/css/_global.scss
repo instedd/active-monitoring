@@ -56,6 +56,9 @@
     padding-bottom: 2.5rem;
     }  
     .md-icon {
+      color: $md-grey-500;
+    }
+    .step-icon.md-icon {
       color: $md-black-base;
     }
   }
@@ -63,7 +66,7 @@
     background: $md-grey-200;
   }
   .green-text {
-    div:nth-child(2) .md-icon, .md-text {
+    .step-icon.md-icon, .md-text {
       color: $md-green-400;
     }
   }
