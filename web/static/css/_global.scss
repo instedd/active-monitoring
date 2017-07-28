@@ -62,6 +62,11 @@
   .md-list-tile--active {
     background: $md-grey-200;
   }
+  .green-text {
+    div:nth-child(2) .md-icon, .md-text {
+      color: $md-green-400;
+    }
+  }
 }
 
 .md-paper.rounded-corners {
