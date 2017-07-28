@@ -37,9 +37,8 @@
     p {
       color: $md-grey-600;
     }
-
     .progress {
-      background: $md-grey-300;
+      background: $md-grey-500;
       position: absolute;
       bottom: 0;
       left: 0;
@@ -54,6 +53,9 @@
     > div {
     padding-top: 2.5rem;
     padding-bottom: 2.5rem;
+    }
+    .md-text {
+      font-weight: 500;
     }  
     .md-icon {
       color: $md-grey-500;
