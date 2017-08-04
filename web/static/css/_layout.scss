@@ -28,10 +28,11 @@ main {
       flex-grow: 1;
       .md-btn--text {
         text-transform: none;
+        color: $md-grey-500;
       }
     }
     #user-menu {
-      color: $md-grey-400;
+      color: $md-grey-500;
       display: flex;
       button {
         font-size: 1rem;
