@@ -161,7 +161,13 @@ section {
 //------------- /Campaign Form ------------- //
 
 
+//------------- Campaign Dashboard ------------- //
 
+.red-text {
+    div, i.md-icon {
+      color: $md-red-500;
+    }
+  }
 
 //------------- Helper classes ------------- //
 
@@ -190,6 +196,6 @@ section {
   text-transform: none;
   &:hover {
     background: transparent;
-    color:  $md-grey-700;
+    color: $md-grey-700;
   }
 }
