@@ -158,16 +158,49 @@ section {
   z-index: 10;
 }
 
-//------------- /Campaign Form ------------- //
-
-
 //------------- Campaign Dashboard ------------- //
 
+.dashboard-data {
+  padding: 0;
+  margin:0;
+  .md-list {
+    background: none;
+    margin: 0;
+    .md-list-tile {
+      height: inherit;
+      padding: 0 0 .5rem .5rem;
+      margin-bottom: 4rem;
+    }
+    .md-tile-text--primary {
+      font-size: 3.4rem;
+    }
+    .md-tile-text--secondary {
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      word-wrap: nowrap;
+    }
+  }
+}
 .red-text {
     div, i.md-icon {
       color: $md-red-500;
     }
   }
+.dashboard-chart {
+  h2 {
+    color: $md-grey-500;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+  }
+  .md-paper{
+    padding: .9rem .9rem 0;
+    margin-bottom: 1.5rem;
+  }
+}
+.dashboard-divider {
+  margin-bottom: 4rem;
+}
 
 //------------- Helper classes ------------- //
 
