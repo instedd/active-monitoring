@@ -32,7 +32,7 @@ export default class CampaignDashboard extends Component {
       weeksInChart.push(currentWeek - i)
     }
     return (
-      <div className='md-container'>
+      <div>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
             <h3>Campaign performance</h3>

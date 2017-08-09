@@ -76,7 +76,7 @@ nav.sub-nav {
       color: $md-white-base;
     }
   }
-  + [class^="md-"] {
+  + div {
     padding-top: 5rem;
     padding-left: 10%;
     padding-right: 10%;
@@ -94,7 +94,7 @@ nav.sub-nav {
   nav.sub-nav {
     padding: 1.3rem 5%;
 
-    + [class^="md-"] {
+    + div {
         padding-left: 5%;
         padding-right: 5%;
     }
