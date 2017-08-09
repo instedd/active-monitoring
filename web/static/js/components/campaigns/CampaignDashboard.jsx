@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Paper from 'react-md/lib/Papers'
-import List from 'react-md/lib/Lists/List';
-import ListItem from 'react-md/lib/Lists/ListItem';
-import FontIcon from 'react-md/lib/FontIcons';
+import List from 'react-md/lib/Lists/List'
+import ListItem from 'react-md/lib/Lists/ListItem'
+import FontIcon from 'react-md/lib/FontIcons'
 import Divider from 'react-md/lib/Dividers'
 import 'react-vis/dist/styles/legends.scss'
 import {
@@ -45,20 +45,18 @@ export default class CampaignDashboard extends Component {
                 <ListItem
                   rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>}
                   primaryText={this.props.subject_stats.cases}
-                  secondaryText="Cases detected"
-                  className="red-text"
-                />
+                  secondaryText='Cases detected'
+                  className='red-text' />
                 <ListItem
                   rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>}
                   primaryText={this.props.subject_stats.totalSubjects}
-                  secondaryText="Enrolled callers"
-                />
-                </List>
+                  secondaryText='Enrolled callers' />
+              </List>
             </div>
           </div>
           <div className='md-cell md-cell--9 dashboard-chart'>
             <Paper zDepth={2} className='white rounded-corners'>
-              <div className='md-grid'>  
+              <div className='md-grid'>
                 <div className='md-cell md-cell--12'>
                   <h2>Weekly enrolled subjects</h2>
                   <XYPlot
@@ -82,7 +80,7 @@ export default class CampaignDashboard extends Component {
             </Paper>
           </div>
         </div>
-        <Divider className='dashboard-divider'/>
+        <Divider className='dashboard-divider' />
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
             <h3>Calls performance</h3>
@@ -95,24 +93,21 @@ export default class CampaignDashboard extends Component {
                 <ListItem
                   rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>}
                   primaryText={this.props.call_stats.today}
-                  secondaryText="Calls today"
-                />
+                  secondaryText='Calls today' />
                 <ListItem
                   rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>}
                   primaryText={this.props.call_stats.lastWeek}
-                  secondaryText="Calls last 7 days"
-                />
+                  secondaryText='Calls last 7 days' />
                 <ListItem
                   rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>}
                   primaryText={this.props.call_stats.successfulOverall}
-                  secondaryText="Successful calls"
-                />
+                  secondaryText='Successful calls' />
               </List>
             </div>
           </div>
           <div className='md-cell md-cell--9 dashboard-chart'>
             <Paper zDepth={2} className='white rounded-corners'>
-              <div className='md-grid'>  
+              <div className='md-grid'>
                 <div className='md-cell md-cell--12'>
                   <h2>Weekly calls by status</h2>
                   <DiscreteColorLegend
