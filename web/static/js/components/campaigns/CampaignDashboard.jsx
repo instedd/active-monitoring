@@ -13,8 +13,11 @@ import {
   HorizontalGridLines,
   VerticalBarSeries,
   DiscreteColorLegend,
-  LineSeries
+  LineSeries,
+  makeVisFlexible
 } from 'react-vis'
+
+const FlexibleXYPlot = makeVisFlexible(XYPlot)
 
 var weekOfYear = function(date) {
   if (!date) { date = Date() }
@@ -55,27 +58,23 @@ export default class CampaignDashboard extends Component {
             </div>
           </div>
           <div className='md-cell md-cell--9 dashboard-chart'>
-            <Paper zDepth={2} className='white rounded-corners'>
-              <div className='md-grid'>
-                <div className='md-cell md-cell--12'>
-                  <h2>Weekly enrolled subjects</h2>
-                  <XYPlot
-                    xType='ordinal'
-                    width={600}
-                    height={400}
-                    xDistance={100}
-                    stackBy='y'>
-                    <HorizontalGridLines
-                      style={{'stroke': '#E4E4E4'}}
-                      left={12} />
-                    <XAxis style={{text: {stroke: 'none', fill: '#A4A4A4', fontSize: 12, top: 4}}} />
-                    <YAxis style={{text: {stroke: 'none', fill: '#A4A4A4', fontSize: 12, top: 4}}}
-                      top={20} />
-                    <LineSeries
-                      data={this.props.subject_stats.timeline}
-                      color='#4FAF54' />
-                  </XYPlot>
-                </div>
+            <Paper zDepth={2} className='white rounded-corners' >
+              <h2>Weekly enrolled subjects</h2>
+              <div id='chart'>
+                <FlexibleXYPlot
+                  xType='ordinal'
+                  xDistance={100}
+                  stackBy='y'>
+                  <HorizontalGridLines
+                    style={{'stroke': '#E4E4E4'}}
+                    left={12} />
+                  <XAxis style={{text: {stroke: 'none', fill: '#A4A4A4', fontSize: 12, top: 4}}} />
+                  <YAxis style={{text: {stroke: 'none', fill: '#A4A4A4', fontSize: 12, top: 4}}}
+                    top={20} />
+                  <LineSeries
+                    data={this.props.subject_stats.timeline}
+                    color='#4FAF54' />
+                </FlexibleXYPlot>
               </div>
             </Paper>
           </div>
@@ -107,34 +106,30 @@ export default class CampaignDashboard extends Component {
           </div>
           <div className='md-cell md-cell--9 dashboard-chart'>
             <Paper zDepth={2} className='white rounded-corners'>
-              <div className='md-grid'>
-                <div className='md-cell md-cell--12'>
-                  <h2>Weekly calls by status</h2>
-                  <DiscreteColorLegend
-                    orientation='horizontal'
-                    items={[{title: 'Successful', color: '#4FAF54'}, {title: 'Partial', color: '#FEC12E'}]} />
-                  <XYPlot
-                    xType='ordinal'
-                    width={600}
-                    height={400}
-                    xDistance={100}
-                    stackBy='y'>
-                    <HorizontalGridLines
-                      style={{'stroke': '#E4E4E4'}}
-                      left={12} />
-                    <XAxis style={{text: {stroke: 'none', fill: '#A4A4A4', fontSize: 12, top: 4}}} />
-                    <YAxis style={{text: {stroke: 'none', fill: '#A4A4A4', fontSize: 12, top: 4}}}
-                      top={20} />
-                    <VerticalBarSeries
-                      className='success'
-                      data={this.props.call_stats.timeline[0]}
-                      color='#4FAF54' />
-                    <VerticalBarSeries
-                      className='partial'
-                      data={this.props.call_stats.timeline[0]}
-                      color='#FEC12E' />
-                  </XYPlot>
-                </div>
+              <h2>Weekly calls by status</h2>
+              <DiscreteColorLegend
+                orientation='horizontal'
+                items={[{title: 'Successful', color: '#4FAF54'}, {title: 'Partial', color: '#FEC12E'}]} />
+              <div id='chart'>
+                <FlexibleXYPlot
+                  xType='ordinal'
+                  xDistance={100}
+                  stackBy='y'>
+                  <HorizontalGridLines
+                    style={{'stroke': '#E4E4E4'}}
+                    left={12} />
+                  <XAxis style={{text: {stroke: 'none', fill: '#A4A4A4', fontSize: 12, top: 4}}} />
+                  <YAxis style={{text: {stroke: 'none', fill: '#A4A4A4', fontSize: 12, top: 4}}}
+                    top={20} />
+                  <VerticalBarSeries
+                    className='success'
+                    data={this.props.call_stats.timeline[0]}
+                    color='#4FAF54' />
+                  <VerticalBarSeries
+                    className='partial'
+                    data={this.props.call_stats.timeline[0]}
+                    color='#FEC12E' />
+                </FlexibleXYPlot>
               </div>
             </Paper>
           </div>

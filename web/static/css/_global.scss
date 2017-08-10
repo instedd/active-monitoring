@@ -194,8 +194,11 @@ section {
     text-transform: uppercase;
   }
   .md-paper{
-    padding: .9rem .9rem 0;
+    padding: 2.1rem 0 0 2.1rem;
     margin-bottom: 1.5rem;
+    #chart {
+      height: 400px;
+    }
   }
 }
 .dashboard-divider {
