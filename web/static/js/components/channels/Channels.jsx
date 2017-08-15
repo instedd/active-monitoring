@@ -37,7 +37,6 @@ class ChannelsList extends Component {
               <TableHeader>
                 <TableRow>
                   <TableColumn>Name</TableColumn>
-                  <TableColumn>Provider</TableColumn>
                   <TableColumn>Active campaign</TableColumn>
                 </TableRow>
               </TableHeader>
@@ -63,7 +62,6 @@ class ChannelItem extends Component {
     return (
       <TableRow>
         <TableColumn>{channel.name}</TableColumn>
-        <TableColumn>{channel.provider}</TableColumn>
         <TableColumn>{channel.active_campaign}</TableColumn>
       </TableRow>
     )

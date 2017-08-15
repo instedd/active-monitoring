@@ -19,7 +19,8 @@ defmodule ActiveMonitoring.Mixfile do
   def application do
     [mod: {ActiveMonitoring, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :timex_ecto, :coherence, :httpoison, :proper_case]]
+                    :phoenix_ecto, :postgrex, :timex_ecto, :coherence, :httpoison, :proper_case,
+                    :oauth2]]
   end
 
   # Specifies which paths to compile per environment.
@@ -46,7 +47,8 @@ defmodule ActiveMonitoring.Mixfile do
       {:joken, "~> 1.4.1"},
       {:proper_case, "~> 1.0.2"},
       {:xml_builder, "~> 0.1.1"},
-      {:ex_machina, "~> 2.0", only: :test}
+      {:ex_machina, "~> 2.0", only: :test},
+      {:oauth2, "~> 0.9"}
     ]
   end
 

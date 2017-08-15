@@ -59,6 +59,7 @@ defmodule ActiveMonitoring.Router do
       end
       resources "/channels", ChannelsController, only: [:index]
       resources "/audios", AudioController, only: [:create]
+      resources "/authorizations", OAuthClientController, only: [:index, :delete]
     end
   end
 

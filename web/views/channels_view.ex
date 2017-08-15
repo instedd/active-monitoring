@@ -11,8 +11,8 @@ defmodule ActiveMonitoring.ChannelsView do
   defp render_one(channel) do
     %{
       id: channel.id,
-      name: channel.name,
-      provider: channel.provider
+      name: channel.name
+      # provider: channel.provider
     }
   end
 end

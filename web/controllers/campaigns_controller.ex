@@ -6,7 +6,8 @@ defmodule ActiveMonitoring.CampaignsController do
     ChangesetView,
     Repo,
     Call,
-    Subject
+    Subject,
+    Channel
   }
 
   def index(conn, _) do
@@ -17,9 +18,14 @@ defmodule ActiveMonitoring.CampaignsController do
 
   def show(conn, %{"id" => id}) do
     campaign = Repo.get!(Campaign, id)
-    calls = Call.stats()
-    subjects = Subject.stats(id)
-    render(conn, "show.json", campaign: campaign, calls: calls, subjects: subjects)
+    if campaign.started_at != nil do
+      calls = Call.stats()
+      subjects = Subject.stats(id)
+      render(conn, "show.json", campaign: campaign, calls: calls, subjects: subjects)
+    else
+      channels = Channel.list(conn.assigns[:current_user])
+      render(conn, "show.json", campaign: campaign, channels: channels)
+    end
   end
 
   def create(conn, %{"campaign" => campaign_params}) do
@@ -38,15 +44,20 @@ defmodule ActiveMonitoring.CampaignsController do
     campaign = Repo.get!(Campaign, id)
     changeset = Campaign.changeset(campaign, %{})
     changeset = Ecto.Changeset.put_change(changeset, :started_at, Ecto.DateTime.utc())
-    calls = Call.stats()
-    subjects = Subject.stats(id)
+    if Channel.verify_exclusive(campaign.channel) do
+      Campaign.set_up_verboice(campaign)
+      calls = Call.stats()
+      subjects = Subject.stats(id)
 
-    case Repo.update(changeset) do
-      {:ok, campaign} ->
-        render(conn, "show.json", campaign: campaign, calls: calls, subjects: subjects)
+      case Repo.update(changeset) do
+        {:ok, campaign} ->
+          render(conn, "show.json", campaign: campaign, calls: calls, subjects: subjects)
 
-      {:error, changeset} ->
-        render(conn, ChangesetView, "error.json", changeset: changeset)
+        {:error, changeset} ->
+          render(conn, ChangesetView, "error.json", changeset: changeset)
+      end
+    else
+      render(conn, ChangesetView, "error.json", changeset: changeset)
     end
   end
 

@@ -22,6 +22,7 @@ defmodule ActiveMonitoring.ModelCase do
       import Ecto.Changeset
       import Ecto.Query
       import ActiveMonitoring.ModelCase
+      import ActiveMonitoring.Factory
     end
   end
 

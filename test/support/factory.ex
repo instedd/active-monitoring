@@ -74,4 +74,17 @@ defmodule ActiveMonitoring.Factory do
     %{call_answer | call: call, campaign: call.campaign}
   end
 
+  def oauth_token_factory do
+    %ActiveMonitoring.OAuthToken{
+      provider: "test",
+      base_url: "http://test.com",
+      user: build(:user),
+      access_token: %{
+        "access_token" => :crypto.strong_rand_bytes(27) |> Base.encode64,
+      },
+      expires_at: Timex.now |> Timex.add(Timex.Duration.from_hours(1))
+    }
+  end
+
+
 end

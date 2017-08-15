@@ -2,6 +2,7 @@ defmodule ActiveMonitoring.Campaign do
   use ActiveMonitoring.Web, :model
 
   alias ActiveMonitoring.{Channel, User, Campaign, Subject}
+  alias ActiveMonitoring.Router.Helpers
 
   schema "campaigns" do
     field :name, :string
@@ -63,5 +64,16 @@ defmodule ActiveMonitoring.Campaign do
 
   def audio_for(audios, topic, language) when is_list(audios) do
     Enum.find_value(audios, fn([t, l, id]) -> t == topic && l == language && id end)
+  end
+
+  def set_up_verboice(campaign) do
+    base_url = "https://verboice-stg.instedd.org"
+    client = Verboice.Client.new(base_url,ActiveMonitoring.OAuthTokenServer.get_token("verboice", base_url, campaign.user_id))
+    Verboice.Client.create_project("Active Monitoring set up", %{
+      status_callback_url: Helpers.verboice_callbacks_url(ActiveMonitoring.Endpoint, :status_callback, campaign.channel.uuid),
+      user: "",
+      password: "",
+      external_service: Helpers.verboice_callbacks_url(ActiveMonitoring.Endpoint, :callback, campaign.channel.uuid)}
+    )
   end
 end
