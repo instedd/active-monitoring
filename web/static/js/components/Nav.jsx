@@ -27,7 +27,6 @@ UserInfo.propTypes = {
 const UserNav = ({displayName}) => <nav>
   <div className='sections'>
     <Button href='/campaigns' flat label='Campaigns' />
-    <Button href='/channels' flat label='Channels' />
   </div>
   <UserInfo displayName={displayName} />
 </nav>

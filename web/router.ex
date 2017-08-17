@@ -63,6 +63,12 @@ defmodule ActiveMonitoring.Router do
     end
   end
 
+  scope "/oauth_client", ActiveMonitoring do
+    pipe_through :api
+
+    get "/callback", OAuthClientController, :callback
+  end
+
   resources "/api/v1/audios", ActiveMonitoring.AudioController, only: [:show]
 
   scope "/", ActiveMonitoring do
@@ -72,4 +78,5 @@ defmodule ActiveMonitoring.Router do
     get "/oauth_callback", SessionController, :oauth_callback
     get "/*path", PageController, :index
   end
+
 end

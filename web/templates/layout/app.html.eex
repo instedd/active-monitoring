@@ -11,7 +11,8 @@
     <%= {:safe, css_script_tag()} %>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script>
-     window.mixEnv = "<%= Mix.env %>"
+      window.mixEnv = "<%= Mix.env %>"
+      window.appConfig = <%= raw(config(@conn)) %>
     </script>
   </head>
 

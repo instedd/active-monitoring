@@ -16,6 +16,14 @@ defmodule ActiveMonitoring do
       # worker(ActiveMonitoring.Worker, [arg1, arg2, arg3]),
     ]
 
+    children = if Mix.env != :test && !IEx.started? do
+      [
+        worker(ActiveMonitoring.OAuthTokenServer, [])
+        | children ]
+      else
+        children
+      end
+
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: ActiveMonitoring.Supervisor]

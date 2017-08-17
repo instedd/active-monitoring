@@ -123,3 +123,11 @@ export const fetchChannels = () => {
 export const createAudio = (files) => {
   return apiPostFile('audios', files[0])
 }
+
+export const fetchAuthorizations = () => {
+  return apiFetchJSONWithCallback(`authorizations`, null, (json, _) => () => json)
+}
+
+export const deleteAuthorization = (provider, baseUrl, keepChannels = false) => {
+  return apiDelete(`authorizations/${provider}?base_url=${encodeURIComponent(baseUrl)}&keep_channels=${keepChannels}`)
+}

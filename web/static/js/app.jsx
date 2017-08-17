@@ -15,7 +15,6 @@ import reducers from './reducers'
 import Nav from './components/Nav'
 import Campaign from './components/campaigns/Campaign'
 import Campaigns from './components/campaigns/Campaigns'
-import Channels from './components/channels/Channels'
 
 const history = createHistory()
 
@@ -45,8 +44,6 @@ if (root) {
 
                 <Route exact path='/campaigns' component={Campaigns} />
                 <Route exact path='/campaigns/:id' component={Campaign} />
-
-                <Route exact path='/channels' component={Channels} />
               </Switch>
             </div>
           </main>

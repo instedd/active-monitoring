@@ -28,4 +28,9 @@ defmodule ActiveMonitoring.Channel do
   def list(user) do
     []
   end
+
+  def provider(name) do
+    channel_config = Application.get_env(:active_monitoring, :channel)
+    channel_config[:providers][name]
+  end
 end

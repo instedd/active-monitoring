@@ -9,7 +9,6 @@ defmodule ActiveMonitoring.SessionController do
 
   import Rememberable, only: [gen_cookie: 3]
 
-
   @doc """
   Begin the login with Guisso using OpenId Connect.
   Flow continues at `oauth_callback`.

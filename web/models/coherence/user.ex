@@ -5,6 +5,7 @@ defmodule ActiveMonitoring.User do
   schema "users" do
     field :name, :string
     field :email, :string
+    has_many :oauth_tokens, ActiveMonitoring.OAuthToken
     coherence_schema()
 
     timestamps()

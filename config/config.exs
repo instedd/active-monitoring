@@ -15,7 +15,7 @@ config :active_monitoring, :sox,
 
 # Configures the endpoint
 config :active_monitoring, ActiveMonitoring.Endpoint,
-  url: [host: "localhost"],
+  url: [host: "vale.activemonitoring.instedd.org", port: 4000],
   secret_key_base: "wiyeiXpy+EZpMZ74UEr8RwoFoZoJipByrgYTNT99PZjaLu2rg0qIFhYFw9vTlJsY",
   render_errors: [view: ActiveMonitoring.ErrorView, accepts: ~w(html json)],
   pubsub: [name: ActiveMonitoring.PubSub,
@@ -52,3 +52,18 @@ import_config "#{Mix.env}.exs"
 if File.exists?("#{__DIR__}/local.exs") && Mix.env != :test do
   import_config "local.exs"
 end
+
+config :active_monitoring, :channel,
+  providers: %{
+    "nuntium" => ActiveMonitoring.Runtime.NuntiumChannel,
+    "verboice" => ActiveMonitoring.Runtime.VerboiceChannel
+  }
+
+config :active_monitoring, :verboice,
+  base_url: System.get_env("VERBOICE_BASE_URL") || "",
+  guisso: [
+    base_url: System.get_env("VERBOICE_GUISSO_BASE_URL") || "",
+    client_id: System.get_env("VERBOICE_CLIENT_ID") || "",
+    client_secret: System.get_env("VERBOICE_CLIENT_SECRET") || "",
+    app_id: System.get_env("VERBOICE_APP_ID") || ""
+  ]

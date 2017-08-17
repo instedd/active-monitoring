@@ -23,14 +23,16 @@ const fetchAuthorizations = (state) => ({
   fetching: true
 })
 
-const receiveAuthorizations = (state, action) => ({
-  ...state,
-  fetching: false,
-  items: action.authorizations
-})
+const receiveAuthorizations = (state, action) => {
+  return {
+    ...state,
+    fetching: false,
+    items: action.authorizations
+  }
+}
 
 const deleteAuthorization = (state, action) => {
-  const index = findIndex(state.items, item => item.provider == action.provider && item.baseUrl == action.baseUrl)
+  const index = state.items.findIndex(item => item.provider == action.provider && item.baseUrl == action.baseUrl)
 
   if (index == -1) {
     return state
@@ -46,7 +48,7 @@ const deleteAuthorization = (state, action) => {
 }
 
 const addAuthorization = (state, action) => {
-  const index = findIndex(state.items, item => item.provider == action.provider && item.baseUrl == action.baseUrl)
+  const index = state.items.findIndex(item => item.provider == action.provider && item.baseUrl == action.baseUrl)
   if (index != -1) {
     return state
   }

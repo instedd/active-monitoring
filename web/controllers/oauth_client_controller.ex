@@ -65,7 +65,6 @@ defmodule ActiveMonitoring.OAuthClientController do
         |> ActiveMonitoring.OAuthToken.from_access_token(access_token)
         |> Repo.insert!
 
-        provider.sync_channels(user.id, base_url)
         nil
       end
     end

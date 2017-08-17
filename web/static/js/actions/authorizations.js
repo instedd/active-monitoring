@@ -1,8 +1,6 @@
 import * as api from '../api'
 import * as guissoApi from '../guisso'
-// import * as channelActions from './channels'
-// import { config } from '../config'
-// import some from 'lodash/some'
+import { config } from '../config'
 
 export const FETCH_AUTHORIZATIONS = 'FETCH_AUTHORIZATIONS'
 export const RECEIVE_AUTHORIZATIONS = 'RECEIVE_AUTHORIZATIONS'
@@ -95,22 +93,7 @@ export const removeAuthorization = (provider, index) => (dispatch, getState) => 
     })
 }
 
-export const beginSynchronization = () => ({
-  type: BEGIN_SYNCHRONIZATION
-})
-
-export const endSynchronization = () => ({
-  type: END_SYNCHRONIZATION
-})
-
-export const synchronizeChannels = () => (dispatch, getState) => {
-  dispatch(beginSynchronization())
-  api.synchronizeChannels()
-    .then(() => { dispatch(endSynchronization()) })
-    .then(() => { dispatch(channelActions.fetchChannels()) })
-}
-
 export const hasInAuthorizations = (authorizations, provider, index) => {
   const baseUrl = config[provider][index].baseUrl
-  return !!(authorizations.items && some(authorizations.items, item => item.provider == provider && item.baseUrl == baseUrl))
+  return !!(authorizations.items && authorizations.items.some(item => item.provider == provider && item.baseUrl == baseUrl))
 }

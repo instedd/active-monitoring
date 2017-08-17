@@ -3,18 +3,11 @@ defmodule ActiveMonitoring.ChannelsController do
 
   alias ActiveMonitoring.{
     Channel,
-    Repo
+    Repo,
+    Runtime.VerboiceChannel
   }
 
   def index(conn, _) do
-    channels = Channel |> Repo.all
-
-    render(conn, "index.json", channels: channels)
+    render(conn, "index.json", channels: VerboiceChannel.get_channels(conn.assigns[:current_user].id))
   end
-
-  # def list(conn) do
-  #   base_url = "https://verboice-stg.instedd.org"
-  #   client = Verboice.Client.new(base_url,ActiveMonitoring.OAuthTokenServer.get_token("verboice", base_url, conn.assigns[:current_user].id))
-  #   Verboice.Client.get_channels(client)
-  # end
 end
