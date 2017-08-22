@@ -18,18 +18,6 @@ defmodule ActiveMonitoring.OAuthClientController do
     |> Repo.get_by!(provider: provider, base_url: base_url)
     |> Repo.delete!
 
-    keep_channels = params
-    |> Map.get("keep_channels", false)
-    keep_channels = keep_channels == true || keep_channels == "true"
-
-    unless keep_channels do
-      user
-      |> assoc(:channels)
-      |> where([c], c.provider == ^provider and c.base_url == ^base_url)
-      |> Repo.all
-      |> Enum.each(&ActiveMonitoring.Channel.delete(&1))
-    end
-
     send_resp(conn, :no_content, "")
   end
 

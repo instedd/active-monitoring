@@ -1,6 +1,7 @@
 import * as api from '../api'
 import * as guissoApi from '../guisso'
 import { config } from '../config'
+import * as channelActions from './channels'
 
 export const FETCH_AUTHORIZATIONS = 'FETCH_AUTHORIZATIONS'
 export const RECEIVE_AUTHORIZATIONS = 'RECEIVE_AUTHORIZATIONS'

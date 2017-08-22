@@ -2,10 +2,12 @@ defmodule ActiveMonitoring.User do
   use ActiveMonitoring.Web, :model
   use Coherence.Schema
 
+  alias ActiveMonitoring.{OAuthToken, Channel, Repo}
+
   schema "users" do
     field :name, :string
     field :email, :string
-    has_many :oauth_tokens, ActiveMonitoring.OAuthToken
+    has_many :oauth_tokens, OAuthToken
     coherence_schema()
 
     timestamps()
@@ -18,5 +20,11 @@ defmodule ActiveMonitoring.User do
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
     |> validate_coherence(params)
+  end
+
+  def channels(user) do
+    Repo.all(from t in OAuthToken, where: t.user_id == ^user.id)
+      |> Enum.map(fn (token) -> Channel.provider(token.provider).get_channels(user.id) end)
+      |> List.flatten
   end
 end

@@ -8,15 +8,10 @@ defmodule ActiveMonitoring.LayoutView do
       user -> user.email
     end
 
-    require Logger
-    Logger.info("print config")
-    Logger.info(inspect(Application.get_env(:active_monitoring, :verboice)))
-    Logger.info("end print config")
-
     client_config = %{
       version: version,
       user: user_email,
-      verboice: Application.get_env(:active_monitoring, :verboice) |> guisso_config
+      verboice: [Application.get_env(:active_monitoring, :verboice)] |> guisso_configs
     }
 
     {:ok, config_json} = client_config |> Poison.encode
@@ -28,8 +23,6 @@ defmodule ActiveMonitoring.LayoutView do
   end
 
   defp guisso_config(app_env) do
-    require Logger
-    Logger.info(inspect(app_env))
     %{
       baseUrl: app_env[:base_url],
       friendlyName: app_env[:friendly_name],

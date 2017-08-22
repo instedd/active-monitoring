@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { campaignUpdate } from '../../actions/campaign'
 import * as authActions from '../../actions/authorizations'
+import * as channelActions from '../../actions/channels'
 import SelectField from 'react-md/lib/SelectFields'
 import Paper from 'react-md/lib/Papers'
 import Dialog from 'react-md/lib/Dialogs'
@@ -22,8 +23,11 @@ class ChannelSelectionComponent extends Component {
   }
 
   componentWillMount() {
-    //this.props.actions.fetchChannels()
     this.props.fetchAuthorizations()
+  }
+
+  componentDidMount() {
+    this.props.fetchChannels()
   }
 
   addProvider(event) {
@@ -64,7 +68,7 @@ class ChannelSelectionComponent extends Component {
       const disabled = this.props.authorizations.fetching
       const checked = authActions.hasInAuthorizations(this.props.authorizations, provider, index)
       return <div className='switch'>
-        <Switch id="switch" label='' name='providerSwitch' checked={false} onChange={() => this.toggleProvider(provider, index, false)} disabled={false} />
+        <Switch id="switch" label='' name='providerSwitch' checked={checked} onChange={() => this.toggleProvider(provider, index, false)} disabled={disabled} />
       </div>
     }
 
@@ -120,17 +124,16 @@ class ChannelSelectionComponent extends Component {
         <div className='md-grid'>
           <SelectField
             id='channel-select'
-            menuItems={[]}
+            menuItems={this.props.channels.items || []}
             position={SelectField.Positions.BELOW}
             className='md-cell md-cell--8  md-cell--bottom'
-            value={this.props.channelId}
-            onChange={(val) => this.props.onChange(val)}
+            onChange={(val) => this.props.onChangeChannel(val)}
           />
           <div className='md-cell md-cell--4'>
             <Button raised label='Add channel provider' onClick={(e) => this.addProvider(e)} />
             {providerModals}
 
-            <Dialog id='add-channel' visible={this.state.providerModalVisible} onHide={() => this.closeProviderModal()} title='Add channel provider'>
+            <Dialog id='add-channel' visible={this.state.providerModalVisible} onHide={() => this.closeProviderModal()} title='Add channel provider' focusOnMount={false}>
               <div className='modal-content'>
                 <div className='card-title header'>
                   <h5>Add channels from a new provider</h5>
@@ -149,8 +152,9 @@ class ChannelSelectionComponent extends Component {
 }
 
 ChannelSelectionComponent.propTypes = {
-  channelId: PropTypes.number,
-  children: PropTypes.array
+  channelId: PropTypes.string,
+  children: PropTypes.array,
+  channels: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
@@ -162,9 +166,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onChange: (value) => dispatch(campaignUpdate({channelId: value})),
+    onChangeChannel: (value) => dispatch(campaignUpdate({channelId: value})),
     toggleProvider: (provider, index) => dispatch(authActions.toggleAuthorization(provider, index)),
-    fetchAuthorizations: () => dispatch(authActions.fetchAuthorizations())
+    fetchAuthorizations: () => dispatch(authActions.fetchAuthorizations()),
+    fetchChannels: () => dispatch(channelActions.fetchChannels())
   }
 }
 
