@@ -21,7 +21,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
-      response = Flow.handle_status(campaign.channel_id, "CALL_SID_1", "9990001", "ringing")
+      response = Flow.handle_status(campaign.id, "CALL_SID_1", "9990001", "ringing")
       {:ok, campaign: campaign, response: response}
     end
 
@@ -29,7 +29,6 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
       call = Repo.one!(Call)
       assert %Call{sid: "CALL_SID_1", current_step: nil} = call
       assert call.campaign_id == campaign.id
-      assert call.channel_id == campaign.channel_id
     end
 
     test "it should create a new subject for new number", %{campaign: campaign} do
@@ -42,34 +41,33 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
 
     test "it should find subject if same phone number is used", %{campaign: campaign} do
-      Flow.handle_status(campaign.channel_id, "CALL_SID_2", "9990001", "ringing")
+      Flow.handle_status(campaign.id, "CALL_SID_2", "9990001", "ringing")
       subjects = Repo.all(Subject)
       assert length(subjects) == 1
     end
   end
 
-  describe "invalid call" do
-    test "it should raise if unused channel on call status" do
-      channel = build(:channel) |> Repo.insert!
-      assert_raise Ecto.NoResultsError, fn ->
-        Flow.handle_status(channel.id, "CALL_SID_1", "9990001", "ringing")
-      end
-    end
+  # describe "invalid call" do
+  #   test "it should raise if campaign isn't active" do
+  #     assert_raise Ecto.NoResultsError, fn ->
+  #       Flow.handle_status(campaign.id, "CALL_SID_1", "9990001", "ringing")
+  #     end
+  #   end
 
-    test "it should raise if unused channel on callback" do
-      channel = build(:channel) |> Repo.insert!
-      assert_raise Ecto.NoResultsError, fn ->
-        Flow.handle(channel.id, "CALL_SID_1", "")
-      end
-    end
-  end
+  #   test "it should raise if unused channel on callback" do
+  #     channel = build(:channel) |> Repo.insert!
+  #     assert_raise Ecto.NoResultsError, fn ->
+  #       Flow.handle(channel.id, "CALL_SID_1", "")
+  #     end
+  #   end
+  # end
 
   describe "welcome message" do
     setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
-      call = build(:call, campaign: campaign, channel: campaign.channel) |> Repo.insert!
-      response = Flow.handle(campaign.channel_id, call.sid, "2")
+      call = build(:call, campaign: campaign) |> Repo.insert!
+      response = Flow.handle(campaign.id, call.sid, "2")
       {:ok, campaign: campaign, call: call, response: response}
     end
 
@@ -86,8 +84,8 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
-      call = build(:call, campaign: campaign, channel: campaign.channel) |> on_step("language") |> Repo.insert!
-      response = Flow.handle(campaign.channel_id, call.sid, "2")
+      call = build(:call, campaign: campaign) |> on_step("language") |> Repo.insert!
+      response = Flow.handle(campaign.id, call.sid, "2")
       {:ok, campaign: campaign, call: call, response: response}
     end
 
@@ -112,8 +110,8 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
-      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("welcome") |> Repo.insert!
-      response = Flow.handle(campaign.channel_id, call.sid, "")
+      call = build(:call, campaign: campaign, language: "es") |> on_step("welcome") |> Repo.insert!
+      response = Flow.handle(campaign.id, call.sid, "")
       {:ok, campaign: campaign, call: call, response: response}
     end
 
@@ -134,8 +132,8 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
-      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-fever") |> Repo.insert!
-      response = Flow.handle(campaign.channel_id, call.sid, "1")
+      call = build(:call, campaign: campaign, language: "es") |> on_step("symptom:id-fever") |> Repo.insert!
+      response = Flow.handle(campaign.id, call.sid, "1")
       {:ok, campaign: campaign, call: call, response: response}
     end
 
@@ -160,8 +158,8 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
-      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-fever") |> Repo.insert!
-      response = Flow.handle(campaign.channel_id, call.sid, "3")
+      call = build(:call, campaign: campaign, language: "es") |> on_step("symptom:id-fever") |> Repo.insert!
+      response = Flow.handle(campaign.id, call.sid, "3")
       {:ok, campaign: campaign, call: call, response: response}
     end
 
@@ -186,20 +184,20 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner, forwarding_condition: "all") |> with_audios |> with_channel |> Repo.insert!
-      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
+      call = build(:call, campaign: campaign, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
       build(:call_answer, symptom: "id-fever", response: true) |> for_call(call) |> Repo.insert!
       {:ok, campaign: campaign, call: call}
     end
 
     test "it should forward the call on all symptoms positive", %{campaign: campaign, call: call} do
-      response = Flow.handle(campaign.channel_id, call.sid, "1")
+      response = Flow.handle(campaign.id, call.sid, "1")
 
       assert %Call{current_step: "forward"} = Repo.one!(Call)
       assert {:forward, %{audio: "id-forward-es"}} = response
     end
 
     test "it should not forward the call if not all symptoms are positive", %{campaign: campaign, call: call} do
-      response = Flow.handle(campaign.channel_id, call.sid, "3")
+      response = Flow.handle(campaign.id, call.sid, "3")
 
       assert %Call{current_step: "educational"} = Repo.one!(Call)
       assert {:play, %{audio: "id-educational-es"}} = response
@@ -210,20 +208,20 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner, forwarding_condition: "any") |> with_audios |> with_channel |> Repo.insert!
-      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
+      call = build(:call, campaign: campaign, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
       build(:call_answer, symptom: "id-fever", response: false) |> for_call(call) |> Repo.insert!
       {:ok, campaign: campaign, call: call}
     end
 
     test "it should forward the call if any symptom is positive", %{campaign: campaign, call: call} do
-      response = Flow.handle(campaign.channel_id, call.sid, "1")
+      response = Flow.handle(campaign.id, call.sid, "1")
 
       assert %Call{current_step: "forward"} = Repo.one!(Call)
       assert {:forward, %{audio: "id-forward-es"}} = response
     end
 
     test "it should not forward the call if not no symptom is positive", %{campaign: campaign, call: call} do
-      response = Flow.handle(campaign.channel_id, call.sid, "3")
+      response = Flow.handle(campaign.id, call.sid, "3")
 
       assert %Call{current_step: "educational"} = Repo.one!(Call)
       assert {:play, %{audio: "id-educational-es"}} = response
@@ -238,8 +236,8 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
 
     test "it should play educational message if compulsory", %{owner: owner} do
       campaign = build(:campaign, user: owner, forwarding_condition: "any", additional_information: "compulsory") |> with_audios |> with_channel |> Repo.insert!
-      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
-      response = Flow.handle(campaign.channel_id, call.sid, "3")
+      call = build(:call, campaign: campaign, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
+      response = Flow.handle(campaign.id, call.sid, "3")
 
       assert %Call{current_step: "educational"} = Repo.one!(Call)
       assert {:play, %{audio: "id-educational-es"}} = response
@@ -247,8 +245,8 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
 
     test "it should skip educational message if disabled", %{owner: owner} do
       campaign = build(:campaign, user: owner, forwarding_condition: "any", additional_information: "zero") |> with_audios |> with_channel |> Repo.insert!
-      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
-      response = Flow.handle(campaign.channel_id, call.sid, "3")
+      call = build(:call, campaign: campaign, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
+      response = Flow.handle(campaign.id, call.sid, "3")
 
       assert %Call{current_step: "thanks"} = Repo.one!(Call)
       assert {:hangup, %{audio: "id-thanks-es"}} = response
@@ -256,8 +254,8 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
 
     test "it should ask for confirmation if optional", %{owner: owner} do
       campaign = build(:campaign, user: owner, forwarding_condition: "any", additional_information: "optional") |> with_audios |> with_channel |> Repo.insert!
-      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
-      response = Flow.handle(campaign.channel_id, call.sid, "3")
+      call = build(:call, campaign: campaign, language: "es") |> on_step("symptom:id-rash") |> Repo.insert!
+      response = Flow.handle(campaign.id, call.sid, "3")
 
       assert %Call{current_step: "additional_information_intro"} = Repo.one!(Call)
       assert {:gather, %{audio: "id-additional_information_intro-es"}} = response
@@ -265,8 +263,8 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
 
     test "it should play educational message if user chooses to", %{owner: owner} do
       campaign = build(:campaign, user: owner, forwarding_condition: "any", additional_information: "optional") |> with_audios |> with_channel |> Repo.insert!
-      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("additional_information_intro") |> Repo.insert!
-      response = Flow.handle(campaign.channel_id, call.sid, "1")
+      call = build(:call, campaign: campaign, language: "es") |> on_step("additional_information_intro") |> Repo.insert!
+      response = Flow.handle(campaign.id, call.sid, "1")
 
       assert %Call{current_step: "educational"} = Repo.one!(Call)
       assert {:play, %{audio: "id-educational-es"}} = response
@@ -274,8 +272,8 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
 
     test "it should skip educational message if user chooses to", %{owner: owner} do
       campaign = build(:campaign, user: owner, forwarding_condition: "any", additional_information: "optional") |> with_audios |> with_channel |> Repo.insert!
-      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("additional_information_intro") |> Repo.insert!
-      response = Flow.handle(campaign.channel_id, call.sid, "3")
+      call = build(:call, campaign: campaign, language: "es") |> on_step("additional_information_intro") |> Repo.insert!
+      response = Flow.handle(campaign.id, call.sid, "3")
 
       assert %Call{current_step: "thanks"} = Repo.one!(Call)
       assert {:hangup, %{audio: "id-thanks-es"}} = response
@@ -286,8 +284,8 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
-      call = build(:call, campaign: campaign, channel: campaign.channel, language: "es") |> on_step("educational") |> Repo.insert!
-      response = Flow.handle(campaign.channel_id, call.sid, "")
+      call = build(:call, campaign: campaign, language: "es") |> on_step("educational") |> Repo.insert!
+      response = Flow.handle(campaign.id, call.sid, "")
       {:ok, campaign: campaign, call: call, response: response}
     end
 

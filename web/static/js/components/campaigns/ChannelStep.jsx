@@ -8,9 +8,11 @@ import SelectField from 'react-md/lib/SelectFields'
 import Paper from 'react-md/lib/Papers'
 import Dialog from 'react-md/lib/Dialogs'
 import List from 'react-md/lib/Lists'
-import ListItem from 'react-md/lib/Lists'
+import ListItemControl from 'react-md/lib/Lists/ListItemControl'
 import Switch from 'react-md/lib/SelectionControls/Switch'
+import FontIcon from 'react-md/lib/FontIcons'
 import Button from 'react-md/lib/Buttons/Button'
+import SelectionControlGroup from 'react-md/lib/SelectionControls/SelectionControlGroup'
 import { config } from '../../config'
 
 class ChannelSelectionComponent extends Component {
@@ -24,9 +26,6 @@ class ChannelSelectionComponent extends Component {
 
   componentWillMount() {
     this.props.fetchAuthorizations()
-  }
-
-  componentDidMount() {
     this.props.fetchChannels()
   }
 
@@ -67,42 +66,25 @@ class ChannelSelectionComponent extends Component {
     const providerSwitch = (provider, index) => {
       const disabled = this.props.authorizations.fetching
       const checked = authActions.hasInAuthorizations(this.props.authorizations, provider, index)
-      return <div className='switch'>
-        <Switch id="switch" label='' name='providerSwitch' checked={checked} onChange={() => this.toggleProvider(provider, index, false)} disabled={disabled} />
-      </div>
+      return <Switch id="switch" label='' name='providerSwitch' checked={checked} onChange={() => this.toggleProvider(provider, index, false)} disabled={disabled} />
     }
-
-    // const providerModal = (provider, index, friendlyName, multiple) => {
-    //   let name = `${provider[0].toUpperCase()}${provider.slice(1)}`
-    //   if (multiple) name = `${name} (${friendlyName})`
-
-    //   return <ConfirmationModal key={`${provider}-${index}`} modalId={`${provider}Modal-${index}`} modalText={`Do you want to delete the channels provided by ${name}?`} header={`Turn off ${name}`} confirmationText='Yes' onConfirm={() => this.deleteProvider(provider, index)} style={{maxWidth: '600px'}} showCancel />
-    // }
 
     const multipleVerboice = config['verboice'].length > 1
 
     let providerModals = []
-    // for (let index in verboices) {
-    // providerModals.push(providerModal('verboice', 0, 'Verboice stg', multipleVerboice))
-    // }
-
     const verboiceProviderUI = (index, multiple) => {
       let name = 'Verboice'
       if (multiple) name = `${name} (${config['verboice'][index].friendlyName})`
 
       return (
-        <ListItem key={`verboice-${index}`} className={`verboice`}>
-          <h5>{name}</h5>
-          {providerSwitch('verboice', index)}
-          <span className='channel-description'>
-            <b>Voice channels</b>
-            <br />
-            Callcentric, SIP client, SIP server, Skype, Twillio
-          </span>
-          <span onClick={() => window.open(config['verboice'][index].baseUrl)}>
-            <i className='material-icons arrow-right'>chevron_right</i>
-          </span>
-        </ListItem>
+        <ListItemControl
+          key={`verboice-${index}`}
+          className={`verboice`}
+          rightIcon={<FontIcon onClick={() => window.open(config['verboice'][index].baseUrl)}>chevron_right</FontIcon>}
+          primaryAction={providerSwitch('verboice', index)}
+          primaryText={name}
+          secondaryText='Callcentric, SIP client, SIP server, Skype, Twillio'
+        />
       )
     }
 
@@ -111,6 +93,19 @@ class ChannelSelectionComponent extends Component {
       providerUIs.push(verboiceProviderUI(index, multipleVerboice))
     }
 
+    let channelControl = null
+    if(this.props.channels.items) {
+      channelControl =
+        (<SelectionControlGroup
+          id='channel-select'
+          name='channel-select'
+          controls={this.props.channels.items.map(function(name){return {label: name, value: name} })}
+          className='md-cell md-cell--12'
+          type='radio'
+          value={this.props.selectedChannel}
+          onChange={(val) => this.props.onChangeChannel(val)}
+        />)
+    }
     return (
       <section id='channel'>
         <div className='md-grid'>
@@ -122,27 +117,16 @@ class ChannelSelectionComponent extends Component {
           </div>
         </div>
         <div className='md-grid'>
-          <SelectField
-            id='channel-select'
-            menuItems={this.props.channels.items || []}
-            position={SelectField.Positions.BELOW}
-            className='md-cell md-cell--8  md-cell--bottom'
-            onChange={(val) => this.props.onChangeChannel(val)}
-          />
-          <div className='md-cell md-cell--4'>
-            <Button raised label='Add channel provider' onClick={(e) => this.addProvider(e)} />
+          {channelControl}
+        </div>
+        <div className='md-grid'>
+          <div className='md-cell md-cell--8'>
+            <Button flat label='Manage providers' onClick={(e) => this.addProvider(e)}>settings</Button>
             {providerModals}
-
-            <Dialog id='add-channel' visible={this.state.providerModalVisible} onHide={() => this.closeProviderModal()} title='Add channel provider' focusOnMount={false}>
-              <div className='modal-content'>
-                <div className='card-title header'>
-                  <h5>Add channels from a new provider</h5>
-                  <p>ActiveMonitoring will sync available channels from these providers after user authorization</p>
-                </div>
-                <List>
-                  {providerUIs}
-                </List>
-              </div>
+            <Dialog id='add-channel' visible={this.state.providerModalVisible} onHide={() => this.closeProviderModal()} title='Manage providers' focusOnMount={false}>
+              <List>
+                {providerUIs}
+              </List>
             </Dialog>
           </div>
         </div>
@@ -160,13 +144,14 @@ ChannelSelectionComponent.propTypes = {
 const mapStateToProps = (state) => {
   return {
     channels: state.channels,
-    authorizations: state.authorizations
+    authorizations: state.authorizations,
+    selectedChannel: state.campaign.data.channel
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onChangeChannel: (value) => dispatch(campaignUpdate({channelId: value})),
+    onChangeChannel: (value) => dispatch(campaignUpdate({channel: value})),
     toggleProvider: (provider, index) => dispatch(authActions.toggleAuthorization(provider, index)),
     fetchAuthorizations: () => dispatch(authActions.fetchAuthorizations()),
     fetchChannels: () => dispatch(channelActions.fetchChannels())

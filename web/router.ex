@@ -44,8 +44,8 @@ defmodule ActiveMonitoring.Router do
   scope "/callbacks", ActiveMonitoring do
     pipe_through :verboice
 
-    get "/verboice/:uuid/status", VerboiceCallbacksController, :status
-    post "/verboice/:uuid", VerboiceCallbacksController, :callback
+    get "/verboice/:campaign/status", VerboiceCallbacksController, :status
+    post "/verboice/:campaign", VerboiceCallbacksController, :callback
   end
 
   scope "/api", ActiveMonitoring do

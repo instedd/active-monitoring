@@ -103,6 +103,11 @@ class UploadAudioStepComponent extends Component {
             </TabsContainer>
           </div>
         </div>
+        <div className='md-grid'>
+          <div className='md-cell md-cell--12'>
+            {this.props.children}
+          </div>
+        </div>
       </section>
     )
   }

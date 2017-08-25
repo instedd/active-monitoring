@@ -13,10 +13,10 @@ defmodule ActiveMonitoring.Campaign do
     field :langs, {:array, :string}
     field :additional_information, :string
     field :started_at, Ecto.DateTime
+    field :channel, :string
     # field :alert_recipients, {:array, :string}
     # field :additional_fields, {:array, :string}
 
-    belongs_to :channel, Channel
     belongs_to :user, User
     has_many :subjects, Subject
 
@@ -25,11 +25,10 @@ defmodule ActiveMonitoring.Campaign do
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:name, :symptoms, :forwarding_number, :forwarding_condition, :audios, :langs, :channel_id, :user_id, :additional_information])
+    |> cast(params, [:name, :symptoms, :forwarding_number, :forwarding_condition, :audios, :langs, :channel, :user_id, :additional_information])
     |> validate_inclusion(:additional_information, ["zero", "optional", "compulsory"])
     |> validate_inclusion(:forwarding_condition, ["any", "all"])
     |> assoc_constraint(:user)
-    |> assoc_constraint(:channel)
   end
 
   def steps(%{symptoms: symptoms, additional_information: additional_information}) do
@@ -70,10 +69,10 @@ defmodule ActiveMonitoring.Campaign do
     base_url = "https://verboice-stg.instedd.org"
     client = Verboice.Client.new(base_url,ActiveMonitoring.OAuthTokenServer.get_token("verboice", base_url, campaign.user_id))
     Verboice.Client.create_project("Active Monitoring set up", %{
-      status_callback_url: Helpers.verboice_callbacks_url(ActiveMonitoring.Endpoint, :status_callback, campaign.channel.uuid),
+      status_callback_url: Helpers.verboice_callbacks_url(ActiveMonitoring.Endpoint, :status_callback, campaign.id),
       user: "",
       password: "",
-      external_service: Helpers.verboice_callbacks_url(ActiveMonitoring.Endpoint, :callback, campaign.channel.uuid)}
+      external_service: Helpers.verboice_callbacks_url(ActiveMonitoring.Endpoint, :callback, campaign.id)}
     )
   end
 end

@@ -1,19 +1,12 @@
 defmodule ActiveMonitoring.Factory do
   use ExMachina.Ecto, repo: ActiveMonitoring.Repo
 
-  alias ActiveMonitoring.{User, Campaign, Channel, Call, CallAnswer}
+  alias ActiveMonitoring.{User, Campaign, Call, CallAnswer}
 
   def user_factory do
     %User{
       name: "Jane Smith",
       email: sequence(:email, &"email-#{&1}@example.com"),
-    }
-  end
-
-  def channel_factory do
-    %Channel{
-      name: "Sample channel",
-      user: build(:user)
     }
   end
 
@@ -48,7 +41,7 @@ defmodule ActiveMonitoring.Factory do
   end
 
   def with_channel(campaign) do
-    %{campaign | channel: build(:channel, user: campaign.user, uuid: Ecto.UUID.generate())}
+    %{campaign | channel: "channel_name"}
   end
 
   def call_factory do
@@ -76,7 +69,7 @@ defmodule ActiveMonitoring.Factory do
 
   def oauth_token_factory do
     %ActiveMonitoring.OAuthToken{
-      provider: "test",
+      provider: "verboice",
       base_url: "http://test.com",
       user: build(:user),
       access_token: %{

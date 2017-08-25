@@ -2,8 +2,8 @@ defmodule ActiveMonitoring.Runtime.Flow do
 
   alias ActiveMonitoring.{Call, CallLog, CallAnswer, Repo, Campaign, Subject}
 
-  def handle(channel_id, call_sid, digits) do
-    campaign = fetch_campaign(channel_id)
+  def handle(campaign_id, call_sid, digits) do
+    campaign = fetch_campaign(campaign_id)
     call = fetch_call(call_sid)
 
     insert_call_log(call, digits)
@@ -17,9 +17,8 @@ defmodule ActiveMonitoring.Runtime.Flow do
     {action, data_for(action, campaign, step, language)}
   end
 
-  def handle_status(channel_id, call_sid, from, _status) do
-    campaign = fetch_campaign(channel_id)
-    fetch_or_insert_call(call_sid, from, channel_id, campaign.id)
+  def handle_status(campaign_id, call_sid, from, _status) do
+    fetch_or_insert_call(call_sid, from, campaign_id)
     :ok
   end
 
@@ -63,8 +62,8 @@ defmodule ActiveMonitoring.Runtime.Flow do
     Enum.fetch!(langs, option - 1)
   end
 
-  defp fetch_campaign(channel_id) do
-    Campaign |> Repo.get_by!(channel_id: channel_id)
+  defp fetch_campaign(campaign_id) do
+    Campaign |> Repo.get!(campaign_id)
   end
 
   defp fetch_call(call_sid) do
@@ -75,15 +74,15 @@ defmodule ActiveMonitoring.Runtime.Flow do
     Subject |> Repo.get_by(phone_number: from)
   end
 
-  defp fetch_or_insert_call(call_sid, from, channel_id, campaign_id) do
+  defp fetch_or_insert_call(call_sid, from, campaign_id) do
     case fetch_call(call_sid) do
       nil ->
         case fetch_subject(from) do
           nil ->
             s = %{phone_number: from}
-            Call.changeset(%Call{}, %{sid: call_sid, subject: s, channel_id: channel_id, campaign_id: campaign_id}) |> Repo.insert!
+            Call.changeset(%Call{}, %{sid: call_sid, subject: s, campaign_id: campaign_id}) |> Repo.insert!
           subject ->
-            Call.changeset(%Call{}, %{sid: call_sid, subject_id: subject.id, channel_id: channel_id, campaign_id: campaign_id}) |> Repo.insert!
+            Call.changeset(%Call{}, %{sid: call_sid, subject_id: subject.id, campaign_id: campaign_id}) |> Repo.insert!
         end
       call ->
         call

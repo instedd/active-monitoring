@@ -10,9 +10,8 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias ActiveMonitoring.{Repo, Call, Subject, CallAnswer, Channel, Campaign}
+alias ActiveMonitoring.{Repo, Call, Subject, CallAnswer, Campaign}
 
-channel = Repo.insert!(%Channel{name: "channel seed", uuid: Ecto.UUID.generate()})
 symptoms = [["1", "Fever"],["2","Rash"]]
 campaign = Repo.insert!(%Campaign{
   name: "Campaign Seed",
@@ -44,7 +43,6 @@ for i <- 1..30 do
       sid: "SID_#{i}",
       language: "en",
       campaign_id: campaign.id,
-      channel_id: channel.id,
       current_step: step,
       subject_id: Enum.random(subjects).id
     })

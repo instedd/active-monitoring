@@ -29,7 +29,8 @@ defmodule ActiveMonitoring.CampaignsView do
       audios: campaign.audios,
       langs: campaign.langs,
       additional_information: campaign.additional_information,
-      started_at: campaign.started_at
+      started_at: campaign.started_at,
+      channel: campaign.channel
     }
   end
 end

@@ -23,8 +23,7 @@ defmodule ActiveMonitoring.CampaignsController do
       subjects = Subject.stats(id)
       render(conn, "show.json", campaign: campaign, calls: calls, subjects: subjects)
     else
-      channels = Channel.list(conn.assigns[:current_user])
-      render(conn, "show.json", campaign: campaign, channels: channels)
+      render(conn, "show.json", campaign: campaign)
     end
   end
 
