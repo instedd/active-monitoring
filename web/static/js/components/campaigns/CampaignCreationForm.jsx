@@ -60,8 +60,10 @@ class CampaignCreationFormComponent extends Component {
       )
     }
 
-    let form = (
-      <div>
+    let completed = false
+
+    return (
+      <div className='md-grid white'>
         <div className='md-cell md-cell--12-tablet md-cell--4-desktop md-cell--tablet-hidden '>
           <PositionFixer offset={60}>
             <div className='md-paper md-paper--1 rounded-corners'>
@@ -102,14 +104,6 @@ class CampaignCreationFormComponent extends Component {
           </UploadAudioStep>
           <ChannelStep />
         </div>
-      </div>
-    )
-
-    let completed = false
-
-    return (
-      <div className='md-grid white'>
-        {form}
       </div>
     )
   }
