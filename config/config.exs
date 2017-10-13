@@ -15,7 +15,7 @@ config :active_monitoring, :sox,
 
 # Configures the endpoint
 config :active_monitoring, ActiveMonitoring.Endpoint,
-  url: [host: "vale.activemonitoring.instedd.org", port: 4000],
+  url: [host: "app.activemonitoring.dev"],
   secret_key_base: "wiyeiXpy+EZpMZ74UEr8RwoFoZoJipByrgYTNT99PZjaLu2rg0qIFhYFw9vTlJsY",
   render_errors: [view: ActiveMonitoring.ErrorView, accepts: ~w(html json)],
   pubsub: [name: ActiveMonitoring.PubSub,
