@@ -1,18 +1,178 @@
-<body>
-  <header class="mui-appbar mui--z1">
-    <div class="mui-container">
-      <table width="100%">
-        <tbody>
-          <tr class="mui--appbar-height">
-            <td class="mui--text-title">Active Monitoring</td>
-            <td align="right">
-              <ul class="mui-list--inline mui--text-body2">
-                <li><a href="<%= session_path @conn, :login %>">Login</a></li>
-              </ul>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </header>
+
+<body class="landing">
+  <div class='wrapper'>
+    <header>
+      <nav>
+        <div class="md-grid">
+          <div class="md-cell md-cell--3-phone">
+            <div class="brand-logo">
+              <img src="/images/icon.svg" width="60px">
+              <span>Active Monitoring</span>
+              </div>
+          </div>
+          <div class="md-cell--right md-text-right md-cell--phone-hidden md-cell--tablet-hidden">
+            <ul class="">
+              <li><a href="http://instedd.org/technologies/" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block">About Instedd Platform</a></li>
+              <li><a href="<%= session_path @conn, :login %>" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block">Login</a></li>
+              <li><a href="#" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block outlined">Sign up for free</a></li>
+            </ul>
+          </div>
+          <div class="md-cell--right md-cell--1-phone md-text-right md-cell--middle md-cell--desktop-hidden">
+
+            <div id="topMenu" aria-haspopup="true" aria-expanded="false" class="md-layover md-layover--simplified md-inline-block md-menu-container" aria-owns="topMenu">
+              <button id="menu-button-2-toggle" type="button" class="md-btn md-btn--icon md-pointer--hover md-inline-block">
+                <div class="md-ink-container">
+                  <span aria-hidden="true"></span>
+                </div>
+                <i class="md-icon material-icons md-text--inherit">apps</i>
+              </button>
+
+<!--
+              <ul id="topMenu" class="md-list md-layover-child md-layover-child--tr md-layover-child--simplified md-list--menu md-list--menu-restricted md-list--menu-tr md-paper md-paper--2">
+                <li class="md-list-item">
+                  <div role="button" class="md-fake-btn md-pointer--hover md-fake-btn--no-outline md-list-tile md-text" tabindex="0" aria-pressed="false">
+                    <div class="md-ink-container">
+                      <span aria-hidden="true"></span>
+                    </div>
+                    <div class="md-tile-content">
+                      <div class="md-tile-text--primary md-text"><a href="http://instedd.org/technologies/" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block">About Instedd Platform</a></div>
+                    </div>
+                  </div>
+                </li>
+                <li class="md-list-item">
+                  <div role="button" class="md-fake-btn md-pointer--hover md-fake-btn--no-outline md-list-tile md-text" tabindex="0" aria-pressed="false">
+                    <div class="md-ink-container">
+                      <span aria-hidden="true"></span>
+                    </div>
+                    <div class="md-tile-content">
+                      <div class="md-tile-text--primary md-text"><a href="<%= session_path @conn, :login %>" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block">Login</a></div>
+                    </div>
+                  </div>
+                </li>
+                <li class="md-list-item">
+                  <div role="button" class="md-fake-btn md-pointer--hover md-fake-btn--no-outline md-list-tile md-text" tabindex="0" aria-pressed="false">
+                    <div class="md-ink-container">
+                      <span aria-hidden="true"></span>
+                    </div>
+                    <div class="md-tile-content">
+                      <div class="md-tile-text--primary md-text"><a href="#" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block outlined">Sign up for free</a></div>
+                    </div>
+                  </div>
+                </li>
+              </ul> -->
+            </div>
+
+          </div>
+        </div>
+      </nav>
+    </header>
+
+
+    <main class="main-welcome">
+      <div class="md-grid md-grid--no-spacing">
+
+        <div class='md-cell md-cell--12 section main'>
+          <div class="md-grid">
+            <div class="md-cell md-cell--12-tablet md-cell--4-desktop">
+              <h1 class="md-display-2 md-font-bold text-white">Early detection</h1>
+              <div class="md-headline text-white">Reduce outbreak risks through active monitoring of exposed populations</div>
+              <p class="top-margin">
+                What is Active Monitoring?
+                <br>
+                Active Monitoring is an open source tool that allow travelers to report their health status daily to an interactive voice recognition system (IVR).
+              </p>
+            </div>
+            <div class="md-cell md-cell--12-tablet md-cell--8-desktop md-cell--bottom md-text-right">
+              <img class="md-text-right responsive-img" src="/images/welcome-main.png" width="695px" />
+            </div>
+          </div>
+        </div>
+
+
+        <div class="md-cell md-cell--12 section right-img">
+          <div class="md-grid md-grid--no-spacing">
+            <div class="md-cell md-cell--12-tablet md-cell--4-desktop">
+              <h1 class="md-display-2 md-font-light text-black"><span class="md-font-semibold">Monitor</span> your campaign with a stats dashboard</h1>
+            </div>
+            <div class="md-cell md-cell--12-tablet md-cell--8-desktop md-cell--bottom md-text-right">
+              <img class="right responsive-img" src='/images/welcome-img01.png' width="646px" />
+            </div>
+          </div>
+        </div>
+
+        <div class="md-cell md-cell--12 section md-text-center">
+          <h1 class="md-display-2 md-font-light text-black">
+            <span class="md-font-semibold">Test</span>
+            your campaigns before release with a graphical test tool
+          </h1>
+          <img class="responsive-img center-align" src="/images/welcome-img02.png" width="880px" />
+        </div>
+
+        <div class="md-cell md-cell--12 section left-img">
+          <div class="md-grid md-grid--no-spacing">
+            <div class="md-cell md-cell--12-tablet md-cell--8-desktop md-cell--bottom md-cell--order-2-phone md-cell--order-2-tablet">
+              <img class="left responsive-img" src="/images/welcome-img03.png" width="650px"  />
+            </div>
+            <div class="md-cell md-cell--12-tablet md-cell--4-desktop md-cell--order-1-phone md-cell--order-1-tablet">
+              <h1 class="md-display-2 md-font-light text-black">
+                <span class="md-font-semibold">Setup</span>
+                monitoring settings in an easy and flexible way
+              </h1>
+            </div>
+          </div>
+        </div>
+
+        <div class="md-cell md-cell--12 section right-img">
+          <div class="md-grid md-grid--no-spacing">
+            <div class="md-cell md-cell--12-tablet md-cell--4-desktop">
+              <h1 class="md-display-2 md-font-light text-black">
+                <span class="md-font-semibold">Translate</span>
+                your campaign to multiple languages
+              </h1>
+            </div>
+            <div class="md-cell md-cell--12-tablet md-cell--8-desktop md-cell--bottom md-text-right">
+              <img class="right responsive-img" src="/images/welcome-img04.png" width="437px" />
+            </div>
+          </div>
+        </div>
+
+        <div class="md-cell md-cell--12 section map md-text-center">
+          <h1 class="md-display-2 md-font-light text-black">Results from CDC on EBOLA CARE system</h1>
+          <p>
+            Check and Report Ebola (CARE) Hotline, a novel approach to monitoring, was designed to allow travelers to report their health status daily to an interactive voice recognition system (IVR). After a rapid development process, The the IVR was piloted with Centers for Disease Control and Prevention (CDC) federal employees who returned from deployments to affected countries. The system was designed using open source tools from InSTEDD, Verboice for IVR and mBuilder for SMS. These tools were packaged together to Together these tools were able to facilitate and promote travelers’ adherence to daily promote self-monitoring reporting requirements. of traveler symptoms and promote adherence among users.
+          </p>
+          <p>
+            CDC surveyed those participating CDC employees to assess user experience. Results indicated that users became more familiar with and found the system easier to use over the course of their monitoring period. The majority were highly satisfied (94%) and would recommend the system for future monitoring efforts (89%). This technology is easily adaptable and can be modified for future emergency responses, contact investigations, or routine monitoring for public health protections.
+          </p>
+        </div>
+
+
+        <div class="md-cell md-cell--12 section columns text-black grey">
+          <h1 class="md-headline">
+            Project background
+          </h1>
+          <p class="columnsx2">
+            Diseases are contagious. Outbreaks are best controlled by early reduction of infections. Population can be active partners in early detection and response. This is done best with support of IT. Ebola was an example where early symptom detection was important for early treatment and contact tracing. InSTEDD implemented a system for CDC. It was rapidly assembled in the midst of the crisis and fulfilled a simple role. Low Income countries don’t have the possibility to build such a system. We propose building a simple Active Monitoring system that captures the lessons from Ebola and is made available for the global community.
+            <br/><span></span>
+            The NCD mobile phone survey is a nationally-representative survey of adults 18 years of age and older using a standard protocol. Using technology platforms such as interactive voice response (IVR), short message service (SMS), computer-assisted telephone interviewing (CATI), mobile web, as well as a mix of these modes, mobile phone surveys provide timely data and allow for rapid feedback of results. It is intended to generate comparable data within and across countries. This survey supplements and supports national household face-to-face surveys. <a href="https://www.ncdmobile.org/" target="_blank">Read more</a>
+          </p>
+        </div>
+
+      </div>
+    </main>
+    <footer>
+      <div class="md-grid">
+        <div class="md-cell md-cell--12-tablet md-cell--8-desktop center--tablet">
+          <ul>
+            <li><a href="http://instedd.org">InSTEDD</a></li>
+            <li><a href="http://instedd.org/terms-of-service/">Terms of service</a></li>
+            <li><a href="mailto:support@instedd.org?subject=[surveda]">Support</a></li>
+          </ul>
+        </div>
+        <div class="md-cell md-cell--12-tablet md-cell--4-desktop md-cell--middle md-text-right  center--tablet">
+          Version: 2.17.1
+        </div>
+      </div>
+    </footer>
+  </div>
 </body>

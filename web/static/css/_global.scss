@@ -56,7 +56,7 @@
     }
     .md-text {
       font-weight: 500;
-    }  
+    }
     .md-icon {
       color: $md-grey-500;
     }
@@ -210,6 +210,13 @@ section {
 .white {
   background-color: $md-white-base !important;
 }
+.text-white {
+  color: $md-white-base !important;
+}
+.text-black {
+  color: $md-black-base !important;
+}
+
 .rounded-corners {
   border-radius: 4px;
 }
