@@ -16,4 +16,12 @@ const initialState = {
   }
 }
 
+export const isActive = (campaign) => {
+  return campaign.startedAt !== null
+}
+
+export const activeCampaignUsing = (campaigns) => (channelName) => {
+  return campaigns.items.find((campaign) => isActive(campaign) && campaign.channel === channelName)
+}
+
 export default collectionReducer(actions, itemsReducer, defaultFilterProvider, initialState)

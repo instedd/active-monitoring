@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import { campaignUpdate } from '../../actions/campaign'
 import * as authActions from '../../actions/authorizations'
 import * as channelActions from '../../actions/channels'
+import * as campaignActions from '../../actions/campaigns'
+import { activeCampaignUsing } from '../../reducers/campaigns'
 import SelectField from 'react-md/lib/SelectFields'
 import Paper from 'react-md/lib/Papers'
 import Dialog from 'react-md/lib/Dialogs'
@@ -27,6 +29,7 @@ class ChannelSelectionComponent extends Component {
   componentWillMount() {
     this.props.fetchAuthorizations()
     this.props.fetchChannels()
+    this.props.fetchCampaigns()
   }
 
   addProvider(event) {
@@ -52,6 +55,16 @@ class ChannelSelectionComponent extends Component {
 
   deleteProvider(provider, index) {
     authActions.toggleAuthorization(provider, index)
+  }
+
+  channelOptions(channels) {
+    const activeCampaignUsing = this.props.activeCampaignUsing
+
+    return channels.map((name) => {
+      const camp = activeCampaignUsing(name)
+      return {
+        label: name + (camp ? ` (in use by campaign ${camp.name})` : ""), value: name, disabled: camp !== undefined}
+    })
   }
 
   render() {
@@ -99,7 +112,7 @@ class ChannelSelectionComponent extends Component {
         (<SelectionControlGroup
           id='channel-select'
           name='channel-select'
-          controls={this.props.channels.items.map(function(name){return {label: name, value: name} })}
+          controls={this.channelOptions(this.props.channels.items)}
           className='md-cell md-cell--12'
           type='radio'
           value={this.props.selectedChannel}
@@ -144,6 +157,7 @@ ChannelSelectionComponent.propTypes = {
 const mapStateToProps = (state) => {
   return {
     channels: state.channels,
+    activeCampaignUsing: activeCampaignUsing(state.campaigns),
     authorizations: state.authorizations,
     selectedChannel: state.campaign.data.channel
   }
@@ -154,7 +168,8 @@ const mapDispatchToProps = (dispatch) => {
     onChangeChannel: (value) => dispatch(campaignUpdate({channel: value})),
     toggleProvider: (provider, index) => dispatch(authActions.toggleAuthorization(provider, index)),
     fetchAuthorizations: () => dispatch(authActions.fetchAuthorizations()),
-    fetchChannels: () => dispatch(channelActions.fetchChannels())
+    fetchChannels: () => dispatch(channelActions.fetchChannels()),
+    fetchCampaigns: () => dispatch(campaignActions.fetchCampaigns())
   }
 }
 
