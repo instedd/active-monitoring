@@ -114,6 +114,7 @@ class UploadAudioStepComponent extends Component {
 }
 
 UploadAudioStepComponent.propTypes = {
+  children: PropTypes.any,
   langs: PropTypes.arrayOf(PropTypes.string),
   symptoms: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
   entries: PropTypes.object,

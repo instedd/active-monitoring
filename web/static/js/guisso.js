@@ -39,7 +39,7 @@ class GuissoSession {
       const popup = this.showPopup(authorizeUrl)
       const watchdog = window.setInterval(() => {
         if (popup.closed) {
-          reject()
+          reject(new Error('Popup closed before approval'))
         }
       }, 100)
       const listener = function(event) {

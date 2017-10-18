@@ -16,7 +16,6 @@ import Subheader from 'react-md/lib/Subheaders'
 import Button from 'react-md/lib/Buttons'
 
 class CampaignCreationFormComponent extends Component {
-
   constructor(props) {
     super(props)
     this.state = {
@@ -110,8 +109,7 @@ class CampaignCreationFormComponent extends Component {
 }
 
 CampaignCreationFormComponent.propTypes = {
-  campaign: PropTypes.object,
-  launchCampaign: PropTypes.func
+  campaign: PropTypes.object
 }
 
 const mapStateToProps = (state) => {

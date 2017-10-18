@@ -19,6 +19,7 @@ defmodule ActiveMonitoring.OAuthTokenServerTest do
     assert token.access_token["access_token"] == access_token.access_token
   end
 
+  @tag :skip
   test "refresh an about to expire token" do
     user = insert(:user)
     token = insert(:oauth_token, user: user)

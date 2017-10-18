@@ -6,7 +6,6 @@ import * as authActions from '../../actions/authorizations'
 import * as channelActions from '../../actions/channels'
 import * as campaignActions from '../../actions/campaigns'
 import { activeCampaignUsing } from '../../reducers/campaigns'
-import SelectField from 'react-md/lib/SelectFields'
 import Paper from 'react-md/lib/Papers'
 import Dialog from 'react-md/lib/Dialogs'
 import List from 'react-md/lib/Lists'
@@ -18,7 +17,6 @@ import SelectionControlGroup from 'react-md/lib/SelectionControls/SelectionContr
 import { config } from '../../config'
 
 class ChannelSelectionComponent extends Component {
-
   constructor(props) {
     super(props)
     this.state = {
@@ -63,7 +61,7 @@ class ChannelSelectionComponent extends Component {
     return channels.map((name) => {
       const camp = activeCampaignUsing(name)
       return {
-        label: name + (camp ? ` (in use by campaign ${camp.name})` : ""), value: name, disabled: camp !== undefined}
+        label: name + (camp ? ` (in use by campaign ${camp.name})` : ''), value: name, disabled: camp !== undefined}
     })
   }
 
@@ -79,7 +77,7 @@ class ChannelSelectionComponent extends Component {
     const providerSwitch = (provider, index) => {
       const disabled = this.props.authorizations.fetching
       const checked = authActions.hasInAuthorizations(this.props.authorizations, provider, index)
-      return <Switch id="switch" label='' name='providerSwitch' checked={checked} onChange={() => this.toggleProvider(provider, index, false)} disabled={disabled} />
+      return <Switch id='switch' label='' name='providerSwitch' checked={checked} onChange={() => this.toggleProvider(provider, index, false)} disabled={disabled} />
     }
 
     const multipleVerboice = config['verboice'].length > 1
@@ -107,7 +105,7 @@ class ChannelSelectionComponent extends Component {
     }
 
     let channelControl = null
-    if(this.props.channels.items) {
+    if (this.props.channels.items) {
       channelControl =
         (<SelectionControlGroup
           id='channel-select'
@@ -149,9 +147,23 @@ class ChannelSelectionComponent extends Component {
 }
 
 ChannelSelectionComponent.propTypes = {
-  channelId: PropTypes.string,
-  children: PropTypes.array,
-  channels: PropTypes.object
+  channels: PropTypes.object,
+  fetchAuthorizations: PropTypes.func,
+  fetchChannels: PropTypes.func,
+  fetchCampaigns: PropTypes.func,
+  toggleProvider: PropTypes.func,
+  activeCampaignUsing: PropTypes.func,
+  authorizations: PropTypes.shape({
+    fetching: PropTypes.bool,
+    items: PropTypes.arrayOf(
+      PropTypes.shape({
+        provider: PropTypes.string,
+        baseUrl: PropTypes.string
+      })
+    )
+  }),
+  selectedChannel: PropTypes.string,
+  onChangeChannel: PropTypes.func
 }
 
 const mapStateToProps = (state) => {
