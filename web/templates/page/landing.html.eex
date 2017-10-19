@@ -100,14 +100,6 @@
           </div>
         </div>
 
-        <div class="md-cell md-cell--12 section md-text-center">
-          <h1 class="md-display-2 md-font-light text-black">
-            <span class="md-font-semibold">Test</span>
-            your campaigns before release with a graphical test tool
-          </h1>
-          <img class="responsive-img center-align" src="/images/welcome-img02.png" width="880px" />
-        </div>
-
         <div class="md-cell md-cell--12 section left-img">
           <div class="md-grid md-grid--no-spacing">
             <div class="md-cell md-cell--12-tablet md-cell--8-desktop md-cell--bottom md-cell--order-2-phone md-cell--order-2-tablet">
