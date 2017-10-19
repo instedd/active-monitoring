@@ -87,19 +87,19 @@ class CampaignCreationFormComponent extends Component {
         <div className='md-cell md-cell--12-tablet md-cell--7-desktop md-cell--1-desktop-offset wizard-content'>
           <section id='identification'>
             <h1> Set up identification process</h1>
-            <ScrollToLink target='#symptoms'>NEXT: Define the symptoms</ScrollToLink>
+            <ScrollToLink target='symptoms'>NEXT: Define the symptoms</ScrollToLink>
           </section>
           <SymptomStep>
-            <ScrollToLink target='#information'>NEXT: Educational information</ScrollToLink>
+            <ScrollToLink target='information'>NEXT: Educational information</ScrollToLink>
           </SymptomStep>
           <EducationalInformationStep>
-            <ScrollToLink target='#languages'>NEXT: Setup a Schedule</ScrollToLink>
+            <ScrollToLink target='languages'>NEXT: Setup a Schedule</ScrollToLink>
           </EducationalInformationStep>
           <LanguageStep>
-            <ScrollToLink target='#audios'>NEXT: Upload audio files</ScrollToLink>
+            <ScrollToLink target='audios'>NEXT: Upload audio files</ScrollToLink>
           </LanguageStep>
           <UploadAudioStep>
-            <ScrollToLink target='#channel'>NEXT: Select a channel</ScrollToLink>
+            <ScrollToLink target='channel'>NEXT: Select a channel</ScrollToLink>
           </UploadAudioStep>
           <ChannelStep />
         </div>
