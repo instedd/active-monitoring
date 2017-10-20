@@ -93,7 +93,7 @@ class CampaignCreationFormComponent extends Component {
             <ScrollToLink target='information'>NEXT: Educational information</ScrollToLink>
           </SymptomStep>
           <EducationalInformationStep>
-            <ScrollToLink target='languages'>NEXT: Setup a Schedule</ScrollToLink>
+            <ScrollToLink target='languages'>NEXT: Select Languages</ScrollToLink>
           </EducationalInformationStep>
           <LanguageStep>
             <ScrollToLink target='audios'>NEXT: Upload audio files</ScrollToLink>
