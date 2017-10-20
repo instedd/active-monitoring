@@ -74,7 +74,6 @@ class CampaignCreationFormComponent extends Component {
                   </div>
                   {launchComponent}
                 </Subheader>
-                <ListItem onClick={(e) => animatedScrollTo(e, 'identification')} leftIcon={<FontIcon className='step-icon'>{completed ? 'check_circle' : 'assignment'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Set up identification process' className={completed ? 'green-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'symptoms')} leftIcon={<FontIcon className='step-icon'>{this.completedSymptomStep() ? 'check_circle' : 'healing'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Define the symptoms' className={this.completedSymptomStep() ? 'green-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'information')} leftIcon={<FontIcon className='step-icon'>{this.completedEducationalInformationStep() ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Educational information' className={this.completedEducationalInformationStep() ? 'green-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'languages')} leftIcon={<FontIcon className='step-icon'>{this.completedLanguageStep() ? 'check_circle' : 'translate'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select languages' className={this.completedLanguageStep() ? 'green-text' : ''} />
@@ -85,10 +84,6 @@ class CampaignCreationFormComponent extends Component {
           </PositionFixer>
         </div>
         <div className='md-cell md-cell--12-tablet md-cell--7-desktop md-cell--1-desktop-offset wizard-content'>
-          <section id='identification'>
-            <h1> Set up identification process</h1>
-            <ScrollToLink target='symptoms'>NEXT: Define the symptoms</ScrollToLink>
-          </section>
           <SymptomStep>
             <ScrollToLink target='information'>NEXT: Educational information</ScrollToLink>
           </SymptomStep>
