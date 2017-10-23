@@ -27,7 +27,6 @@ class SymptomStepComponent extends Component {
           <SelectField
             id='forwarding-condition'
             menuItems={[{value: 'any', label: 'Forward call if any symptom is positive'}, {value: 'all', label: 'Forward call if all symptoms are positive'}]}
-            position={SelectField.Positions.BELOW}
             className='md-cell md-cell--8  md-cell--bottom'
             value={this.props.forwardingCondition || 'any'}
             onChange={(val) => this.props.onEditForwarding('forwardingCondition', val)}
