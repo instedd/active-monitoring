@@ -18,8 +18,10 @@ export const createCampaign = (campaignParams) => (dispatch) => {
 
   api.createCampaign(params)
      .then((campaign) => {
-       dispatch(campaignCreated(campaign))
-       dispatch(push(`/campaigns/${campaign.id}`))
+       const campaignWithName = {...campaign, name: `Untitled Campaign #${campaign.id}`}
+       dispatch(campaignCreated(campaignWithName))
+       dispatch(campaignUpdate(campaignWithName))
+       dispatch(push(`/campaigns/${campaignWithName.id}`))
      })
 }
 
