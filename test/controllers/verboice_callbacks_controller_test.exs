@@ -3,7 +3,7 @@ defmodule ActiveMonitoring.VerboiceCallbacksControllerTest do
   use ExUnit.Case
   import ActiveMonitoring.Factory
 
-  alias ActiveMonitoring.{Repo, Channel, Campaign, Runtime.Flow}
+  alias ActiveMonitoring.{Repo, Campaign, Runtime.Flow}
 
   describe "on call receive" do
     setup do
