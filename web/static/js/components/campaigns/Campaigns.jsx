@@ -23,7 +23,7 @@ class CampaignsList extends Component {
     if (campaigns.length == 0) {
       return (
         <EmptyListing image='/images/campaign.svg'>
-          You have no campaigns yet
+          <h5>You have no campaigns yet</h5>
           <NavLink to='#' onClick={this.props.createCampaign}>Create one</NavLink>
         </EmptyListing>
       )
