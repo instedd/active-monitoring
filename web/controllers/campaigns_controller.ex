@@ -11,13 +11,16 @@ defmodule ActiveMonitoring.CampaignsController do
   }
 
   def index(conn, _) do
-    campaigns = Campaign |> Repo.all
+    campaigns = conn
+    |> current_user
+    |> assoc(:campaigns)
+    |> Repo.all
 
     render(conn, "index.json", campaigns: campaigns)
   end
 
   def show(conn, %{"id" => id}) do
-    campaign = Repo.get!(Campaign, id)
+    campaign = Repo.get!(Campaign, id) |> authorize_campaign(conn)
     if campaign.started_at != nil do
       calls = Call.stats()
       subjects = Subject.stats(id)
@@ -28,7 +31,9 @@ defmodule ActiveMonitoring.CampaignsController do
   end
 
   def create(conn, %{"campaign" => campaign_params}) do
+    user = conn.assigns[:current_user]
     changeset = Campaign.changeset(%Campaign{}, campaign_params)
+    changeset = Ecto.Changeset.put_change(changeset, :user_id, user.id)
 
     case Repo.insert(changeset) do
       {:ok, campaign} ->
@@ -40,7 +45,7 @@ defmodule ActiveMonitoring.CampaignsController do
   end
 
   def launch(conn, %{"campaigns_id" => id}) do
-    campaign = Repo.get!(Campaign, id)
+    campaign = Repo.get!(Campaign, id) |> authorize_campaign(conn)
     changeset = Campaign.changeset(campaign, %{})
     changeset = Ecto.Changeset.put_change(changeset, :started_at, Ecto.DateTime.utc())
     if Channel.verify_exclusive(campaign.channel) do
@@ -61,7 +66,7 @@ defmodule ActiveMonitoring.CampaignsController do
   end
 
   def update(conn, %{"id" => id, "campaign" => campaign_params}) do
-    campaign = Repo.get!(Campaign, id)
+    campaign = Repo.get!(Campaign, id) |> authorize_campaign(conn)
     changeset = Campaign.changeset(campaign, campaign_params)
 
     case Repo.update(changeset) do

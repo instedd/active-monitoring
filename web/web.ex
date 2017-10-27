@@ -36,6 +36,8 @@ defmodule ActiveMonitoring.Web do
 
       import ActiveMonitoring.Router.Helpers
       import ActiveMonitoring.Gettext
+
+      import User.Helper
     end
   end
 

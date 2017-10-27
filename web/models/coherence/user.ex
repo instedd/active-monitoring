@@ -2,12 +2,13 @@ defmodule ActiveMonitoring.User do
   use ActiveMonitoring.Web, :model
   use Coherence.Schema
 
-  alias ActiveMonitoring.{OAuthToken, Channel, Repo}
+  alias ActiveMonitoring.{OAuthToken, Channel, Repo, Campaign}
 
   schema "users" do
     field :name, :string
     field :email, :string
     has_many :oauth_tokens, OAuthToken
+    has_many :campaigns, Campaign
     coherence_schema()
 
     timestamps()
