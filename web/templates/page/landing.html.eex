@@ -162,7 +162,7 @@
           </ul>
         </div>
         <div class="md-cell md-cell--12-tablet md-cell--4-desktop md-cell--middle md-text-right  center--tablet">
-          Version: 2.17.1
+          Version: <%= Application.get_env(:active_monitoring, :version) %>
         </div>
       </div>
     </footer>

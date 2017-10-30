@@ -67,3 +67,11 @@ config :active_monitoring, :verboice,
     client_secret: System.get_env("VERBOICE_CLIENT_SECRET") || "",
     app_id: System.get_env("VERBOICE_APP_ID") || ""
   ]
+
+
+version = case File.read("VERSION") do
+  {:ok, version} -> String.trim(version)
+  {:error, :enoent} -> "#{Mix.Project.config[:version]}-#{Mix.env}"
+end
+
+config :active_monitoring, :version, version

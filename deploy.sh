@@ -1,7 +1,8 @@
 #!/bin/bash
 set -eo pipefail
 
-PROJECT_VERSION=`docker-compose run --rm app mix run --no-compile --no-start -e 'IO.write Mix.Project.config[:version]'`
+# Mix outputs warnings to STDOUT, so we need to only keep the last line (see lpil/exfmt#53 for related discussion)
+PROJECT_VERSION=`docker-compose run --rm app mix run --no-compile --no-start -e 'IO.write Mix.Project.config[:version]' | tail -n 1`
 
 if [ "$TRAVIS_TAG" = "" ]; then
   REV=`git rev-parse --short HEAD`

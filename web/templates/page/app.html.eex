@@ -1,3 +1,13 @@
 <body>
   <div id="root"></div>
+  <footer>
+    <div class="md-grid">
+      <div class="md-cell md-cell--12-tablet md-cell--8-desktop center--tablet">
+        InSTEDD ©
+      </div>
+      <div class="md-cell md-cell--12-tablet md-cell--4-desktop md-cell--middle md-text-right  center--tablet">
+        Version: <%= Application.get_env(:active_monitoring, :version) %>
+      </div>
+    </div>
+  </footer>
 </body>
