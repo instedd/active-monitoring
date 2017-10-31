@@ -40,7 +40,7 @@ class LanguageStepComponent extends Component {
                     id={`autocomplete${i}`}
                     data={languages}
                     filter={FixedAutocomplete.caseInsensitiveFilter}
-                    onAutocomplete={(lbl, j, obj) => this.props.onEdit(obj[0].value, i)}
+                    onAutocomplete={(lbl, j, obj) => this.props.onEdit(obj[j].value, i)}
                     block={false}
                     dataLabel='label'
                     dataValue='value'
