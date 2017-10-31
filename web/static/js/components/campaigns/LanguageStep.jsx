@@ -13,8 +13,8 @@ import FixedAutocomplete from '../FixedAutocomplete'
 
 class LanguageStepComponent extends Component {
   render() {
-    const languages = iso6393.map(function(obj) { return {label: obj.name, value: obj.iso6391} })
-                             .filter(obj => obj.value != null)
+    const languages = iso6393.map(obj => ({label: obj.name, value: obj.iso6391}))
+                             .filter(obj => obj.value != null && !this.props.langs.includes(obj.value))
 
     return (
       <section id='languages'>
