@@ -18,7 +18,7 @@ class CampaignTitle extends Component {
     return (
       <EditableTitleLabel
         title={this.props.campaign.name}
-        emptyText={'Untitled campaign'}
+        emptyText={`Untitled campaign #${this.props.campaign.id}`}
         readOnly={false}
         onSubmit={(title) => this.handleSubmit(title)}
         maxLength={255} />

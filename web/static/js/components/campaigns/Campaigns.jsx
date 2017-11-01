@@ -59,11 +59,23 @@ CampaignsList.propTypes = {
 }
 
 class CampaignItem extends Component {
+  campaignName() {
+    let name = this.props.campaign.name || ''
+    if (name == '') {
+      return <em>Untitled Campaign #{this.props.campaign.id}</em>
+    }
+    const nameMaxLength = 120
+    if (name.length > nameMaxLength) {
+      return `${name.slice(0, nameMaxLength - 3)}...`
+    }
+    return name
+  }
+
   render() {
     const campaign = this.props.campaign
     return (
       <TableRow onClick={() => this.props.onClick(campaign.id)}>
-        <TableColumn>{campaign.name}</TableColumn>
+        <TableColumn>{this.campaignName()}</TableColumn>
         <TableColumn>...</TableColumn>
         <TableColumn>...</TableColumn>
       </TableRow>
@@ -73,7 +85,8 @@ class CampaignItem extends Component {
 
 CampaignItem.propTypes = {
   campaign: PropTypes.shape({
-    name: PropTypes.string
+    name: PropTypes.string,
+    id: PropTypes.number
   }).isRequired,
   onClick: PropTypes.func.isRequired
 }

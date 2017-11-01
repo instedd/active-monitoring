@@ -69,7 +69,7 @@ nav.sub-nav {
       color: inherit;
       margin-top: 0;
     }
-    .md-divider--text-field:after {
+    .md-divider--text-field:not(.md-divider--text-field-error):after {
       background: $md-secondary-color;
     }
     .md-text-field-message {

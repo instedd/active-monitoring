@@ -70,7 +70,8 @@ export default class EditableTitleLabel extends Component {
           ref={node => this.setInput(node)}
           onKeyDown={e => this.onKeyDown(e)}
           onBlur={e => this.endAndSubmit(e)}
-          className='app-header-title-edit md-cell md-cell--bottom' />
+          size={50}
+          className='app-header-title-edit' />
       )
     }
   }
