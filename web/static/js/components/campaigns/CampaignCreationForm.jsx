@@ -14,6 +14,9 @@ import ListItem from 'react-md/lib/Lists/ListItem'
 import FontIcon from 'react-md/lib/FontIcons'
 import Subheader from 'react-md/lib/Subheaders'
 import Button from 'react-md/lib/Buttons'
+import values from 'lodash/values'
+import flatten from 'lodash/flatten'
+import { audioEntries, audiosInUse } from '../../selectors/campaign'
 
 class CampaignCreationFormComponent extends Component {
   constructor(props) {
@@ -28,7 +31,7 @@ class CampaignCreationFormComponent extends Component {
   }
 
   completedAudioStep() {
-    return true
+    return (this.props.uploadedAudios > 1) && (this.props.uploadedAudios == this.props.neededAudios)
   }
 
   completedEducationalInformationStep() {
@@ -77,7 +80,7 @@ class CampaignCreationFormComponent extends Component {
                 <ListItem onClick={(e) => animatedScrollTo(e, 'symptoms')} leftIcon={<FontIcon className='step-icon'>{this.completedSymptomStep() ? 'check_circle' : 'healing'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Define the symptoms' className={this.completedSymptomStep() ? 'green-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'information')} leftIcon={<FontIcon className='step-icon'>{this.completedEducationalInformationStep() ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Educational information' className={this.completedEducationalInformationStep() ? 'green-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'languages')} leftIcon={<FontIcon className='step-icon'>{this.completedLanguageStep() ? 'check_circle' : 'translate'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select languages' className={this.completedLanguageStep() ? 'green-text' : ''} />
-                <ListItem onClick={(e) => animatedScrollTo(e, 'audios')} leftIcon={<FontIcon className='step-icon'>{completed ? 'check_circle' : 'volume_up'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Upload audio files' className={completed ? 'green-text' : ''} />
+                <ListItem onClick={(e) => animatedScrollTo(e, 'audios')} leftIcon={<FontIcon className='step-icon'>{this.completedAudioStep() ? 'check_circle' : 'volume_up'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Upload audio files' className={this.completedAudioStep() ? 'green-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'channel')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'phone'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select a channel' />
               </List>
             </div>
@@ -104,12 +107,16 @@ class CampaignCreationFormComponent extends Component {
 }
 
 CampaignCreationFormComponent.propTypes = {
-  campaign: PropTypes.object
+  campaign: PropTypes.object,
+  neededAudios: PropTypes.number,
+  uploadedAudios: PropTypes.number
 }
 
 const mapStateToProps = (state) => {
   return {
     campaign: state.campaign.data,
+    neededAudios: flatten(values(audioEntries(state.campaign.data))).length + 1,
+    uploadedAudios: audiosInUse(state.campaign.data).length,
     attemptLaunch: state.attemptLaunch
   }
 }

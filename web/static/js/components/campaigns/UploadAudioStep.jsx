@@ -5,7 +5,7 @@ import values from 'lodash/values'
 import flatten from 'lodash/flatten'
 import capitalize from 'lodash/capitalize'
 
-import { audioEntries, getAudioFileFor } from '../../selectors/campaign'
+import { audioEntries, audiosInUse, getAudioFileFor } from '../../selectors/campaign'
 import { uploadCampaignAudio, removeCampaignAudio } from '../../actions/audios'
 import { codeToName } from '../../langs'
 
@@ -125,8 +125,8 @@ UploadAudioStepComponent.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
-    entries: audioEntries(state),
-    audios: state.campaign.data.audios || [],
+    audios: audiosInUse(state.campaign.data),
+    entries: audioEntries(state.campaign.data),
     symptoms: state.campaign.data.symptoms,
     langs: state.campaign.data.langs || []
   }
