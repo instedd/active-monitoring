@@ -32,7 +32,7 @@ class LanguageStepComponent extends Component {
               // List item control is necessary for the autocomplete to work, and it requires primaryText
               // Issue on this is pending: https://github.com/mlaursen/react-md/issues/412
               <ListItemControl
-                key={i}
+                key={id}
                 primaryText=''
                 rightIcon={<FontIcon className='cursor' onClick={() => this.props.onRemove(i)}>cancel</FontIcon>}
                 primaryAction={

@@ -27,7 +27,7 @@ class CampaignCreationFormComponent extends Component {
   }
 
   completedSymptomStep() {
-    return this.props.campaign.symptoms.length > 0 && this.props.campaign.forwardingNumber != null
+    return this.props.campaign.symptoms.filter((symptom) => symptom[1].length > 0).length > 0 && this.props.campaign.forwardingNumber != null
   }
 
   completedAudioStep() {
@@ -39,7 +39,11 @@ class CampaignCreationFormComponent extends Component {
   }
 
   completedLanguageStep() {
-    return this.props.campaign.langs.length > 0
+    return this.props.campaign.langs.filter((lang) => lang.length > 0).length > 0
+  }
+
+  completedChannelSelectionStep() {
+    return this.props.campaign.channel != null
   }
 
   launch() {
@@ -47,7 +51,7 @@ class CampaignCreationFormComponent extends Component {
   }
 
   render() {
-    const steps = [this.completedSymptomStep(), this.completedAudioStep(), this.completedEducationalInformationStep(), this.completedLanguageStep()]
+    const steps = [this.completedSymptomStep(), this.completedAudioStep(), this.completedEducationalInformationStep(), this.completedLanguageStep(), this.completedChannelSelectionStep()]
     const numberOfCompletedSteps = steps.filter(item => item == true).length
     const percentage = `${(100 / steps.length * numberOfCompletedSteps).toFixed(0)}%`
 
@@ -61,8 +65,6 @@ class CampaignCreationFormComponent extends Component {
           onClick={() => this.launch()}>play_arrow</Button>
       )
     }
-
-    let completed = false
 
     return (
       <div className='md-grid white'>
@@ -81,7 +83,7 @@ class CampaignCreationFormComponent extends Component {
                 <ListItem onClick={(e) => animatedScrollTo(e, 'information')} leftIcon={<FontIcon className='step-icon'>{this.completedEducationalInformationStep() ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Educational information' className={this.completedEducationalInformationStep() ? 'green-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'languages')} leftIcon={<FontIcon className='step-icon'>{this.completedLanguageStep() ? 'check_circle' : 'translate'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select languages' className={this.completedLanguageStep() ? 'green-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'audios')} leftIcon={<FontIcon className='step-icon'>{this.completedAudioStep() ? 'check_circle' : 'volume_up'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Upload audio files' className={this.completedAudioStep() ? 'green-text' : ''} />
-                <ListItem onClick={(e) => animatedScrollTo(e, 'channel')} leftIcon={<FontIcon>{completed ? 'check_circle' : 'phone'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select a channel' />
+                <ListItem onClick={(e) => animatedScrollTo(e, 'channel')} leftIcon={<FontIcon className='step-icon'>{this.completedChannelSelectionStep() ? 'check_circle' : 'phone'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select a channel' className={this.completedChannelSelectionStep() ? 'green-text' : ''} />
               </List>
             </div>
           </PositionFixer>
