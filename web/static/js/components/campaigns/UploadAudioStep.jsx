@@ -98,7 +98,7 @@ class UploadAudioStepComponent extends Component {
           <div className='md-cell md-cell--12'>
             <TabsContainer component={'div'} panelClassName='md-grid'>
               <Tabs tabId='langs'>
-                {this.props.langs.map(lang => this.renderLangTab(lang))}
+                {this.props.langs.filter(lang => lang && lang != '').map(lang => this.renderLangTab(lang))}
               </Tabs>
             </TabsContainer>
           </div>
