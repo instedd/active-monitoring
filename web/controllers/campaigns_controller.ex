@@ -49,7 +49,7 @@ defmodule ActiveMonitoring.CampaignsController do
     changeset = Campaign.changeset(campaign, %{})
     changeset = Ecto.Changeset.put_change(changeset, :started_at, Ecto.DateTime.utc())
     if Channel.verify_exclusive(campaign.channel) do
-      Campaign.set_up_verboice(campaign)
+      # Campaign.set_up_verboice(campaign)
       calls = Call.stats()
       subjects = Subject.stats(id)
 

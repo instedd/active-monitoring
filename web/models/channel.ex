@@ -4,7 +4,7 @@ defmodule ActiveMonitoring.Channel do
   alias ActiveMonitoring.{User, Repo, Campaign}
 
   def verify_exclusive(channel_name) do
-    campaign_count = Repo.one(from camp in Campaign, where: camp.channel == ^channel_name and is_nil(camp.started_at), select: count("id"))
+    campaign_count = Repo.one(from camp in Campaign, where: camp.channel == ^channel_name and not(is_nil(camp.started_at)), select: count("id"))
     campaign_count == 0
   end
 

@@ -62,7 +62,8 @@ class CampaignCreationFormComponent extends Component {
           tooltipLabel='Launch campaign'
           tooltipPosition='top'
           className='launch-campaign'
-          onClick={() => this.launch()}>play_arrow</Button>
+          // TODO: disable Launch button between click and response
+          onClick={() => this.props.launchCampaign(this.props.campaign.id)}>play_arrow</Button>
       )
     }
 
@@ -110,6 +111,7 @@ class CampaignCreationFormComponent extends Component {
 
 CampaignCreationFormComponent.propTypes = {
   campaign: PropTypes.object,
+  launchCampaign: PropTypes.func,
   neededAudios: PropTypes.number,
   uploadedAudios: PropTypes.number
 }
