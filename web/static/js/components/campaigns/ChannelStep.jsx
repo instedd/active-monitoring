@@ -30,6 +30,14 @@ class ChannelSelectionComponent extends Component {
     this.props.fetchCampaigns()
   }
 
+  openChannelSetupInfo() {
+    window.open('https://github.com/instedd/active-monitoring/wiki/Setting-up-Verboice-channels')
+  }
+
+  openVerboiceSetup() {
+    window.open(`${config['verboice'][0].baseUrl}/channels`)
+  }
+
   addProvider(event) {
     event.preventDefault()
     this.setState({providerModalVisible: true})
@@ -105,7 +113,7 @@ class ChannelSelectionComponent extends Component {
     }
 
     let channelControl = null
-    if (this.props.channels.items) {
+    if ((this.props.channels.items || []).length > 0) {
       channelControl =
         (<SelectionControlGroup
           id='channel-select'
@@ -116,7 +124,21 @@ class ChannelSelectionComponent extends Component {
           value={this.props.selectedChannel}
           onChange={(val) => this.props.onChangeChannel(val)}
         />)
+    } else {
+      if (this.props.channels.fetching || this.props.authorizations.fetching) {
+        channelControl = 'Fetching available channels...'
+      } else {
+        if ((this.props.authorizations.items || []).length > 0) {
+          channelControl = (<div className='md-cell md-cell--12'>
+            <p>You don't have any channel available</p>
+            <Button flat primary label='Setup a channel on Verboice' onClick={this.openVerboiceSetup}>open_in_new</Button>
+          </div>)
+        } else {
+          channelControl = <p className='md-cell md-cell--12'>You don't have any provider configured - select Manage Providers below to start!</p>
+        }
+      }
     }
+
     return (
       <section id='channel'>
         <div className='md-grid'>
@@ -125,6 +147,7 @@ class ChannelSelectionComponent extends Component {
             <p>
               Before the campaign can start you need to select a Verboice channel to receive the incoming calls.
             </p>
+            <Button flat primary label='Read about channel setup' onClick={this.openChannelSetupInfo}>info</Button>
           </div>
         </div>
         <div className='md-grid'>
