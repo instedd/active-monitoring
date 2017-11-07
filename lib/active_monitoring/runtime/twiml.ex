@@ -17,9 +17,10 @@ defmodule ActiveMonitoring.Runtime.TwiML do
       |> generate
   end
 
-  def build({:forward, %{audio: audio_uuid, number: number}}, _callback_url) do
+  def build({:forward, %{audio: audio_uuid, number: number}}, callback_url) do
     [ play(audio_uuid),
-      dial(number) ]
+      dial(number),
+      redirect(callback_url) ]
         |> response
         |> generate
   end
