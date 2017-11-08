@@ -148,8 +148,8 @@ class ChannelSelectionComponent extends Component {
             <p>
               Before the campaign can start you need to select a Verboice channel to receive the incoming calls.
             </p>
-            <TextField label='Call Flow callback URL' value={`${location.protocol}//${location.host}/callbacks/verboice/${this.props.campaignId}`} readOnly />
-            <TextField label='Project Status callback' value={`${location.protocol}//${location.host}/callbacks/verboice/${this.props.campaignId}/status`} readOnly />
+            <TextField label='Call Flow callback URL' id='callflow-callback-url' value={`${location.protocol}//${location.host}/callbacks/verboice/${this.props.campaignId}`} readOnly />
+            <TextField label='Project Status callback' id='project-status-callback' value={`${location.protocol}//${location.host}/callbacks/verboice/${this.props.campaignId}/status`} readOnly />
             <Button flat primary label='Read about channel setup' onClick={this.openChannelSetupInfo}>info</Button>
           </div>
         </div>
