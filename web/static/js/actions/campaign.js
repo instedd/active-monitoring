@@ -18,10 +18,10 @@ export const createCampaign = (campaignParams) => (dispatch) => {
 
   api.createCampaign(params)
      .then((campaign) => {
-       const campaignWithName = {...campaign, name: `Untitled Campaign #${campaign.id}`}
-       dispatch(campaignCreated(campaignWithName))
-       dispatch(campaignUpdate(campaignWithName))
-       dispatch(push(`/campaigns/${campaignWithName.id}`))
+       const campaignWithDefaults = {...campaign, forwardingCondition: 'any'}
+       dispatch(campaignCreated(campaignWithDefaults))
+       dispatch(campaignUpdate(campaignWithDefaults))
+       dispatch(push(`/campaigns/${campaignWithDefaults.id}`))
      })
 }
 
@@ -33,9 +33,13 @@ export const campaignFetch = (id) => (dispatch) => {
   dispatch({type: CAMPAIGN_FETCH, id: id})
 
   api.fetchCampaign(id)
-     .then((campaign) => {
-       dispatch({ type: CAMPAIGN_FETCHED, campaign })
-     })
+    .then((campaign) => {
+      if (campaign.forwardingCondition == null) {
+        campaign = {...campaign, forwardingCondition: 'any'}
+        dispatch(campaignUpdate(campaign))
+      }
+      dispatch({ type: CAMPAIGN_FETCHED, campaign: campaign })
+    })
 }
 
 export const campaignUpdate = (attrs) => (dispatch, getState) => {
