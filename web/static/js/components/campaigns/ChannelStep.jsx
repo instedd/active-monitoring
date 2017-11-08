@@ -14,6 +14,7 @@ import Switch from 'react-md/lib/SelectionControls/Switch'
 import FontIcon from 'react-md/lib/FontIcons'
 import Button from 'react-md/lib/Buttons/Button'
 import SelectionControlGroup from 'react-md/lib/SelectionControls/SelectionControlGroup'
+import TextField from 'react-md/lib/TextFields'
 import { config } from '../../config'
 
 class ChannelSelectionComponent extends Component {
@@ -147,6 +148,8 @@ class ChannelSelectionComponent extends Component {
             <p>
               Before the campaign can start you need to select a Verboice channel to receive the incoming calls.
             </p>
+            <TextField label='Call Flow callback URL' value={`${location.protocol}//${location.host}/callbacks/verboice/${this.props.campaignId}`} readOnly />
+            <TextField label='Project Status callback' value={`${location.protocol}//${location.host}/callbacks/verboice/${this.props.campaignId}/status`} readOnly />
             <Button flat primary label='Read about channel setup' onClick={this.openChannelSetupInfo}>info</Button>
           </div>
         </div>
@@ -171,6 +174,7 @@ class ChannelSelectionComponent extends Component {
 
 ChannelSelectionComponent.propTypes = {
   channels: PropTypes.object,
+  campaignId: PropTypes.number,
   fetchAuthorizations: PropTypes.func,
   fetchChannels: PropTypes.func,
   fetchCampaigns: PropTypes.func,
@@ -194,7 +198,8 @@ const mapStateToProps = (state) => {
     channels: state.channels,
     activeCampaignUsing: activeCampaignUsing(state.campaigns),
     authorizations: state.authorizations,
-    selectedChannel: state.campaign.data.channel
+    selectedChannel: state.campaign.data.channel,
+    campaignId: state.campaign.data.id
   }
 }
 
