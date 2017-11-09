@@ -60,6 +60,7 @@ defmodule ActiveMonitoring.Router do
       resources "/channels", ChannelsController, only: [:index]
       resources "/audios", AudioController, only: [:create]
       resources "/authorizations", OAuthClientController, only: [:index, :delete]
+      get "/timezones", TimezoneController, :timezones
     end
   end
 
