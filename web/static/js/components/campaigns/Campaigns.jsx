@@ -77,7 +77,7 @@ class CampaignItem extends Component {
       <TableRow onClick={() => this.props.onClick(campaign.id)}>
         <TableColumn>{this.campaignName()}</TableColumn>
         <TableColumn>...</TableColumn>
-        <TableColumn>...</TableColumn>
+        <TableColumn>{campaign.startedAt ? 'Started' : '...' }</TableColumn>
       </TableRow>
     )
   }
