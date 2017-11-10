@@ -120,6 +120,10 @@ export const fetchChannels = () => {
   return apiFetchJSON('channels')
 }
 
+export const fetchTimezones = () => {
+  return apiFetchJSON('timezones')
+}
+
 export const createAudio = (files) => {
   return apiPostFile('audios', files[0])
 }

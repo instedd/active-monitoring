@@ -8,6 +8,7 @@ import LanguageStep from './LanguageStep'
 import UploadAudioStep from './UploadAudioStep'
 import ChannelStep from './ChannelStep'
 import EducationalInformationStep from './EducationalInformationStep'
+import MonitoringSettingsStep from './MonitoringSettingsStep'
 import { campaignLaunch } from '../../actions/campaign'
 import List from 'react-md/lib/Lists/List'
 import ListItem from 'react-md/lib/Lists/ListItem'
@@ -38,6 +39,10 @@ class CampaignCreationFormComponent extends Component {
     return this.props.campaign.additionalInformation != null
   }
 
+  completedMonitoringSettingsStep() {
+    return this.props.campaign.timezone != null
+  }
+
   completedLanguageStep() {
     return this.props.campaign.langs.filter((lang) => lang.length > 0).length > 0
   }
@@ -51,7 +56,7 @@ class CampaignCreationFormComponent extends Component {
   }
 
   render() {
-    const steps = [this.completedSymptomStep(), this.completedAudioStep(), this.completedEducationalInformationStep(), this.completedLanguageStep(), this.completedChannelSelectionStep()]
+    const steps = [this.completedSymptomStep(), this.completedAudioStep(), this.completedEducationalInformationStep(), this.completedMonitoringSettingsStep(), this.completedLanguageStep(), this.completedChannelSelectionStep()]
     const numberOfCompletedSteps = steps.filter(item => item == true).length
     const percentage = `${(100 / steps.length * numberOfCompletedSteps).toFixed(0)}%`
 
@@ -82,6 +87,7 @@ class CampaignCreationFormComponent extends Component {
                 </Subheader>
                 <ListItem onClick={(e) => animatedScrollTo(e, 'symptoms')} leftIcon={<FontIcon className='step-icon'>{this.completedSymptomStep() ? 'check_circle' : 'healing'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Define the symptoms' className={this.completedSymptomStep() ? 'green-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'information')} leftIcon={<FontIcon className='step-icon'>{this.completedEducationalInformationStep() ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Educational information' className={this.completedEducationalInformationStep() ? 'green-text' : ''} />
+                <ListItem onClick={(e) => animatedScrollTo(e, 'monitoring')} leftIcon={<FontIcon className='step-icon'>{this.completedMonitoringSettingsStep() ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Set up monitoring settings' className={this.completedMonitoringSettingsStep() ? 'green-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'languages')} leftIcon={<FontIcon className='step-icon'>{this.completedLanguageStep() ? 'check_circle' : 'translate'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select languages' className={this.completedLanguageStep() ? 'green-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'audios')} leftIcon={<FontIcon className='step-icon'>{this.completedAudioStep() ? 'check_circle' : 'volume_up'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Upload audio files' className={this.completedAudioStep() ? 'green-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'channel')} leftIcon={<FontIcon className='step-icon'>{this.completedChannelSelectionStep() ? 'check_circle' : 'phone'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select a channel' className={this.completedChannelSelectionStep() ? 'green-text' : ''} />
@@ -94,8 +100,11 @@ class CampaignCreationFormComponent extends Component {
             <ScrollToLink target='information'>NEXT: Educational information</ScrollToLink>
           </SymptomStep>
           <EducationalInformationStep>
-            <ScrollToLink target='languages'>NEXT: Select Languages</ScrollToLink>
+            <ScrollToLink target='monitoring'>NEXT: Set up Monitoring Settings</ScrollToLink>
           </EducationalInformationStep>
+          <MonitoringSettingsStep>
+            <ScrollToLink target='languages'>NEXT: Select Languages</ScrollToLink>
+          </MonitoringSettingsStep>
           <LanguageStep>
             <ScrollToLink target='audios'>NEXT: Upload audio files</ScrollToLink>
           </LanguageStep>
