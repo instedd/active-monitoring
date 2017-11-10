@@ -14,6 +14,7 @@ defmodule ActiveMonitoring.Campaign do
     field :additional_information, :string
     field :started_at, Ecto.DateTime
     field :channel, :string
+    field :timezone, :string
     # field :alert_recipients, {:array, :string}
     # field :additional_fields, {:array, :string}
 
@@ -25,7 +26,7 @@ defmodule ActiveMonitoring.Campaign do
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:name, :symptoms, :forwarding_number, :forwarding_condition, :audios, :langs, :channel, :user_id, :additional_information])
+    |> cast(params, [:name, :symptoms, :forwarding_number, :forwarding_condition, :audios, :langs, :channel, :user_id, :additional_information, :timezone])
     |> validate_inclusion(:additional_information, ["zero", "optional", "compulsory"])
     |> validate_inclusion(:forwarding_condition, ["any", "all"])
     |> assoc_constraint(:user)
