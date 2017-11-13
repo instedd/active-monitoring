@@ -30,6 +30,7 @@ defmodule ActiveMonitoring.CampaignsView do
       langs: campaign.langs,
       additional_information: campaign.additional_information,
       started_at: campaign.started_at,
+      monitor_duration: campaign.monitor_duration,
       timezone: campaign.timezone,
       channel: campaign.channel
     }

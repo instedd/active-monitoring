@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { campaignUpdate } from '../../actions/campaign'
 import TimezoneDropdown from '../timezones/TimeZoneDropdown'
+import TextField from 'react-md/lib/TextFields'
 
 class MonitoringSettingsComponent extends Component {
   render() {
@@ -22,6 +23,11 @@ class MonitoringSettingsComponent extends Component {
           </div>
         </div>
         <div className='md-grid'>
+          <div className='md-cell md-cell--3'>
+            <TextField label='Duration' id='monitor-duration' value={this.props.monitorDuration || ''} type='number' min={0} step={1} onChange={this.props.onEditMonitorDuration} rightIcon={<span>days</span>} />
+          </div>
+        </div>
+        <div className='md-grid'>
           <div className='md-cell md-cell--12'>
             {this.props.children}
           </div>
@@ -33,19 +39,23 @@ class MonitoringSettingsComponent extends Component {
 
 MonitoringSettingsComponent.propTypes = {
   timezone: PropTypes.string,
+  monitorDuration: PropTypes.number,
   onEditTimezone: PropTypes.func,
+  onEditMonitorDuration: PropTypes.func,
   children: PropTypes.element
 }
 
 const mapStateToProps = (state) => {
   return {
-    timezone: state.campaign.data.timezone
+    timezone: state.campaign.data.timezone,
+    monitorDuration: state.campaign.data.monitorDuration
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onEditTimezone: (timezone) => dispatch(campaignUpdate({timezone: timezone}))
+    onEditTimezone: (timezone) => dispatch(campaignUpdate({timezone: timezone})),
+    onEditMonitorDuration: (monitorDuration) => dispatch(campaignUpdate({monitorDuration: Number.parseInt(monitorDuration) || null}))
   }
 }
 

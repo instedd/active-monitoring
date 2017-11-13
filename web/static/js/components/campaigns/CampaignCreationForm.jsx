@@ -40,7 +40,7 @@ class CampaignCreationFormComponent extends Component {
   }
 
   completedMonitoringSettingsStep() {
-    return this.props.campaign.timezone != null
+    return this.props.campaign.timezone != null && this.props.campaign.monitorDuration != null
   }
 
   completedLanguageStep() {
