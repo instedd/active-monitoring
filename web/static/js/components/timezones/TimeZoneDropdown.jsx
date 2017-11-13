@@ -25,6 +25,7 @@ class TimezoneDropdown extends Component {
     return (
       <SelectField
         id='timezone'
+        label='Timezone'
         menuItems={timezonesWithFormat}
         className='md-cell md-cell--8  md-cell--bottom'
         value={selected}
