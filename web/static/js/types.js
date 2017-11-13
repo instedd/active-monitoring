@@ -5,11 +5,15 @@ export type Uuid = string
 export type Audio = [Step, LanguageCode, Uuid]
 export type Timezone = string
 export type Campaign = {
+  id: number,
   audios: Audio[],
   langs: string[],
   symptoms: string[][],
   additionalInformation: ?string,
-  timezone: Timezone
+  timezone: Timezone,
+  forwardingNumber: ?string,
+  monitorDuration: ?number,
+  channel: ?string,
 };
 
 export type State = {

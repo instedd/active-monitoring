@@ -1,6 +1,6 @@
+// @flow
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { ScrollToLink, animatedScrollTo } from '../ScrollToLink'
 import PositionFixer from '../PositionFixer'
 import SymptomStep from './SymptomStep'
@@ -18,8 +18,23 @@ import Button from 'react-md/lib/Buttons'
 import values from 'lodash/values'
 import flatten from 'lodash/flatten'
 import { audioEntries, audiosInUse } from '../../selectors/campaign'
+import type { Campaign } from '../../types'
+
+type Props = {
+  campaign: Campaign,
+  launchCampaign: (campaignId: number) => void,
+  neededAudios: number,
+  uploadedAudios: number
+}
+
+type State = {
+  attemptLaunch: boolean
+}
 
 class CampaignCreationFormComponent extends Component {
+  props: Props
+  state: State
+
   constructor(props) {
     super(props)
     this.state = {
@@ -116,13 +131,6 @@ class CampaignCreationFormComponent extends Component {
       </div>
     )
   }
-}
-
-CampaignCreationFormComponent.propTypes = {
-  campaign: PropTypes.object,
-  launchCampaign: PropTypes.func,
-  neededAudios: PropTypes.number,
-  uploadedAudios: PropTypes.number
 }
 
 const mapStateToProps = (state) => {
