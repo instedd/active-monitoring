@@ -22,7 +22,7 @@ defmodule ActiveMonitoring.CampaignsController do
   def show(conn, %{"id" => id}) do
     campaign = Repo.get!(Campaign, id) |> authorize_campaign(conn)
     if campaign.started_at != nil do
-      calls = Call.stats()
+      calls = Call.stats(campaign)
       subjects = Subject.stats(id)
       render(conn, "show.json", campaign: campaign, calls: calls, subjects: subjects)
     else
@@ -50,7 +50,7 @@ defmodule ActiveMonitoring.CampaignsController do
     changeset = Ecto.Changeset.put_change(changeset, :started_at, Ecto.DateTime.utc())
     if Channel.verify_exclusive(campaign.channel) do
       # Campaign.set_up_verboice(campaign)
-      calls = Call.stats()
+      calls = Call.stats(campaign)
       subjects = Subject.stats(id)
 
       case Repo.update(changeset) do

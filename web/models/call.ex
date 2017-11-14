@@ -28,13 +28,13 @@ defmodule ActiveMonitoring.Call do
     |> assoc_constraint(:campaign)
   end
 
-  def stats() do
+  def stats(campaign) do
     date = now()
-    today = Repo.one(from c in Call, where: c.inserted_at >= ^Timex.beginning_of_day(date), where: c.inserted_at <= ^Timex.end_of_day(date), select: count("sid"))
-    successful_overall = Repo.one(from c in Call, select: count("sid"), where: c.current_step in ["educational","thanks","forward"])
-    last_week = Repo.one(from c in Call, where: c.inserted_at > ^subtract(now(), Timex.Duration.from_days(7)), select: count("sid"))
-    timeline_success = Repo.all((from c in Call, where: c.inserted_at >= ^subtract(now(), Timex.Duration.from_days(90)), where: c.current_step in ["educational","thanks","forward"]) |> by_week(:inserted_at))
-    timeline_failure = Repo.all((from c in Call, where: c.inserted_at >= ^subtract(now(), Timex.Duration.from_days(90)), where: not c.current_step in ["educational","thanks","forward"]) |> by_week(:inserted_at))
+    today = Repo.one(from c in Call, where: c.inserted_at >= ^Timex.beginning_of_day(date), where: c.inserted_at <= ^Timex.end_of_day(date), where: c.campaign_id == ^campaign.id, select: count("sid"))
+    successful_overall = Repo.one(from c in Call, select: count("sid"), where: c.current_step in ["educational","thanks","forward"], where: c.campaign_id == ^campaign.id)
+    last_week = Repo.one(from c in Call, where: c.inserted_at > ^subtract(now(), Timex.Duration.from_days(7)), where: c.campaign_id == ^campaign.id, select: count("sid"))
+    timeline_success = Repo.all((from c in Call, where: c.inserted_at >= ^subtract(now(), Timex.Duration.from_days(90)), where: c.current_step in ["educational","thanks","forward"], where: c.campaign_id == ^campaign.id) |> by_week(:inserted_at))
+    timeline_failure = Repo.all((from c in Call, where: c.inserted_at >= ^subtract(now(), Timex.Duration.from_days(90)), where: not c.current_step in ["educational","thanks","forward"], where: c.campaign_id == ^campaign.id) |> by_week(:inserted_at))
     timeline = [timeline_success, timeline_failure]
     %{today: today, successful_overall: successful_overall, last_week: last_week, timeline: timeline}
   end
