@@ -17,8 +17,8 @@ config :active_monitoring, ActiveMonitoring.Endpoint,
   cache_static_manifest: "priv/static/manifest.json",
   force_ssl: [rewrite_on: [:x_forwarded_proto], host: nil]
 
-# Do not print debug messages in production
-config :logger, level: :info
+# Print debug messages in production
+config :logger, level: :debug
 
 # ## SSL Support
 #

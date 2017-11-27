@@ -12,6 +12,10 @@ if [ "$TRAVIS_TAG" = "" ]; then
       DOCKER_TAG="dev"
       ;;
 
+    debug-production)
+      DOCKER_TAG="debug"
+      ;;
+
     release/*)
       DOCKER_TAG="$PROJECT_VERSION-dev"
       ;;
