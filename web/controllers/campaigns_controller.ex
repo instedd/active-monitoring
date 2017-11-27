@@ -58,10 +58,10 @@ defmodule ActiveMonitoring.CampaignsController do
           render(conn, "show.json", campaign: campaign, calls: calls, subjects: subjects)
 
         {:error, changeset} ->
-          render(conn, ChangesetView, "error.json", changeset: changeset)
+          put_status(conn, 403) |> render(ChangesetView, "error.json", changeset: changeset)
       end
     else
-      render(conn, ChangesetView, "error.json", changeset: changeset)
+      put_status(conn, 403) |> render(ChangesetView, "error.json", errors: %{channel: "already in use"})
     end
   end
 

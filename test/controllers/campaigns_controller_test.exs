@@ -79,8 +79,23 @@ defmodule ActiveMonitoring.CampaignsControllerTest do
     end
   end
 
+  describe "errors" do
+    setup [:with_started_campaign]
+
+    test "launch", %{conn: conn, campaign: campaign, user: user} do
+      new_campaign = build(:campaign, user: user, channel: campaign.channel) |> Repo.insert!
+      conn = conn |> put(campaigns_launch_path(conn, :launch, campaign))
+      assert json_response(conn, 403) == %{"errors" => %{"channel" => "already in use"}}
+    end
+  end
+
   defp with_user_campaign %{user: user} do
     campaign = build(:campaign, user: user) |> Repo.insert!
+    [campaign: campaign]
+  end
+
+  defp with_started_campaign %{user: user} do
+    campaign = build(:campaign, user: user, channel: "a.channel", started_at: Ecto.DateTime.utc()) |> Repo.insert!
     [campaign: campaign]
   end
 end
