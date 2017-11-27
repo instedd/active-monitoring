@@ -10,6 +10,7 @@ import ChannelStep from './ChannelStep'
 import EducationalInformationStep from './EducationalInformationStep'
 import MonitoringSettingsStep from './MonitoringSettingsStep'
 import { campaignLaunch } from '../../actions/campaign'
+import { activeCampaignUsing } from '../../reducers/campaigns'
 import List from 'react-md/lib/Lists/List'
 import ListItem from 'react-md/lib/Lists/ListItem'
 import FontIcon from 'react-md/lib/FontIcons'
@@ -24,6 +25,7 @@ type Props = {
   campaign: Campaign,
   launchCampaign: (campaignId: number) => void,
   neededAudios: number,
+  activeCampaignUsing: (channel: string) => Campaign,
   uploadedAudios: number
 }
 
@@ -63,7 +65,7 @@ class CampaignCreationFormComponent extends Component {
   }
 
   completedChannelSelectionStep() {
-    return this.props.campaign.channel != null
+    return this.props.campaign.channel != null && !this.props.activeCampaignUsing(this.props.campaign.channel)
   }
 
   launch() {
@@ -134,10 +136,18 @@ class CampaignCreationFormComponent extends Component {
 }
 
 const mapStateToProps = (state) => {
+  let activeCampaignUsingChannelIfHaveCampaigns = (campaigns) => {
+    if (campaigns && campaigns.items) {
+      return activeCampaignUsing(campaigns)
+    }
+    return () => null
+  }
+
   return {
     campaign: state.campaign.data,
     neededAudios: flatten(values(audioEntries(state.campaign.data))).length + 1,
     uploadedAudios: audiosInUse(state.campaign.data).length,
+    activeCampaignUsing: activeCampaignUsingChannelIfHaveCampaigns(state.campaigns),
     attemptLaunch: state.attemptLaunch
   }
 }
