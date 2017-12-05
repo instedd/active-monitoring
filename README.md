@@ -8,9 +8,11 @@ To run the app: `docker-compose up`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-To open a shell in a container: `docker exec -it active_monitoring_db_1 bash`, where `active_monitoring_db_1` is a container name. You can list containers with `docker ps`.
+To open a shell in a container: `docker exec -it activemonitoring_db_1 bash`, where `activemonitoring_db_1` is a container name. You can list containers with `docker ps`.
 
-To start an Elixir console in your running Phoenix app container: `docker exec -it active_monitoring_app_1 iex -S mix`.
+To start an Elixir console in your running Phoenix app container: `docker exec -it activemonitoring_app_1 iex -S mix`.
+
+To run the tests: `docker exec -it activemonitoring_app_1 mix test`
 
 ## Exposing your containers as *.activemonitoring.dev
 
