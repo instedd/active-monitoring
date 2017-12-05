@@ -74,7 +74,7 @@ class CampaignItem extends Component {
   render() {
     const campaign = this.props.campaign
     return (
-      <TableRow onClick={() => this.props.onClick(campaign.id)}>
+      <TableRow className='pointer' onClick={() => this.props.onClick(campaign.id)}>
         <TableColumn>{this.campaignName()}</TableColumn>
         <TableColumn>...</TableColumn>
         <TableColumn>{campaign.startedAt ? 'Started' : '...' }</TableColumn>
