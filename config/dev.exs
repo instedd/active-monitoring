@@ -43,6 +43,7 @@ config :active_monitoring, ActiveMonitoring.Mailer,
   adapter: Swoosh.Adapters.Local
 
 config :active_monitoring, :guisso,
+  base_url: "#{System.get_env("GUISSO_BASE_URL")}",
   auth_url: "#{System.get_env("GUISSO_BASE_URL")}/oauth2/authorize",
   token_url: "#{System.get_env("GUISSO_BASE_URL")}/oauth2/token",
   redirect_uri: System.get_env("GUISSO_REDIRECT_URI"),

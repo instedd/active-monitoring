@@ -96,8 +96,8 @@ export const createCampaign = (campaign) => {
   return apiPostJSON('campaigns', { campaign })
 }
 
-export const logout = () => {
-  apiDelete('sessions').then(() => { window.location.href = '/' })
+export const logout = (guissoLogoutUrl) => {
+  apiDelete('sessions').then(() => { window.location.href = guissoLogoutUrl })
 }
 
 export const updateCampaign = (campaign) => {
