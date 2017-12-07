@@ -5,6 +5,7 @@ import Button from 'react-md/lib/Buttons/Button'
 import ListItem from 'react-md/lib/Lists/ListItem'
 import PropTypes from 'prop-types'
 import { logout } from '../api'
+import { config } from '../config'
 
 const UserInfo = ({displayName}) =>
   <MenuButton
@@ -17,7 +18,7 @@ const UserInfo = ({displayName}) =>
     flat
     >
     <ListItem primaryText='Preferences' />
-    <ListItem onClick={logout} primaryText='Sign out' />
+    <ListItem onClick={() => logout(config.logout_url)} primaryText='Sign out' />
   </MenuButton>
 
 UserInfo.propTypes = {

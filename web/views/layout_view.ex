@@ -11,11 +11,18 @@ defmodule ActiveMonitoring.LayoutView do
     client_config = %{
       version: version,
       user: user_email,
+      logout_url: guisso_logout_url(conn),
       verboice: [Application.get_env(:active_monitoring, :verboice)] |> guisso_configs
     }
 
     {:ok, config_json} = client_config |> Poison.encode
     config_json
+  end
+
+  defp guisso_logout_url(conn) do
+    guisso_settings = Application.get_env(:active_monitoring, :guisso)
+    url_params = %{ after_sign_out_url: "#{url(conn)}#{Coherence.Config.logged_out_url("/")}" }
+    "#{guisso_settings[:base_url]}/users/sign_out?#{URI.encode_query(url_params)}"
   end
 
   defp guisso_configs(app_env) do
