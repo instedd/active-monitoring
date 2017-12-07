@@ -14,6 +14,8 @@ To start an Elixir console in your running Phoenix app container: `docker exec -
 
 To run the tests: `docker exec -it activemonitoring_app_1 mix test`
 
+To run the JS linter: `docker-compose run webpack yarn lint`
+
 ## Exposing your containers as *.activemonitoring.dev
 
 You can use [dockerdev](https://github.com/waj/dockerdev) to access the web app at `app.activemonitoring.dev` and ngrok at `ngrok.activemonitoring.dev`.
