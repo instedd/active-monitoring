@@ -12,9 +12,11 @@ To open a shell in a container: `docker exec -it activemonitoring_db_1 bash`, wh
 
 To start an Elixir console in your running Phoenix app container: `docker exec -it activemonitoring_app_1 iex -S mix`.
 
-To run the tests: `docker exec -it activemonitoring_app_1 mix test`
+To run the tests: `docker exec -it activemonitoring_app_1 mix test` or `docker-compose run app mix test`
 
 To run the JS linter: `docker-compose run webpack yarn lint`
+
+To run the migrations: `docker-compose run app mix ecto.migrate`
 
 ## Exposing your containers as *.activemonitoring.dev
 
