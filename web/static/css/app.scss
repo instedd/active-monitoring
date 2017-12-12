@@ -2,8 +2,8 @@
 
 @import 'variables-overrides';
 
-$md-primary-color: $md-grey-800;
-$md-secondary-color: $md-green-500;
+$md-primary-color: $md-light-blue-500;
+$md-secondary-color: $md-red-500;
 
 @include react-md-everything;
 

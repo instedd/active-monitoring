@@ -44,7 +44,7 @@
       left: 0;
       width: 100%;
       .determinate {
-        background: $md-green-400;
+        background: $md-light-blue-500;
         height: 6px;
       }
     }
@@ -67,9 +67,9 @@
   .md-list-tile--active {
     background: $md-grey-200;
   }
-  .green-text {
+  .blue-text {
     .step-icon.md-icon, .md-text {
-      color: $md-green-400;
+      color: $md-light-blue-500;
     }
   }
 }

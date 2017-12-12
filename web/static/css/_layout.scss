@@ -19,6 +19,7 @@ main {
   }
 }
 .mainToolbar {
+  background: $md-grey-700;
   flex-direction: column;
   nav {
     flex-direction: row;
@@ -49,7 +50,7 @@ main {
   }
 }
 nav.sub-nav {
-  @extend .md-background--primary;
+  background: $md-grey-700;
   line-height: 0;
   padding: 1.3rem 10%;
   display: flex;
