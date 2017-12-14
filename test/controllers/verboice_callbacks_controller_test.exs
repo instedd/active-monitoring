@@ -13,6 +13,7 @@ defmodule ActiveMonitoring.VerboiceCallbacksControllerTest do
       {:ok, campaign: campaign}
     end
 
+    @tag :skip
     test "answers a verboice status call", %{conn: conn, campaign: campaign} do
       cs = Campaign.changeset(campaign, %{})
       Repo.update(Ecto.Changeset.put_change(cs, :started_at, Ecto.DateTime.utc()))
@@ -20,6 +21,7 @@ defmodule ActiveMonitoring.VerboiceCallbacksControllerTest do
       assert conn.status == 200
     end
 
+    @tag :skip
     test "refuses a call if campaign hasn't begun", %{conn: conn, campaign: campaign} do
       conn = post conn, verboice_callbacks_path(conn, :callback, campaign.id, CallSid: "abc123")
       assert conn.resp_body == "<Hangup/>"
