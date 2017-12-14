@@ -5,6 +5,7 @@ import campaigns from './campaigns'
 import channels from './channels'
 import authorizations from './authorizations'
 import timezones from './timezones'
+import subjects from './subjects'
 
 export default combineReducers({
   campaign,
@@ -12,5 +13,6 @@ export default combineReducers({
   channels,
   authorizations,
   timezones,
+  subjects,
   router: routerReducer
 })

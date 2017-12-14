@@ -14,17 +14,38 @@ export type Campaign = {
   forwardingNumber: ?string,
   monitorDuration: ?number,
   channel: ?string,
-};
+}
+
+export type Subject = {
+  id: number,
+  phoneNumber: string,
+  registrationIdentifier: string,
+}
+
+export type SubjectParams = {
+  id?: number,
+  phoneNumber: string,
+  registrationIdentifier: string,
+}
 
 export type State = {
   timezones: {
-    fetching: boolean,
-  }
+    fetching: boolean
+  },
+  subjects: {
+    editingSubject: Subject,
+    targetPage: number
+  },
+}
+
+export type Items = {
+  subjects: Subject[],
+  count: number
 }
 
 export type Action = {
   type: string,
 }
 
-export type Dispatch = (action: Action) => void
+export type Dispatch = (action: Action | Function) => void
 export type GetState = () => State
