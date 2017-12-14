@@ -5,6 +5,7 @@
     "deploy": "webpack -p --devtool source-map",
     "watch": "webpack --watch --progress --color",
     "lint": "eslint --ext .jsx,.js web/static/js/ test/js",
+    "lint-and-flow": "yarn lint; yarn flow",
     "format": "eslint --ext .jsx,.js --fix web/static/js/ test/js"
   },
   "dependencies": {
