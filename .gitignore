@@ -31,3 +31,5 @@ erl_crash.dump
 
 # Local development settings
 .env
+
+.DS_Store
