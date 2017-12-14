@@ -1,7 +1,7 @@
 defmodule ActiveMonitoring.Factory do
   use ExMachina.Ecto, repo: ActiveMonitoring.Repo
 
-  alias ActiveMonitoring.{User, Campaign, Call, CallAnswer}
+  alias ActiveMonitoring.{User, Campaign, Call, CallAnswer, Subject}
 
   def user_factory do
     %User{
@@ -42,6 +42,14 @@ defmodule ActiveMonitoring.Factory do
 
   def with_channel(campaign) do
     %{campaign | channel: "channel_name"}
+  end
+
+  def subject_factory do
+    %Subject{
+      phone_number: sequence(:phone_number, &"555#{&1 |> Integer.to_string |> String.pad_leading(4, "0")}"),
+      registration_identifier: sequence(:registration_identifier, fn(n) -> n |> Integer.to_string |> String.pad_leading(8, "0") end),
+      campaign: build(:campaign)
+    }
   end
 
   def call_factory do
