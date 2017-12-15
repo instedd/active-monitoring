@@ -57,6 +57,7 @@ defmodule ActiveMonitoring.Router do
       resources "/campaigns", CampaignsController, only: [:index, :create, :show, :update, :delete] do
         put "/launch", CampaignsController, :launch, as: :launch
 
+        get "/subjects/export", SubjectsController, :export_csv, as: :subjects_export_csv
         resources "/subjects", SubjectsController, only: [:index, :create, :update, :delete]
       end
       resources "/channels", ChannelsController, only: [:index]
