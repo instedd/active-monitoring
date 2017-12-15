@@ -168,6 +168,40 @@ class Subjects extends Component {
     return 'Subjects!'
   }
 
+  subjectForm(editingSubject: SubjectParams) {
+    return (<SubjectForm
+      onSubmit={() => editingSubject.id ? this.updateSubject() : this.createSubject()}
+      onCancel={() => this.closeSubjectFormModal()}
+      subject={editingSubject}
+      onEditPhoneNumber={this.onEditPhoneNumber}
+      onEditRegistrationIdentifier={this.onEditRegistrationIdentifier} />)
+  }
+
+  circularProgress() {
+    return (<CircularProgress id='subjects-fetching-progress' />)
+  }
+
+  subjectsList() {
+    const {
+      editingSubject,
+      page,
+      items,
+      limit,
+      fetching,
+      count
+    } = this.props.subjects
+
+    return (<SubjectsList
+      items={items}
+      count={count}
+      fetching={fetching}
+      currentPage={page}
+      rowsPerPage={limit}
+      showSubjectForm={() => this.showSubjectForm()}
+      onSubjectClick={(subject) => this.editSubject(subject)}
+      onPageChange={(targetPage) => this.goToPage(targetPage)} />)
+  }
+
   componentDidUpdate() {
     const {
       page,
@@ -196,22 +230,10 @@ class Subjects extends Component {
     const showDialog = editingSubject != null
     let subjectForm = null
     if (editingSubject != null) {
-      subjectForm = <SubjectForm
-        onSubmit={() => editingSubject.id ? this.updateSubject() : this.createSubject()}
-        onCancel={() => this.closeSubjectFormModal()}
-        subject={editingSubject}
-        onEditPhoneNumber={this.onEditPhoneNumber}
-        onEditRegistrationIdentifier={this.onEditRegistrationIdentifier} />
+      subjectForm = this.subjectForm(editingSubject)
     }
-    let tableOrLoadingIndicator = fetching ? <CircularProgress id='subjects-fetching-progress' /> : (<SubjectsList
-      items={items}
-      count={count}
-      fetching={fetching}
-      currentPage={page}
-      rowsPerPage={limit}
-      showSubjectForm={() => this.showSubjectForm()}
-      onSubjectClick={(subject) => this.editSubject(subject)}
-      onPageChange={(targetPage) => this.goToPage(targetPage)} />)
+
+    let tableOrLoadingIndicator = fetching ? this.circularProgress() : this.subjectsList()
 
     return (
       <div className='md-grid--no-spacing'>
