@@ -183,7 +183,6 @@ class Subjects extends Component {
 
   subjectsList() {
     const {
-      editingSubject,
       page,
       items,
       limit,
@@ -220,11 +219,7 @@ class Subjects extends Component {
   render() {
     const {
       editingSubject,
-      page,
-      items,
-      limit,
-      fetching,
-      count
+      fetching
     } = this.props.subjects
 
     const showDialog = editingSubject != null
