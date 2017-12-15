@@ -12,6 +12,7 @@ import TableRow from 'react-md/lib/DataTables/TableRow'
 import TableColumn from 'react-md/lib/DataTables/TableColumn'
 import Dialog from 'react-md/lib/Dialogs'
 import CircularProgress from 'react-md/lib/Progress/CircularProgress'
+import Button from 'react-md/lib/Buttons/Button'
 
 import * as collectionActions from '../../actions/subjects'
 import * as itemActions from '../../actions/subject'
@@ -26,6 +27,7 @@ class SubjectsList extends Component {
     showSubjectForm: () => void,
     onPageChange: (page: number) => void,
     onSubjectClick: (subject: Subject) => void,
+    exportCsv: () => void,
     currentPage: ?number,
     rowsPerPage: number,
     count: number,
@@ -45,6 +47,7 @@ class SubjectsList extends Component {
 
     return (
       <div className='md-grid'>
+        <Button flat primary label='Export CSV' onClick={this.props.exportCsv}>file_download</Button>
         <div className='md-cell md-cell--12'>
           <Card tableCard>
             <DataTable plain className='app-listing' baseId='subjects'>
@@ -144,6 +147,10 @@ class Subjects extends Component {
     this.props.collectionActions.fetchSubjects(this.props.campaignId, limit, targetPage)
   }
 
+  exportCsv() {
+    window.location.href = `/api/v1/campaigns/${this.props.campaignId}/subjects/export`
+  }
+
   createSubject() {
     if (this.props.subjects.editingSubject != null) {
       this.props.itemActions.createSubject(this.props.campaignId, this.props.subjects.editingSubject)
@@ -197,6 +204,7 @@ class Subjects extends Component {
       currentPage={page}
       rowsPerPage={limit}
       showSubjectForm={() => this.showSubjectForm()}
+      exportCsv={() => this.exportCsv()}
       onSubjectClick={(subject) => this.editSubject(subject)}
       onPageChange={(targetPage) => this.goToPage(targetPage)} />)
   }
@@ -227,7 +235,6 @@ class Subjects extends Component {
     if (editingSubject != null) {
       subjectForm = this.subjectForm(editingSubject)
     }
-
     let tableOrLoadingIndicator = fetching ? this.circularProgress() : this.subjectsList()
 
     return (
