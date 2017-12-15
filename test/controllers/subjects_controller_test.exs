@@ -47,13 +47,11 @@ defmodule ActiveMonitoring.SubjectsControllerTest do
     setup [:with_logged_in_user, :with_campaign_subjects]
 
     test "lists all subjects", %{conn: conn, campaign: campaign, subject: subject} do
-      assert subject.registration_identifier != nil
       response = conn |> get(campaigns_subjects_path(conn, :index, campaign)) |> json_response(200)
       assert length(response["data"]["subjects"]) == 4
-      [subject1, subject2 | _] = response["data"]["subjects"]
-      assert subject1["phoneNumber"] == subject.phone_number
-      assert subject1["phoneNumber"] != subject2["phoneNumber"]
-      assert subject1["registrationIdentifier"] == subject.registration_identifier
+      subj = Enum.find(response["data"]["subjects"], fn(sub) -> sub["registrationIdentifier"] == subject.registration_identifier end)
+      assert subj
+      assert subj["phoneNumber"] == subject.phone_number
     end
 
     test "lists subjects by page size", %{conn: conn, campaign: campaign} do
@@ -114,17 +112,34 @@ defmodule ActiveMonitoring.SubjectsControllerTest do
       assert response["meta"]["count"] > 50
     end
 
+    test "lists subjects by maximum page size when asked for invalid limit", %{conn: conn, campaign: campaign} do
+      response = conn |> get(campaigns_subjects_path(conn, :index, campaign, limit: "INVALID")) |> json_response(200)
+      assert length(response["data"]["subjects"]) == 50
+      assert response["meta"]["count"] > 50
+    end
+
     test "lists second page of subjects", %{conn: conn, campaign: campaign} do
       response = conn |> get(campaigns_subjects_path(conn, :index, campaign)) |> json_response(200)
       [first_subject | _ ] = response["data"]["subjects"]
       first_subject_id = first_subject["id"]
 
-      response = conn |> get(campaigns_subjects_path(conn, :index, campaign, page: 2)) |> json_response(200)
+      response = conn |> get(campaigns_subjects_path(conn, :index, campaign, page: "2")) |> json_response(200)
       assert length(response["data"]["subjects"]) == 50
       assert response["meta"]["count"] == 100
-      require Logger
       second_page_subject_ids = Enum.map response["data"]["subjects"], fn(subject) -> subject["id"] end
       assert not(first_subject_id in second_page_subject_ids)
+    end
+
+    test "list first page of subjects when asked for invalid page", %{conn: conn, campaign: campaign} do
+      response = conn |> get(campaigns_subjects_path(conn, :index, campaign)) |> json_response(200)
+      [first_subject | _ ] = response["data"]["subjects"]
+      first_subject_id = first_subject["id"]
+
+      response = conn |> get(campaigns_subjects_path(conn, :index, campaign, page: "INVALID")) |> json_response(200)
+      assert length(response["data"]["subjects"]) == 50
+      assert response["meta"]["count"] == 100
+      first_page_subject_ids = Enum.map response["data"]["subjects"], fn(subject) -> subject["id"] end
+      assert first_subject_id in first_page_subject_ids
     end
   end
 
