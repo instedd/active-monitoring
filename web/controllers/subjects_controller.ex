@@ -26,6 +26,27 @@ defmodule ActiveMonitoring.SubjectsController do
     render(conn, "index.json", subjects: subjects, count: count)
   end
 
+  def export_csv(conn, %{"campaigns_id" => campaign_id}) do
+    header = ["ID","Phone Number"]
+
+    campaign = Repo.get!(Campaign, campaign_id)
+    |> authorize_campaign(conn)
+
+    subjects = campaign
+    |> assoc(:subjects)
+    |> Repo.all
+
+    csv_rows = subjects
+    |> Stream.map(fn subject ->
+      [subject.registration_identifier, subject.phone_number]
+    end)
+
+    rows = Stream.concat([[header], csv_rows])
+
+    filename = "export_#{campaign.name}_subjects.csv"
+    conn |> csv_stream(rows, filename)
+  end
+
   defp page_offset page, limit do
     newPage = case Integer.parse(page) do
       :error -> 1

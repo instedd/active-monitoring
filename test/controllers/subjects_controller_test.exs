@@ -54,6 +54,16 @@ defmodule ActiveMonitoring.SubjectsControllerTest do
       assert subj["phoneNumber"] == subject.phone_number
     end
 
+    test "subjects csv export", %{conn: conn, campaign: campaign, subject: subject} do
+      conn = conn |> get(campaigns_subjects_export_csv_path(conn, :export_csv, campaign))
+      csv = conn |> response(200)
+      assert get_resp_header(conn, "content-disposition") == ["attachment; filename=\"export_#{campaign.name}_subjects.csv\""]
+      assert get_resp_header(conn, "content-type") == ["text/csv; charset=utf-8"]
+      [header, line1 | _] = csv |> String.split("\r\n")
+      assert header == "ID,Phone Number"
+      assert line1 == "#{subject.registration_identifier},#{subject.phone_number}"
+    end
+
     test "lists subjects by page size", %{conn: conn, campaign: campaign} do
       response = conn |> get(campaigns_subjects_path(conn, :index, campaign, limit: 2)) |> json_response(200)
       assert length(response["data"]["subjects"]) == 2
@@ -149,6 +159,12 @@ defmodule ActiveMonitoring.SubjectsControllerTest do
     test "doesn't allow to index another user's campaign subjects", %{conn: conn, other_campaign: other_campaign} do
       assert_error_sent 403, fn ->
         conn |> get(campaigns_subjects_path(conn, :index, other_campaign))
+      end
+    end
+
+    test "doesn't allow to export another user's campaign subjects", %{conn: conn, other_campaign: other_campaign} do
+      assert_error_sent 403, fn ->
+        conn |> get(campaigns_subjects_export_csv_path(conn, :export_csv, other_campaign))
       end
     end
 
