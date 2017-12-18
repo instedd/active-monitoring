@@ -7,7 +7,7 @@ defmodule ActiveMonitoring.SubjectsControllerTest do
 
   setup %{conn: conn} do
     user = build(:user, email: "test@example.com") |> Repo.insert!
-    campaign = build(:campaign, user: user) |> Repo.insert!
+    campaign = build(:campaign, user: user, monitor_duration: 30) |> Repo.insert!
 
     other_user = build(:user, email: "other@example.com") |> Repo.insert!
     other_campaign = build(:campaign, user: other_user) |> Repo.insert!
@@ -60,8 +60,8 @@ defmodule ActiveMonitoring.SubjectsControllerTest do
       assert get_resp_header(conn, "content-disposition") == ["attachment; filename=\"export_#{campaign.name}_subjects.csv\""]
       assert get_resp_header(conn, "content-type") == ["text/csv; charset=utf-8"]
       [header, line1 | _] = csv |> String.split("\r\n")
-      assert header == "ID,Phone Number"
-      assert line1 == "#{subject.registration_identifier},#{subject.phone_number}"
+      assert header == "ID,Phone Number,Enroll date,First Call Date,Last Call Date,Last Successful Call,Active Case"
+      assert line1 == "#{subject.registration_identifier},#{subject.phone_number},#{subject.inserted_at},,,,true"
     end
 
     test "lists subjects by page size", %{conn: conn, campaign: campaign} do
