@@ -79,10 +79,9 @@ defmodule ActiveMonitoring.Runtime.Flow do
       nil ->
         case fetch_subject(from) do
           nil ->
-            s = %{phone_number: from}
-            Call.changeset(%Call{}, %{sid: call_sid, subject: s, campaign_id: campaign_id}) |> Repo.insert!
+            Call.changeset(%Call{}, %{sid: call_sid, campaign_id: campaign_id, from: from}) |> Repo.insert!
           subject ->
-            Call.changeset(%Call{}, %{sid: call_sid, subject_id: subject.id, campaign_id: campaign_id}) |> Repo.insert!
+            Call.changeset(%Call{}, %{sid: call_sid, subject_id: subject.id, campaign_id: campaign_id, from: from}) |> Repo.insert!
         end
       call ->
         call

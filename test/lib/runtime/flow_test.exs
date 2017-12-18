@@ -21,32 +21,28 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
-      response = Flow.handle_status(campaign.id, "CALL_SID_1", "9990001", "ringing")
-      {:ok, campaign: campaign, response: response}
+      subject = build(:subject, campaign: campaign, phone_number: "9990001") |> Repo.insert!
+      {:ok, campaign: campaign, subject: subject}
     end
 
-    @tag :skip
     test "it should create a new call", %{campaign: campaign} do
+      Flow.handle_status(campaign.id, "CALL_SID_1", "9990001", "ringing")
       call = Repo.one!(Call)
       assert %Call{sid: "CALL_SID_1", current_step: nil} = call
       assert call.campaign_id == campaign.id
     end
 
-    @tag :skip
-    test "it should create a new subject for new number", %{campaign: campaign} do
-      subject = Repo.one!(Subject) |> Repo.preload(:calls)
-      assert %Subject{phone_number: "9990001"} = subject
-      [call | _tail] = subject.calls
-      assert call.sid == "CALL_SID_1"
-      assert call.campaign_id == campaign.id
-      assert subject.phone_number == "9990001"
+    test "it should find subject if same phone number is used", %{campaign: campaign, subject: %Subject{id: subject_id}} do
+      Flow.handle_status(campaign.id, "CALL_SID_1", "9990001", "ringing")
+      call = Repo.one!(Call)
+      assert %Call{sid: "CALL_SID_1", current_step: nil} = call
+      assert call.subject_id == subject_id
     end
 
-    @tag :skip
-    test "it should find subject if same phone number is used", %{campaign: campaign} do
-      Flow.handle_status(campaign.id, "CALL_SID_2", "9990001", "ringing")
-      subjects = Repo.all(Subject)
-      assert length(subjects) == 1
+    test "it should not find subject if new phone number is used", %{campaign: campaign} do
+      Flow.handle_status(campaign.id, "CALL_SID_1", "9990002", "ringing")
+      call = Repo.one!(Call)
+      assert %Call{sid: "CALL_SID_1", current_step: nil, subject_id: nil} = call
     end
   end
 
