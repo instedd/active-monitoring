@@ -13,6 +13,7 @@ import TableColumn from 'react-md/lib/DataTables/TableColumn'
 import Dialog from 'react-md/lib/Dialogs'
 import CircularProgress from 'react-md/lib/Progress/CircularProgress'
 import Button from 'react-md/lib/Buttons/Button'
+import Moment from 'react-moment'
 
 import * as collectionActions from '../../actions/subjects'
 import * as itemActions from '../../actions/subject'
@@ -86,6 +87,22 @@ class SubjectsList extends Component {
   }
 }
 
+class FormatDate extends Component {
+  props: {
+    date: ?Date,
+  }
+
+  render() {
+    const date = this.props.date
+
+    if (date !== null) {
+      return (<Moment format='MMM DD, YYYY HH:mm' date={date} />)
+    } else {
+      return (<span>-</span>)
+    }
+  }
+}
+
 class SubjectItem extends Component {
   props: {
     subject: Subject,
@@ -98,11 +115,19 @@ class SubjectItem extends Component {
       <TableRow onClick={() => this.props.onClick(subject)}>
         <TableColumn>{subject.registrationIdentifier}</TableColumn>
         <TableColumn>{subject.phoneNumber}</TableColumn>
-        <TableColumn>{subject.enrollDate}</TableColumn>
-        <TableColumn>{subject.firstCallDate}</TableColumn>
-        <TableColumn>{subject.lastCallDate}</TableColumn>
-        <TableColumn>{subject.lastSuccessfulCallDate}</TableColumn>
-        <TableColumn>{subject.activeCase}</TableColumn>
+        <TableColumn>
+          <FormatDate date={subject.enrollDate} />
+        </TableColumn>
+        <TableColumn>
+          <FormatDate date={subject.firstCallDate} />
+        </TableColumn>
+        <TableColumn>
+          <FormatDate date={subject.lastCallDate} />
+        </TableColumn>
+        <TableColumn>
+          <FormatDate date={subject.lastSuccessfulCallDate} />
+        </TableColumn>
+        <TableColumn>{subject.activeCase ? 'Yes' : 'No'}</TableColumn>
       </TableRow>
     )
   }
