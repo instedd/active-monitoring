@@ -1,5 +1,6 @@
 defmodule ActiveMonitoring.SubjectsView do
   use ActiveMonitoring.Web, :view
+  alias ActiveMonitoring.{Subject}
 
   def render("index.json", %{subjects: subjects, count: count}) do
     rendered = subjects |> Enum.map(fn(subject) ->
@@ -21,6 +22,11 @@ defmodule ActiveMonitoring.SubjectsView do
       campaign_id: subject.campaign_id,
       registration_identifier: subject.registration_identifier,
       phone_number: subject.phone_number,
+      enroll_date: Subject.enroll_date(subject),
+      first_call_date: Subject.first_call_date(subject),
+      last_call_date: Subject.last_call_date(subject),
+      last_successful_call_date: Subject.last_successful_call_date(subject),
+      active_case: Subject.active_case(subject),
     }
   end
 end

@@ -20,6 +20,11 @@ export type Subject = {
   id: number,
   phoneNumber: string,
   registrationIdentifier: string,
+  enrollDate: Date,
+  firstCallDate: ?Date,
+  lastCallDate: ?Date,
+  lastSuccessfulCallDate: ?Date,
+  activeCase: boolean,
 }
 
 export type SubjectParams = {

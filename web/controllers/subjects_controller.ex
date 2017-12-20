@@ -17,6 +17,7 @@ defmodule ActiveMonitoring.SubjectsController do
     subjects = Repo.get!(Campaign, campaign_id)
     |> authorize_campaign(conn)
     |> assoc(:subjects)
+    |> preload(:campaign)
     |> limit(^limit)
     |> offset(^offset)
     |> Repo.all
@@ -82,6 +83,7 @@ defmodule ActiveMonitoring.SubjectsController do
 
     case Repo.insert(changeset) do
       {:ok, subject} ->
+        subject = Repo.preload(subject, :campaign)
         conn
         |> put_status(:created)
         |> put_resp_header("location", campaigns_subjects_path(conn, :index, campaign))
@@ -103,6 +105,7 @@ defmodule ActiveMonitoring.SubjectsController do
 
     case Repo.update(changeset) do
       {:ok, subject} ->
+        subject = Repo.preload(subject, :campaign)
         render(conn, "show.json", subject: subject)
 
       {:error, changeset} ->
