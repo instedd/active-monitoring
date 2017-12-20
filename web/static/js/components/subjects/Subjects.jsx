@@ -55,6 +55,11 @@ class SubjectsList extends Component {
                 <TableRow>
                   <TableColumn>ID</TableColumn>
                   <TableColumn>Phone Number</TableColumn>
+                  <TableColumn>Enroll Date</TableColumn>
+                  <TableColumn>First Call</TableColumn>
+                  <TableColumn>Last Call</TableColumn>
+                  <TableColumn>Last Successful Call</TableColumn>
+                  <TableColumn>Active?</TableColumn>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -93,6 +98,11 @@ class SubjectItem extends Component {
       <TableRow onClick={() => this.props.onClick(subject)}>
         <TableColumn>{subject.registrationIdentifier}</TableColumn>
         <TableColumn>{subject.phoneNumber}</TableColumn>
+        <TableColumn>{subject.enrollDate}</TableColumn>
+        <TableColumn>{subject.firstCallDate}</TableColumn>
+        <TableColumn>{subject.lastCallDate}</TableColumn>
+        <TableColumn>{subject.lastSuccessfulCallDate}</TableColumn>
+        <TableColumn>{subject.activeCase}</TableColumn>
       </TableRow>
     )
   }
