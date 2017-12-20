@@ -141,7 +141,7 @@ class ChannelSelectionComponent extends Component {
     }
 
     return (
-      <section id='channel'>
+      <section id='channel' className='full-height'>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
             <h1>Choose a channel</h1>

@@ -96,7 +96,6 @@
 }
 
 section {
-  min-height: 100vh;
   h1 {
     color: $md-black-base;
     font-size: 2.2rem;
@@ -245,4 +244,7 @@ section {
 .pointer {
   cursor: pointer;
   cursor: hand;
+}
+.full-height {
+  min-height: 100vh;
 }

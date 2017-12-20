@@ -7,7 +7,7 @@ import Radio from 'react-md/lib/SelectionControls/Radio'
 class EducationalInformationComponent extends Component {
   render() {
     return (
-      <section id='information'>
+      <section id='information' className='full-height'>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
             <h1>Educational information</h1>

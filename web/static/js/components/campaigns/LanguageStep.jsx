@@ -17,7 +17,7 @@ class LanguageStepComponent extends Component {
                              .filter(obj => obj.value != null && !this.props.langs.includes(obj.value))
 
     return (
-      <section id='languages'>
+      <section id='languages' className='full-height'>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
             <h1>Select languages</h1>

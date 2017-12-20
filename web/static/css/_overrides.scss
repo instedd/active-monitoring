@@ -37,22 +37,60 @@ p {
   border-bottom: 1px solid $md-grey-300;
 }
 
-
+.md-btn {
+  font-size: 16px;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  height: auto;
+  &.md-btn--text {
+    border-radius: 3px;
+  }
+  &.md-btn--raised {
+    box-shadow: none;
+  }
+}
 
 //------------ Tabs -----------------
 
-.md-tabs {
-  border-bottom: 1px solid $md-grey-400;
-  padding-left: 0 !important;
-  .md-tab-indicator {
-    background: black;
-  }
-  .md-tab--inactive {
-    .md-tab-label {
-      color: $md-grey-400;
+.tabs-container {
+  background: $md-grey-800;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  margin-top: -5rem;
+  padding: 0 10%;
+  ul#tabs {
+    color: $md-white-base;
+
+    .md-tab {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      min-width: auto;
+      white-space: nowrap;
+      flex-grow: 0;
+
+      .md-tab-label {
+        line-height: 20px;
+      }
+    }
+
+    .md-tab-indicator {
+      background: $md-red-500;
     }
   }
 }
 
-
 //------------ /Tabs -----------------
+
+
+
+//------------ Dialogs -----------------
+.md-dialog {
+  border-radius: 5px;
+  .md-title--dialog {
+    background: $md-grey-200;
+    border-radius: 5px 5px 0 0;
+  }
+}
+
+//------------ /Dialogs -----------------

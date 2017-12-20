@@ -14,7 +14,7 @@ import FontIcon from 'react-md/lib/FontIcons'
 class SymptomStepComponent extends Component {
   render() {
     return (
-      <section id='symptoms'>
+      <section id='symptoms' className='full-height'>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
             <h1>Define the symptoms</h1>

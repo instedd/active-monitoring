@@ -18,21 +18,25 @@ class SubjectForm extends Component {
 
     return (
       <section id='subject'>
-        <div>
+        <div className='md-grid'>
           <TextField
             id='registration-identifier'
             label='ID'
+            className='md-cell md-cell--12'
             defaultValue={subject.registrationIdentifier || ''}
             onBlur={e => onEditRegistrationIdentifier(e.target.value)}
           />
           <TextField
             id='phone-number'
             label='Phone Number'
+            className='md-cell md-cell--12'
             defaultValue={subject.phoneNumber || ''}
             onBlur={e => onEditPhoneNumber(e.target.value)}
           />
-          <Button primary onClick={onSubmit} raised label='Save' />
-          <Button secondary onClick={onCancel} flat label='Cancel' />
+        </div>
+        <div className='md-grid'>
+          <Button primary className='md-cell' onClick={onSubmit} raised label='Save' />
+          <Button secondary className='md-cell' onClick={onCancel} flat label='Cancel' />
         </div>
       </section>
     )

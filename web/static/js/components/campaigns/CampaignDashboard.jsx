@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Paper from 'react-md/lib/Papers'
-import List from 'react-md/lib/Lists/List'
-import ListItem from 'react-md/lib/Lists/ListItem'
-import FontIcon from 'react-md/lib/FontIcons'
-import Divider from 'react-md/lib/Dividers'
+import { Paper, List, ListItem, FontIcon, Divider, Tabs, Tab } from 'react-md'
 import 'react-vis/dist/styles/legends.scss'
 import {
   XYPlot,
@@ -36,6 +32,12 @@ export default class CampaignDashboard extends Component {
     }
     return (
       <div>
+        <div className='tabs-container'>
+          <Tabs id='tabs'>
+            <Tab label='Overview' active />
+            <Tab label='subjects' />
+          </Tabs>
+        </div>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
             <h3>Campaign performance</h3>

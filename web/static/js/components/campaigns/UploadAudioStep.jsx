@@ -73,7 +73,7 @@ class UploadAudioStepComponent extends Component {
     const totalAudios = flatten(values(this.props.entries)).length + 1
 
     return (
-      <section id='audios'>
+      <section id='audios' className='full-height'>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
             <h1>Upload audio files</h1>

@@ -8,7 +8,7 @@ import TextField from 'react-md/lib/TextFields'
 class MonitoringSettingsComponent extends Component {
   render() {
     return (
-      <section id='monitoring'>
+      <section id='monitoring' className='full-height'>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
             <h1>Set up monitoring settings</h1>
