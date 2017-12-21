@@ -7,6 +7,7 @@ export type Timezone = string
 export type Campaign = {
   id: number,
   audios: Audio[],
+  name: ?string,
   langs: string[],
   symptoms: string[][],
   additionalInformation: ?string,

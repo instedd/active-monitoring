@@ -57,9 +57,9 @@ p {
   position: absolute;
   width: 100%;
   left: 0;
-  margin-top: -5rem;
+  bottom: -48px;
   padding: 0 10%;
-  ul#tabs {
+  ul#Tabs {
     color: $md-white-base;
 
     .md-tab {
@@ -77,6 +77,9 @@ p {
     .md-tab-indicator {
       background: $md-red-500;
     }
+  }
+  + button.add-button {
+    margin-bottom: -48px;
   }
 }
 

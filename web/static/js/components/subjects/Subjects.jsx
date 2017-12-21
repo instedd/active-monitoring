@@ -17,10 +17,11 @@ import Moment from 'react-moment'
 
 import * as collectionActions from '../../actions/subjects'
 import * as itemActions from '../../actions/subject'
+import * as campaignActions from '../../actions/campaign'
 import EmptyListing from '../EmptyListing'
 import SubjectForm from './SubjectForm'
-import SubNav from '../SubNav'
-import type { Subject, SubjectParams } from '../../types'
+import ActiveCampaignSubNav from '../ActiveCampaignSubNav'
+import type { Subject, SubjectParams, Campaign } from '../../types'
 
 class SubjectsList extends Component {
   props: {
@@ -47,7 +48,7 @@ class SubjectsList extends Component {
     }
 
     return (
-      <div className='md-grid'>
+      <div>
         <Button flat primary label='Export CSV' onClick={this.props.exportCsv}>file_download</Button>
         <div className='md-cell md-cell--12'>
           <Card tableCard>
@@ -136,6 +137,10 @@ class SubjectItem extends Component {
 class Subjects extends Component {
   props: {
     campaignId: number,
+    campaign: {
+      fetching: boolean,
+      data: Campaign
+    },
     subjects: {
       count: number,
       items: Subject[],
@@ -144,6 +149,9 @@ class Subjects extends Component {
       page: ?number,
       targetPage: number,
       fetching: boolean,
+    },
+    campaignActions: {
+      campaignFetch: (campaignId: number) => void
     },
     collectionActions: {
       fetchSubjects: (campaignId: number, limit: number, targetPage: number) => void,
@@ -253,6 +261,10 @@ class Subjects extends Component {
     if (page != targetPage && !fetching) {
       this.fetchTargetPage()
     }
+
+    if (!this.props.campaign.data && !this.props.campaign.fetching) {
+      this.props.campaignActions.campaignFetch(this.props.campaignId)
+    }
   }
 
   componentDidMount() {
@@ -274,13 +286,19 @@ class Subjects extends Component {
 
     return (
       <div className='md-grid--no-spacing'>
-        <SubNav addButtonHandler={() => this.showSubjectForm()}>
-          Subjects
-        </SubNav>
-        {tableOrLoadingIndicator}
-        <Dialog id='subject-form' visible={showDialog} onHide={() => this.closeSubjectFormModal()} title='Manage Subject'>
-          {subjectForm}
-        </Dialog>
+        <ActiveCampaignSubNav
+          title={(this.props.campaign.data && this.props.campaign.data.name) ? this.props.campaign.data.name : ''}
+          addButtonHandler={() => this.showSubjectForm()}
+          campaignId={this.props.campaignId}
+        />
+        <div>
+          <div className='md-grid'>
+            {tableOrLoadingIndicator}
+            <Dialog id='subject-form' visible={showDialog} onHide={() => this.closeSubjectFormModal()} title='Manage Subject'>
+              {subjectForm}
+            </Dialog>
+          </div>
+        </div>
       </div>
     )
   }
@@ -288,12 +306,14 @@ class Subjects extends Component {
 
 const mapStateToProps = (state, ownProps) => ({
   campaignId: parseInt(ownProps.match.params.campaignId),
+  campaign: state.campaign,
   subjects: state.subjects
 })
 
 const mapDispatchToProps = (dispatch) => ({
   collectionActions: bindActionCreators(collectionActions, dispatch),
-  itemActions: bindActionCreators(itemActions, dispatch)
+  itemActions: bindActionCreators(itemActions, dispatch),
+  campaignActions: bindActionCreators(campaignActions, dispatch)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Subjects)
