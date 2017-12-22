@@ -40,5 +40,5 @@ export default () =>
   <Toolbar
     className='mainToolbar'
     colored
-    nav={<UserNav displayName='User Name' />}
+    nav={<UserNav displayName={config.user} />}
   />
