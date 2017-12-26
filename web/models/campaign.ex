@@ -3,6 +3,7 @@ defmodule ActiveMonitoring.Campaign do
 
   alias ActiveMonitoring.{Channel, User, Campaign, Subject}
   alias ActiveMonitoring.Router.Helpers
+  alias Timex.Timezone
 
   schema "campaigns" do
     field :name, :string
@@ -76,5 +77,14 @@ defmodule ActiveMonitoring.Campaign do
       password: "",
       external_service: Helpers.verboice_callbacks_url(ActiveMonitoring.Endpoint, :callback, campaign.id)}
     )
+  end
+
+  def subjects_pending_check_in(%Campaign{timezone: timezone}, subjects, now) do
+    subjects |> Enum.filter(fn(s) -> has_not_checked_in_today(timezone, Subject.last_successful_call_date(s), now) end)
+  end
+
+  defp has_not_checked_in_today(_, nil, _), do: true
+  defp has_not_checked_in_today(timezone, last_call_date, now) do
+    Timex.before?(Timezone.convert(last_call_date, timezone), Timex.beginning_of_day(Timezone.convert(now, timezone)))
   end
 end
