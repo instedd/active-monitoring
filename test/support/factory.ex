@@ -19,6 +19,8 @@ defmodule ActiveMonitoring.Factory do
       langs: ["en", "es"],
       audios: [],
       additional_information: "compulsory",
+      monitor_duration: 30,
+      timezone: "Europe/London",
       user: build(:user)
     }
   end

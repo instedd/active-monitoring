@@ -80,7 +80,7 @@ defmodule ActiveMonitoring.Campaign do
   end
 
   def subjects_pending_check_in(%Campaign{timezone: timezone}, subjects, now) do
-    subjects |> Enum.filter(fn(s) -> has_not_checked_in_today(timezone, Subject.last_successful_call_date(s), now) end)
+    subjects |> Enum.filter(fn(s) -> Subject.active_case(s, now) && has_not_checked_in_today(timezone, Subject.last_successful_call_date(s), now) end)
   end
 
   defp has_not_checked_in_today(_, nil, _), do: true
