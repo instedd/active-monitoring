@@ -30,24 +30,24 @@ defmodule ActiveMonitoring.Subject do
   def first_call_date(%Subject{id: subject_id, campaign_id: campaign_id}) do
     call = Repo.one(from c in Call,
             where: c.subject_id == ^subject_id and c.campaign_id == ^campaign_id,
-            order_by: [asc: c.inserted_at],
+            order_by: [asc: c.updated_at],
             limit: 1)
 
     case call do
       nil -> nil
-      %Call{inserted_at: inserted_at} -> inserted_at
+      %Call{updated_at: updated_at} -> updated_at
     end
   end
 
   def last_call_date(%Subject{id: subject_id, campaign_id: campaign_id}) do
     call = Repo.one(from c in Call,
             where: c.subject_id == ^subject_id and c.campaign_id == ^campaign_id,
-            order_by: [desc: c.inserted_at],
+            order_by: [desc: c.updated_at],
             limit: 1)
 
     case call do
       nil -> nil
-      %Call{inserted_at: inserted_at} -> inserted_at
+      %Call{updated_at: updated_at} -> updated_at
     end
   end
 
