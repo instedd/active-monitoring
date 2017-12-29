@@ -66,10 +66,10 @@ defmodule ActiveMonitoring.Runtime.VerboiceChannel do
     end
   end
 
-  def call(%{id: campaign_id, channel: channel, user_id: user_id}, subject) do
+  def call(%{id: campaign_id, channel: channel, user_id: user_id}, %{phone_number: phone_number}) do
     base_url = Application.get_env(:active_monitoring, :verboice)[:base_url]
     create_client(user_id, base_url)
-    |> Verboice.Client.call(address: subject.phone_number,
+    |> Verboice.Client.call(address: phone_number,
                             channel: channel,
                             callback_url: Helpers.verboice_callbacks_url(ActiveMonitoring.Endpoint, :callback, campaign_id),
                             status_callback_url: Helpers.verboice_callbacks_url(ActiveMonitoring.Endpoint, :status, campaign_id))
