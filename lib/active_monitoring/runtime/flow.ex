@@ -70,14 +70,14 @@ defmodule ActiveMonitoring.Runtime.Flow do
     Call |> Repo.get_by(sid: call_sid)
   end
 
-  defp fetch_subject(from) do
-    Subject |> Repo.get_by(phone_number: from)
+  defp fetch_subject(from, campaign_id) do
+    Subject |> Repo.get_by(phone_number: from, campaign_id: campaign_id)
   end
 
   defp fetch_or_insert_call(call_sid, from, campaign_id) do
     case fetch_call(call_sid) do
       nil ->
-        case fetch_subject(from) do
+        case fetch_subject(from, campaign_id) do
           nil ->
             Call.changeset(%Call{}, %{sid: call_sid, campaign_id: campaign_id, from: from}) |> Repo.insert!
           subject ->

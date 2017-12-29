@@ -44,6 +44,13 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
       call = Repo.one!(Call)
       assert %Call{sid: "CALL_SID_1", current_step: nil, subject_id: nil} = call
     end
+
+    test "it should not find a subject for a different campaign", %{subject: subject} do
+      other_campaign = build(:campaign) |> Repo.insert!
+      Flow.handle_status(other_campaign.id, "CALL_SID_2", "9990001", "ringing")
+      call = Repo.one!(Call)
+      assert call.subject_id != subject.id
+    end
   end
 
   # describe "invalid call" do
