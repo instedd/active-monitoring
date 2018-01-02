@@ -68,6 +68,13 @@ config :active_monitoring, :verboice,
     app_id: System.get_env("VERBOICE_APP_ID") || ""
   ]
 
+config :active_monitoring, :guisso,
+  base_url: "#{System.get_env("GUISSO_BASE_URL")}",
+  auth_url: "#{System.get_env("GUISSO_BASE_URL")}/oauth2/authorize",
+  token_url: "#{System.get_env("GUISSO_BASE_URL")}/oauth2/token",
+  redirect_uri: System.get_env("GUISSO_REDIRECT_URI"),
+  client_id: System.get_env("GUISSO_CLIENT_ID"),
+  client_secret: System.get_env("GUISSO_CLIENT_SECRET")
 
 version = case File.read("VERSION") do
   {:ok, version} -> String.trim(version)

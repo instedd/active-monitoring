@@ -86,10 +86,3 @@ config :coherence, ActiveMonitoring.Coherence.Mailer, smtp_config
 config :coherence,
   email_from_name: System.get_env("EMAIL_FROM_NAME"),
   email_from_email: System.get_env("EMAIL_FROM_EMAIL")
-
-config :active_monitoring, :guisso,
-  auth_url: "#{System.get_env("GUISSO_BASE_URL")}/oauth2/authorize",
-  token_url: "#{System.get_env("GUISSO_BASE_URL")}/oauth2/token",
-  redirect_uri: System.get_env("GUISSO_REDIRECT_URI"),
-  client_id: System.get_env("GUISSO_CLIENT_ID"),
-  client_secret: System.get_env("GUISSO_CLIENT_SECRET")
