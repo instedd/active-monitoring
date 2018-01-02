@@ -63,7 +63,7 @@ defmodule ActiveMonitoring.Subject do
     end
   end
 
-  def active_case(%Subject{id: subject_id, campaign: campaign} = subject, now) do
+  def active_case(%Subject{campaign: campaign} = subject, now) do
     subject_enroll_date = Subject.enroll_date(subject)
 
     final_enroll_date = subject_enroll_date |> Timex.shift(days: campaign.monitor_duration)

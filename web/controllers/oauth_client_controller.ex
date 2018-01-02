@@ -10,7 +10,7 @@ defmodule ActiveMonitoring.OAuthClientController do
     render conn, "index.json", authorizations: auths
   end
 
-  def delete(conn, params = %{"id" => provider, "base_url" => base_url}) do
+  def delete(conn, %{"id" => provider, "base_url" => base_url}) do
     user = get_current_user(conn)
 
     user

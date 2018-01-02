@@ -1,13 +1,7 @@
 defmodule ActiveMonitoring.ChannelsController do
   use ActiveMonitoring.Web, :controller
 
-  alias ActiveMonitoring.{
-    Channel,
-    Repo,
-    Runtime.VerboiceChannel,
-    OAuthToken,
-    User
-  }
+  alias ActiveMonitoring.{ User }
 
   def index(conn, _) do
     channels = User.channels(conn.assigns[:current_user])

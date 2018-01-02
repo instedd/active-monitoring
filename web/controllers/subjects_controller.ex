@@ -63,7 +63,7 @@ defmodule ActiveMonitoring.SubjectsController do
       {page, _} -> page |> max(1)
     end
 
-    offset = limit * (newPage - 1)
+    limit * (newPage - 1)
   end
 
   defp limit_up_to_50 limit do
