@@ -10,6 +10,7 @@ defmodule ActiveMonitoring.Runtime.Flow do
     insert_call_answer(call, digits)
 
     language = fetch_or_choose_language(call, digits, campaign)
+    call = associate_call_subject(call, digits, campaign)
     step = next_step(campaign, call.current_step, digits) |> check_forward(campaign, call, digits)
     Call.changeset(call, %{current_step: step, language: language}) |> Repo.update!
 
@@ -40,6 +41,8 @@ defmodule ActiveMonitoring.Runtime.Flow do
     call = Repo.preload call, :call_answers
     if Campaign.should_forward(campaign, call.call_answers), do: "forward", else: next_step(campaign, "forward", digits)
   end
+  defp check_forward("registration", _campaign, %Call{subject_id: nil}, _digits), do: "registration"
+  defp check_forward("registration", campaign, _call, digits), do: next_step(campaign, "registration", digits)
   defp check_forward(step, _campaign, _call, _digits), do: step
 
   defp action_for(step) do
@@ -62,6 +65,14 @@ defmodule ActiveMonitoring.Runtime.Flow do
     Enum.fetch!(langs, option - 1)
   end
 
+  defp associate_call_subject(%Call{current_step: "identify"} = call, digits, campaign) do
+    case fetch_subject(digits, campaign.id) do
+      nil -> call
+      subject -> Call.assign_subject(call, subject)
+    end
+  end
+  defp associate_call_subject(call, _digits, _campaign), do: call
+
   defp fetch_campaign(campaign_id) do
     Campaign |> Repo.get!(campaign_id)
   end
@@ -70,8 +81,8 @@ defmodule ActiveMonitoring.Runtime.Flow do
     Call |> Repo.get_by(sid: call_sid)
   end
 
-  defp fetch_subject(from, campaign_id) do
-    Subject |> Repo.get_by(phone_number: from, campaign_id: campaign_id)
+  defp fetch_subject(registration_identifier, campaign_id) do
+    Subject |> Repo.get_by(registration_identifier: registration_identifier, campaign_id: campaign_id)
   end
 
   defp fetch_or_insert_call(call_sid, from, campaign_id) do

@@ -29,7 +29,7 @@ defmodule ActiveMonitoring.Factory do
     topics =
       campaign.symptoms
       |> Enum.map(fn([id, _]) -> "symptom:#{id}" end)
-      |> Enum.concat(["welcome", "forward", "additional_information_intro", "educational", "thanks"])
+      |> Enum.concat(["welcome", "identify", "registration", "forward", "additional_information_intro", "educational", "thanks"])
 
     lang_audios =
       for lang <- campaign.langs,

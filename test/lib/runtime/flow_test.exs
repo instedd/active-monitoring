@@ -106,15 +106,68 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
 
     test "it should advance current step" do
-      assert %Call{current_step: "symptom:id-fever"} = Repo.one!(Call)
+      assert %Call{current_step: "identify"} = Repo.one!(Call)
     end
 
     test "it should create a call log", %{call: %Call{id: call_id}} do
       assert %CallLog{step: "welcome", call_id: ^call_id} = (CallLog |> Query.last |> Repo.one!)
     end
 
+    test "it should answer with identify message", %{response: response} do
+      assert {:gather, %{audio: "id-identify-es"}} = response
+    end
+  end
+
+  describe "identifies a registered subject" do
+    setup do
+      owner = build(:user) |> Repo.insert!
+      campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
+      subject = build(:subject, campaign: campaign, registration_identifier: "123") |> Repo.insert!
+      call = build(:call, campaign: campaign, language: "es") |> on_step("identify") |> Repo.insert!
+      response = Flow.handle(campaign.id, call.sid, "123")
+      {:ok, campaign: campaign, call: call, response: response, subject: subject}
+    end
+
+    test "it should advance current step" do
+      assert %Call{current_step: "symptom:id-fever"} = Repo.one!(Call)
+    end
+
+    test "it should assign the call's subject", %{subject: %{id: subject_id}} do
+      assert %Call{subject_id: ^subject_id} = Repo.one!(Call)
+    end
+
+    test "it should create a call log", %{call: %Call{id: call_id}} do
+      assert %CallLog{step: "identify", digits: "123", call_id: ^call_id} = (CallLog |> Query.last |> Repo.one!)
+    end
+
     test "it should answer with symptom message", %{response: response} do
       assert {:gather, %{audio: "id-symptom:id-fever-es"}} = response
+    end
+  end
+
+  describe "identifies an invalid subject registration ID" do
+    setup do
+      owner = build(:user) |> Repo.insert!
+      campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
+      call = build(:call, campaign: campaign, language: "es") |> on_step("identify") |> Repo.insert!
+      response = Flow.handle(campaign.id, call.sid, "123")
+      {:ok, campaign: campaign, call: call, response: response}
+    end
+
+    test "it should advance current step" do
+      assert %Call{current_step: "registration"} = Repo.one!(Call)
+    end
+
+    test "it should not assign the call's subject" do
+      assert %Call{subject_id: nil} = Repo.one!(Call)
+    end
+
+    test "it should create a call log", %{call: %Call{id: call_id}} do
+      assert %CallLog{step: "identify", digits: "123", call_id: ^call_id} = (CallLog |> Query.last |> Repo.one!)
+    end
+
+    test "it should answer with registration message", %{response: response} do
+      assert {:gather, %{audio: "id-registration-es"}} = response
     end
   end
 

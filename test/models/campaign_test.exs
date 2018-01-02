@@ -11,7 +11,7 @@ defmodule ActiveMonitoring.CampaignTest do
   end
 
   test "generate steps from symptoms", context do
-    assert ["language", "welcome", "symptom:id-fever", "symptom:id-rash", "forward", "educational", "thanks"] == Campaign.steps(context[:campaign])
+    assert ["language", "welcome", "identify", "registration", "symptom:id-fever", "symptom:id-rash", "forward", "educational", "thanks"] == Campaign.steps(context[:campaign])
   end
 
   test "returns audio for language topic", context do
