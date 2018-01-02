@@ -1,67 +1,29 @@
-
 <body class="landing">
+  <a href="javascript:void(0)" id="Overlay" class="overlay" onclick="closeNav()"></a>
+  <div id="Sidenav" class="sidenav">
+    <ul>
+      <li><a href="http://instedd.org/technologies/" class="md-btn md-btn--text md-text--theme-primary">About Instedd Platform</a></li>
+      <li><a href="<%= session_path @conn, :login %>" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block">Login</a></li>
+      <li><a href="#" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block outlined">Sign up for free</a></li>
+    </ul>
+  </div>
   <div class='wrapper'>
     <header>
       <nav>
         <div class="md-grid">
-          <div class="md-cell md-cell--3-phone">
+          <div class="md-cell md-cell--4-phone md-cell--8-tablet md-text-center--tablet">
+            <i class="md-icon material-icons md-cell--desktop-hidden side-menu" onclick="openNav()">menu</i>
             <div class="brand-logo">
               <img src="/images/icon.svg" width="60px">
               <span>Active Monitoring</span>
               </div>
           </div>
           <div class="md-cell--right md-text-right md-cell--phone-hidden md-cell--tablet-hidden">
-            <ul class="">
+            <ul>
               <li><a href="http://instedd.org/technologies/" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block">About Instedd Platform</a></li>
               <li><a href="<%= session_path @conn, :login %>" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block">Login</a></li>
               <li><a href="#" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block outlined">Sign up for free</a></li>
             </ul>
-          </div>
-          <div class="md-cell--right md-cell--1-phone md-text-right md-cell--middle md-cell--desktop-hidden">
-
-            <div id="topMenu" aria-haspopup="true" aria-expanded="false" class="md-layover md-layover--simplified md-inline-block md-menu-container" aria-owns="topMenu">
-              <button id="menu-button-2-toggle" type="button" class="md-btn md-btn--icon md-pointer--hover md-inline-block">
-                <div class="md-ink-container">
-                  <span aria-hidden="true"></span>
-                </div>
-                <i class="md-icon material-icons md-text--inherit">apps</i>
-              </button>
-
-<!--
-              <ul id="topMenu" class="md-list md-layover-child md-layover-child--tr md-layover-child--simplified md-list--menu md-list--menu-restricted md-list--menu-tr md-paper md-paper--2">
-                <li class="md-list-item">
-                  <div role="button" class="md-fake-btn md-pointer--hover md-fake-btn--no-outline md-list-tile md-text" tabindex="0" aria-pressed="false">
-                    <div class="md-ink-container">
-                      <span aria-hidden="true"></span>
-                    </div>
-                    <div class="md-tile-content">
-                      <div class="md-tile-text--primary md-text"><a href="http://instedd.org/technologies/" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block">About Instedd Platform</a></div>
-                    </div>
-                  </div>
-                </li>
-                <li class="md-list-item">
-                  <div role="button" class="md-fake-btn md-pointer--hover md-fake-btn--no-outline md-list-tile md-text" tabindex="0" aria-pressed="false">
-                    <div class="md-ink-container">
-                      <span aria-hidden="true"></span>
-                    </div>
-                    <div class="md-tile-content">
-                      <div class="md-tile-text--primary md-text"><a href="<%= session_path @conn, :login %>" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block">Login</a></div>
-                    </div>
-                  </div>
-                </li>
-                <li class="md-list-item">
-                  <div role="button" class="md-fake-btn md-pointer--hover md-fake-btn--no-outline md-list-tile md-text" tabindex="0" aria-pressed="false">
-                    <div class="md-ink-container">
-                      <span aria-hidden="true"></span>
-                    </div>
-                    <div class="md-tile-content">
-                      <div class="md-tile-text--primary md-text"><a href="#" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block outlined">Sign up for free</a></div>
-                    </div>
-                  </div>
-                </li>
-              </ul> -->
-            </div>
-
           </div>
         </div>
       </nav>
@@ -167,4 +129,18 @@
       </div>
     </footer>
   </div>
+
+
+<script>
+  function openNav() {
+      document.getElementById("Sidenav").style.transform = "translateX(0)";
+      document.getElementById("Overlay").style.visibility = "visible";
+  }
+
+  function closeNav() {
+      document.getElementById("Sidenav").style.transform = "translateX(-100%)";
+      document.getElementById("Overlay").style.visibility = "hidden";
+  }
+</script>
+
 </body>

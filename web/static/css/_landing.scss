@@ -12,10 +12,25 @@ body.landing {
   a {
     text-decoration: none;
     color: inherit;
+
+    &.outlined {
+      color: #f44336;
+      border: 2px solid #f44336;
+      border-radius: 3px;
+    }
   }
 
   header {
     background: $md-white-base;
+    position: relative;
+
+    .side-menu {
+      border-radius: 4px;
+      position: absolute;
+      left: 2rem;
+      top: calc(50% - 12px);
+      cursor: pointer;
+    }
 
     .brand-logo {
       min-width: 285px;
@@ -38,26 +53,19 @@ body.landing {
         display: inline-block;
         text-align: center;
         a {
-          font-size: 90%;
+          font-size: 94%;
           color: $md-grey-700;
           margin-left: 5px;
           margin-right: 0px;
           height: 48px;
           line-height: 48px;
           padding: 0 .5rem;
-
-          &:hover {
-            // @extend .black-text;
-          }
-          &.outlined {
-            color: #f44336;
-            line-height: 45px;
-            border: 2px solid #f44336;
-            border-radius: 3px;
-            &:hover {
-            }
-          }
+          line-height: 45px;
         }
+      }
+      .md-btn--text {
+        margin-top: 0px !important;
+        margin-bottom: 0px !important;
       }
     }
   }
@@ -200,3 +208,65 @@ body.landing {
   }
 }
 
+
+// Left panel for mobile
+
+.sidenav {
+  background-color: $md-white-base;
+  text-align: center;
+  padding-top: 1rem;
+  height: 100%;
+  width: 300px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+  transition-timing-function: ease-in;
+  transition: 0.24s;
+  transform: translateX(-100%);
+  z-index: 999;
+
+  ul {
+    padding: 0;
+    margin: 0;
+    li {
+      list-style: none;
+      margin: 0;
+      padding: 0 1.2rem;
+
+      a {
+        font-size: 94%;
+        display: block;
+      }
+    }
+  }
+}
+
+
+.overlay {
+    background: $md-black-base;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    visibility: hidden;
+    opacity: .4;
+    z-index: 1;
+}
+
+
+
+@media (max-width: 410px) {
+  .brand-logo {
+    transform: scale(.8, .8);
+  }
+}
+
+@media (max-width: 840px) {
+  .md-text-center--tablet {
+    text-align: center;
+  }
+}
