@@ -48,7 +48,7 @@ class LanguageStepComponent extends Component {
                   />}
               />)}
           </List>
-          <Button flat label='Add another language' className='btn-add-grey' onClick={this.props.onAdd}>add</Button>
+          <Button flat label='Add language' className='btn-add-grey' onClick={this.props.onAdd}>add</Button>
         </div>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
