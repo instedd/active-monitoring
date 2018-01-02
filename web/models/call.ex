@@ -44,6 +44,11 @@ defmodule ActiveMonitoring.Call do
     |> select([r], %{x: (fragment("date_part('week', ?)", (field(r, ^date_field)))), y: count("*")})
   end
 
+  def assign_subject(call, subject) do
+    changeset(call, %{subject_id: subject.id})
+    |> Repo.update!
+  end
+
   defp render_one(call) do
     %{
       id: call.id,

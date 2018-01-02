@@ -38,7 +38,9 @@ defmodule ActiveMonitoring.Campaign do
   def steps(%{symptoms: symptoms, additional_information: additional_information}) do
     Enum.concat([
       ["language",
-       "welcome"],
+       "welcome",
+       "identify",
+       "registration"],
       Enum.map(symptoms, fn([id, _]) -> "symptom:#{id}" end),
       ["forward",
        (if additional_information == "optional", do: "additional_information_intro"),
