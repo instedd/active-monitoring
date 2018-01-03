@@ -128,7 +128,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
       {:ok, campaign: campaign, call: call, response: response, subject: subject}
     end
 
-    test "it should advance current step" do
+    test "it should move on to the first symptom" do
       assert %Call{current_step: "symptom:id-fever"} = Repo.one!(Call)
     end
 
@@ -154,7 +154,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
       {:ok, campaign: campaign, call: call, response: response}
     end
 
-    test "it should advance current step" do
+    test "it should advance the call to registration" do
       assert %Call{current_step: "registration"} = Repo.one!(Call)
     end
 
@@ -166,7 +166,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
       assert %CallLog{step: "identify", digits: "123", call_id: ^call_id} = (CallLog |> Query.last |> Repo.one!)
     end
 
-    test "it should answer with registration message", %{response: response} do
+    test "it should forward the call for registration", %{response: response} do
       assert {:forward, %{audio: "id-registration-es", number: "5550000"}} = response
     end
   end
