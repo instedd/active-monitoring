@@ -33,7 +33,7 @@ defmodule ActiveMonitoring.Runtime.Broker do
 
   def handle_info(:poll, state, now) do
     try do
-      all_active_campaigns()
+      active_campaigns_to_remind(now)
       |> Enum.filter(&is_it_time_to_remind_subjects(&1, now))
       |> Enum.each(&call_pending_subjects(&1, now))
 
@@ -51,8 +51,9 @@ defmodule ActiveMonitoring.Runtime.Broker do
     {:noreply, state}
   end
 
-  defp all_active_campaigns do
-    Repo.all(from c in Campaign, where: not(is_nil(c.started_at))) |> Repo.preload(:subjects) |> Repo.preload([subjects: :campaign])
+  defp active_campaigns_to_remind(now) do
+    Repo.all(from c in Campaign, where: not(is_nil(c.started_at)) and (is_nil(c.last_reminder_time) or (c.last_reminder_time < ^Timex.shift(now, hours: -23))) )
+    |> Repo.preload([subjects: :campaign])
   end
 
   defp is_it_time_to_remind_subjects(%{timezone: timezone}, now) do
@@ -60,8 +61,7 @@ defmodule ActiveMonitoring.Runtime.Broker do
       {:error, error} -> Logger.error inspect(error); false
       local_now ->
         local_3pm = Timex.set(local_now, [hour: 15, minute: 0, second: 0])
-        last_poll_date = Timex.shift(local_now, milliseconds: -@poll_interval)
-        Timex.between?(local_3pm, last_poll_date, local_now)
+        Timex.before?(local_3pm, local_now)
     end
   end
 
@@ -69,5 +69,6 @@ defmodule ActiveMonitoring.Runtime.Broker do
     verboice_client = Channel.provider("verboice")
     pending = Campaign.subjects_pending_check_in(campaign, subjects, now)
     Enum.each pending, &verboice_client.call(campaign, &1)
+    Campaign.mark_as_reminded(campaign, now)
   end
 end

@@ -1,7 +1,7 @@
 defmodule ActiveMonitoring.Campaign do
   use ActiveMonitoring.Web, :model
 
-  alias ActiveMonitoring.{Channel, User, Campaign, Subject}
+  alias ActiveMonitoring.{Channel, User, Campaign, Subject, Repo}
   alias ActiveMonitoring.Router.Helpers
   alias Timex.Timezone
 
@@ -17,6 +17,7 @@ defmodule ActiveMonitoring.Campaign do
     field :channel, :string
     field :timezone, :string
     field :monitor_duration, :integer
+    field :last_reminder_time, Ecto.DateTime
     # field :alert_recipients, {:array, :string}
     # field :additional_fields, {:array, :string}
 
@@ -28,7 +29,7 @@ defmodule ActiveMonitoring.Campaign do
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:name, :symptoms, :forwarding_number, :forwarding_condition, :audios, :langs, :channel, :user_id, :additional_information, :timezone, :monitor_duration])
+    |> cast(params, [:name, :symptoms, :forwarding_number, :forwarding_condition, :audios, :langs, :channel, :user_id, :additional_information, :timezone, :monitor_duration, :last_reminder_time])
     |> validate_inclusion(:additional_information, ["zero", "optional", "compulsory"])
     |> validate_inclusion(:forwarding_condition, ["any", "all"])
     |> assoc_constraint(:user)
@@ -77,6 +78,11 @@ defmodule ActiveMonitoring.Campaign do
       password: "",
       external_service: Helpers.verboice_callbacks_url(ActiveMonitoring.Endpoint, :callback, campaign.id)}
     )
+  end
+
+  def mark_as_reminded(campaign, now) do
+    Campaign.changeset(campaign, %{last_reminder_time: now})
+    |> Repo.update!
   end
 
   def subjects_pending_check_in(%Campaign{timezone: timezone}, subjects, now) do
