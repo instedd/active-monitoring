@@ -171,6 +171,29 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
   end
 
+  describe "registration of a new subject" do
+    setup do
+      owner = build(:user) |> Repo.insert!
+      campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
+      call = build(:call, campaign: campaign, language: "es") |> on_step("registration") |> Repo.insert!
+      subject = build(:subject, campaign: campaign, phone_number: "9990001") |> Repo.insert!
+      response = Flow.handle(campaign.id, call.sid, nil)
+      {:ok, campaign: campaign, call: call, response: response, subject: subject}
+    end
+
+    test "it should go back to identify step" do
+      assert %Call{current_step: "identify"} = Repo.one!(Call)
+    end
+
+    test "it should create a call log", %{call: %Call{id: call_id}} do
+      assert %CallLog{step: "registration", call_id: ^call_id} = (CallLog |> Query.last |> Repo.one!)
+    end
+
+    test "it should answer with identify message", %{response: response} do
+      assert {:gather, %{audio: "id-identify-es"}} = response
+    end
+  end
+
   describe "answer positive symptom" do
     setup do
       owner = build(:user) |> Repo.insert!

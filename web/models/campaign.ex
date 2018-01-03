@@ -35,13 +35,17 @@ defmodule ActiveMonitoring.Campaign do
     |> assoc_constraint(:user)
   end
 
-  def steps(%{symptoms: symptoms, additional_information: additional_information}) do
+  def symptom_steps(%{symptoms: symptoms}) do
+    Enum.map(symptoms, fn([id, _]) -> "symptom:#{id}" end)
+  end
+
+  def steps(%{symptoms: symptoms, additional_information: additional_information} = campaign) do
     Enum.concat([
       ["language",
        "welcome",
        "identify",
        "registration"],
-      Enum.map(symptoms, fn([id, _]) -> "symptom:#{id}" end),
+      symptom_steps(campaign),
       ["forward",
        (if additional_information == "optional", do: "additional_information_intro"),
        (if additional_information in ["optional", "compulsory"], do: "educational"),
