@@ -67,7 +67,7 @@ defmodule ActiveMonitoring.Subject do
     subject_enroll_date = Subject.enroll_date(subject)
 
     final_enroll_date = subject_enroll_date |> Timex.shift(days: campaign.monitor_duration)
-    Timex.compare(now, subject_enroll_date) > 0 && Timex.compare(final_enroll_date, now) > 0
+    Timex.before?(subject_enroll_date, now) && Timex.after?(final_enroll_date, now)
   end
 
   def active_case(subject) do

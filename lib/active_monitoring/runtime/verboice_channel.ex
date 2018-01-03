@@ -1,5 +1,6 @@
 defmodule ActiveMonitoring.Runtime.VerboiceChannel do
   alias __MODULE__
+  alias ActiveMonitoring.Router.Helpers
   use ActiveMonitoring.Web, :model
   require Plug.Conn
   @behaviour ActiveMonitoring.Runtime.ChannelProvider
@@ -62,6 +63,25 @@ defmodule ActiveMonitoring.Runtime.VerboiceChannel do
         channel_names
 
       _ -> :error
+    end
+  end
+
+  def call(%{id: campaign_id, channel: channel, user_id: user_id}, %{phone_number: phone_number}) do
+    base_url = Application.get_env(:active_monitoring, :verboice)[:base_url]
+    create_client(user_id, base_url)
+    |> Verboice.Client.call(address: phone_number,
+                            channel: channel,
+                            callback_url: Helpers.verboice_callbacks_url(ActiveMonitoring.Endpoint, :callback, campaign_id),
+                            status_callback_url: Helpers.verboice_callbacks_url(ActiveMonitoring.Endpoint, :status, campaign_id))
+    |> ActiveMonitoring.Runtime.VerboiceChannel.process_call_response
+  end
+
+  def process_call_response(response) do
+    case response do
+      {:ok, %{"call_id" => call_id}} ->
+        {:ok, %{verboice_call_id: call_id}}
+      _ ->
+        {:error, response}
     end
   end
 

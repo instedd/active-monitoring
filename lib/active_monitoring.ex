@@ -18,7 +18,8 @@ defmodule ActiveMonitoring do
 
     children = if Mix.env != :test && !IEx.started? do
       [
-        worker(ActiveMonitoring.OAuthTokenServer, [])
+        worker(ActiveMonitoring.OAuthTokenServer, []),
+        worker(ActiveMonitoring.Runtime.Broker, [])
         | children ]
       else
         children
