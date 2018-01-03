@@ -15,6 +15,11 @@ defmodule ActiveMonitoring.Runtime.TwimlTest do
       assert "<Response>\n\t<Gather action=\"CALLBACK_URL\" method=\"POST\">\n\t\t<Play>http://test.example.com/api/v1/audios/AUDIO_UUID</Play>\n\t</Gather>\n</Response>" == xml
     end
 
+    test "it should build a gather step with finish key" do
+      xml = TwiML.build({:gather, %{audio: "AUDIO_UUID", finish_on_key: "*"}}, "CALLBACK_URL")
+      assert "<Response>\n\t<Gather action=\"CALLBACK_URL\" finishOnKey=\"*\" method=\"POST\">\n\t\t<Play>http://test.example.com/api/v1/audios/AUDIO_UUID</Play>\n\t</Gather>\n</Response>" == xml
+    end
+
     test "it should build a forward step" do
       xml = TwiML.build({:forward, %{audio: "AUDIO_UUID", number: "5550000"}}, "CALLBACK_URL")
       assert "<Response>\n\t<Play>http://test.example.com/api/v1/audios/AUDIO_UUID</Play>\n\t<Dial>5550000</Dial>\n\t<Redirect>CALLBACK_URL</Redirect>\n</Response>" == xml
