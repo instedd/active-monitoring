@@ -48,7 +48,7 @@ defmodule ActiveMonitoring.Runtime.Flow do
   defp action_for(step) do
     case step do
       step when step in ["welcome", "educational"] -> :play
-      step when step in ["forward"] -> :forward
+      step when step in ["registration", "forward"] -> :forward
       step when step in ["thanks"] -> :hangup
       _ -> :gather
     end
