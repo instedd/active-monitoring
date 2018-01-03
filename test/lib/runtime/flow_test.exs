@@ -2,7 +2,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
   use ExUnit.Case
 
   alias ActiveMonitoring.Runtime.{Flow}
-  alias ActiveMonitoring.{Call, CallLog, CallAnswer, Repo, Subject}
+  alias ActiveMonitoring.{Call, CallLog, CallAnswer, Repo}
   alias Ecto.Query
 
   import ActiveMonitoring.Factory
@@ -21,8 +21,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     setup do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
-      subject = build(:subject, campaign: campaign, phone_number: "9990001") |> Repo.insert!
-      {:ok, campaign: campaign, subject: subject}
+      {:ok, campaign: campaign}
     end
 
     test "it should create a new call", %{campaign: campaign} do
@@ -32,24 +31,20 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
       assert call.campaign_id == campaign.id
     end
 
-    test "it should find subject if same phone number is used", %{campaign: campaign, subject: %Subject{id: subject_id}} do
+    test "it should not infer the subject (not even by phone number)", %{campaign: campaign} do
+      build(:subject, campaign: campaign, phone_number: "9990001") |> Repo.insert!
+
       Flow.handle_status(campaign.id, "CALL_SID_1", "9990001", "ringing")
-      call = Repo.one!(Call)
-      assert %Call{sid: "CALL_SID_1", current_step: nil} = call
-      assert call.subject_id == subject_id
+
+      assert %Call{sid: "CALL_SID_1", current_step: nil, subject_id: nil} = Repo.one!(Call)
     end
 
-    test "it should not find subject if new phone number is used", %{campaign: campaign} do
-      Flow.handle_status(campaign.id, "CALL_SID_1", "9990002", "ringing")
-      call = Repo.one!(Call)
-      assert %Call{sid: "CALL_SID_1", current_step: nil, subject_id: nil} = call
-    end
+    test "it should not infer the subject (not even by registration identifier)", %{campaign: campaign} do
+      build(:subject, campaign: campaign, registration_identifier: "9990001") |> Repo.insert!
 
-    test "it should not find a subject for a different campaign", %{subject: subject} do
-      other_campaign = build(:campaign) |> Repo.insert!
-      Flow.handle_status(other_campaign.id, "CALL_SID_2", "9990001", "ringing")
-      call = Repo.one!(Call)
-      assert call.subject_id != subject.id
+      Flow.handle_status(campaign.id, "CALL_SID_1", "9990001", "ringing")
+
+      assert %Call{sid: "CALL_SID_1", current_step: nil, subject_id: nil} = Repo.one!(Call)
     end
   end
 
