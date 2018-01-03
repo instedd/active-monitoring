@@ -114,7 +114,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
 
     test "it should answer with identify message", %{response: response} do
-      assert {:gather, %{audio: "id-identify-es"}} = response
+      assert {:gather, %{audio: "id-identify-es", finish_on_key: "#"}} = response
     end
   end
 
@@ -190,7 +190,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
 
     test "it should answer with identify message", %{response: response} do
-      assert {:gather, %{audio: "id-identify-es"}} = response
+      assert {:gather, %{audio: "id-identify-es", finish_on_key: "#"}} = response
     end
   end
 

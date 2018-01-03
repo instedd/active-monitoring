@@ -11,6 +11,12 @@ defmodule ActiveMonitoring.Runtime.TwiML do
         |> generate
   end
 
+  def build({:gather, %{audio: audio_uuid, finish_on_key: finish_key}}, callback_url) do
+    gather(callback_url, finish_key, [ play(audio_uuid) ])
+      |> response
+      |> generate
+  end
+
   def build({:gather, %{audio: audio_uuid}}, callback_url) do
     gather(callback_url, [ play(audio_uuid) ])
       |> response
@@ -39,6 +45,10 @@ defmodule ActiveMonitoring.Runtime.TwiML do
 
   defp play(audio_uuid) do
     element(:Play, audio_url_for(audio_uuid))
+  end
+
+  defp gather(callback_url, finish_key, children) do
+    element(:Gather, %{method: "POST", action: callback_url, finishOnKey: finish_key}, children)
   end
 
   defp gather(callback_url, children) do
