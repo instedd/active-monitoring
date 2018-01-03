@@ -34,6 +34,10 @@ class UploadAudioStepComponent extends Component {
   getTopicTexts(topic) {
     if (topic == 'welcome') {
       return { title: 'Welcome message', description: 'Present the objectives of this call' }
+    } else if (topic == 'identify') {
+      return { title: 'Identify message', description: 'Ask subject to dial their ID or to press # if they do not have one' }
+    } else if (topic == 'registration') {
+      return { title: 'Registration message', description: 'Inform the caller the call will be forwarded to an agent for registration' }
     } else if (topic == 'forward') {
       return { title: 'Forward call message', description: 'Explain that the current call will be forwarded to an agent due to positive symptoms' }
     } else if (topic == 'educational') {
