@@ -167,7 +167,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     end
 
     test "it should answer with registration message", %{response: response} do
-      assert {:gather, %{audio: "id-registration-es"}} = response
+      assert {:forward, %{audio: "id-registration-es", number: "5550000"}} = response
     end
   end
 
