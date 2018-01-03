@@ -11,7 +11,7 @@ defmodule ActiveMonitoring.Runtime.Flow do
 
     language = fetch_or_choose_language(call, digits, campaign)
     call = associate_call_subject(call, digits, campaign)
-    step = next_step(campaign, call.current_step, digits) |> check_forward(campaign, call, digits)
+    step = next_step(campaign, call, digits) |> check_forward(campaign, call, digits)
     Call.changeset(call, %{current_step: step, language: language}) |> Repo.update!
 
     action = action_for(step)
@@ -23,10 +23,14 @@ defmodule ActiveMonitoring.Runtime.Flow do
     :ok
   end
 
-  defp next_step(_campaign, "additional_information_intro", digits) do
+  defp next_step(_campaign, %{current_step: "additional_information_intro"}, digits) do
     if digits_to_response(digits), do: "educational", else: "thanks"
   end
-  defp next_step(campaign, step, _digits) do
+  defp next_step(_campaign, %{current_step: "registration"}, _digits), do: "identify"
+  defp next_step(campaign, %{current_step: "identify", subject_id: subject_id}, _digits)
+    when not(is_nil(subject_id)),
+    do: Campaign.symptom_steps(campaign) |> hd
+  defp next_step(campaign, %{current_step: step}, _digits) do
     steps = Campaign.steps(campaign)
     index = Enum.find_index(steps, fn(s) -> s == step end) || -1
     Enum.fetch!(steps, index + 1)
@@ -39,10 +43,8 @@ defmodule ActiveMonitoring.Runtime.Flow do
 
   defp check_forward("forward", campaign, call, digits) do
     call = Repo.preload call, :call_answers
-    if Campaign.should_forward(campaign, call.call_answers), do: "forward", else: next_step(campaign, "forward", digits)
+    if Campaign.should_forward(campaign, call.call_answers), do: "forward", else: next_step(campaign, %{call | current_step: "forward"}, digits)
   end
-  defp check_forward("registration", _campaign, %Call{subject_id: nil}, _digits), do: "registration"
-  defp check_forward("registration", campaign, _call, digits), do: next_step(campaign, "registration", digits)
   defp check_forward(step, _campaign, _call, _digits), do: step
 
   defp action_for(step) do
