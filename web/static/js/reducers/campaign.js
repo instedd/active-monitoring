@@ -11,6 +11,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case actions.CAMPAIGN_CLEAR: return campaignClear(state, action)
     case actions.CAMPAIGN_CREATED: return campaignLoaded(state, action)
     case actions.CAMPAIGN_FETCH: return campaignFetch(state, action)
     case actions.CAMPAIGN_FETCHED: return campaignLoaded(state, action)
@@ -21,6 +22,10 @@ export default (state = initialState, action) => {
     default: return state
   }
 }
+
+const campaignClear = (state) => (
+  { fetching: false, campaignId: null, data: null }
+)
 
 const campaignFetch = (state, id) => {
   return { fetching: true, campaignId: id, data: null }

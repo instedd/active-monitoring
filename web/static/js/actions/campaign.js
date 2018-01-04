@@ -3,6 +3,7 @@ import { SERVER_ERROR } from './shared'
 import { push } from 'react-router-redux'
 import assign from 'lodash/assign'
 
+export const CAMPAIGN_CLEAR = 'CAMPAIGN_CLEAR'
 export const CAMPAIGN_CREATE = 'CAMPAIGN_CREATE'
 export const CAMPAIGN_CREATED = 'CAMPAIGN_CREATED'
 export const CAMPAIGN_FETCH = 'CAMPAIGN_FETCH'
@@ -10,6 +11,10 @@ export const CAMPAIGN_FETCHED = 'CAMPAIGN_FETCHED'
 export const CAMPAIGN_UPDATE = 'CAMPAIGN_UPDATE'
 export const CAMPAIGN_UPDATED = 'CAMPAIGN_UPDATED'
 export const CAMPAIGN_LAUNCH = 'CAMPAIGN_LAUNCH'
+
+export const campaignClear = () => (dispatch) => {
+  dispatch({type: CAMPAIGN_CLEAR})
+}
 
 export const createCampaign = (campaignParams) => (dispatch) => {
   dispatch({type: CAMPAIGN_CREATE})

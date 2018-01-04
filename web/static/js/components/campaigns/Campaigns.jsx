@@ -101,6 +101,7 @@ class Campaigns extends Component {
   }
 
   goToCampaign(id) {
+    this.props.itemActions.campaignClear()
     this.props.navigate(`/campaigns/${id}`)
   }
 
