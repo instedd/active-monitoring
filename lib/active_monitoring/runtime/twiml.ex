@@ -12,7 +12,8 @@ defmodule ActiveMonitoring.Runtime.TwiML do
   end
 
   def build({:gather, %{audio: audio_uuid, finish_on_key: finish_key}}, callback_url) do
-    gather(callback_url, finish_key, [ play(audio_uuid) ])
+    [ gather(callback_url, finish_key, [ play(audio_uuid) ]),
+      redirect("#{callback_url}?Digits=") ]
       |> response
       |> generate
   end
