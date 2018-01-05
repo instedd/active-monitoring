@@ -67,8 +67,18 @@ defmodule ActiveMonitoring.Runtime.Broker do
 
   defp call_pending_subjects(%{subjects: subjects} = campaign, now) do
     verboice_client = Channel.provider("verboice")
-    pending = Campaign.subjects_pending_check_in(campaign, subjects, now)
-    Enum.each pending, &verboice_client.call(campaign, &1)
+    pending_subjects = Campaign.subjects_pending_check_in(campaign, subjects, now)
+    Enum.each pending_subjects, fn(subject) ->
+      try do
+        case verboice_client.call(campaign, subject) do
+          {:ok, _} -> true
+          {:error, reason} -> Logger.error "Error calling subject: #{inspect(reason)}\n#{inspect(subject)}\n\n"
+          response -> Logger.error "Unknown response calling subject: #{inspect(response)}\n#{inspect(subject)}\n\n"
+        end
+      rescue
+        e in RuntimeError -> Logger.error("Runtime error calling subject: #{inspect(e)}\n#{inspect(subject)}\n\n")
+      end
+    end
     Campaign.mark_as_reminded(campaign, now)
   end
 end

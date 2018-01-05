@@ -80,6 +80,8 @@ defmodule ActiveMonitoring.Runtime.VerboiceChannel do
     case response do
       {:ok, %{"call_id" => call_id}} ->
         {:ok, %{verboice_call_id: call_id}}
+      {:error, error} ->
+        {:error, error}
       _ ->
         {:error, response}
     end
