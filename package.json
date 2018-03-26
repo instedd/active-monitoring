@@ -57,7 +57,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "eslint_d": "^4.2.5",
     "extract-text-webpack-plugin": "^2.1.0",
-    "flow-babel-webpack-plugin": "^1.0.1",
+    "flow-babel-webpack-plugin": "^1.1.1",
     "flow-bin": "^0.68.0",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.5",
