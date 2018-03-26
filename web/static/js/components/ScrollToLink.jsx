@@ -1,10 +1,16 @@
 // @flow
 import React, { Component } from 'react'
+import type {Node} from 'react'
 import PropTypes from 'prop-types'
 import Button from 'react-md/lib/Buttons/Button'
 import $ from 'jquery'
 
-export class ScrollToLink extends Component {
+type Props = {
+  target: string,
+  children: Node
+}
+
+export class ScrollToLink extends Component<Props> {
   render() {
     const { children, target } = this.props
 

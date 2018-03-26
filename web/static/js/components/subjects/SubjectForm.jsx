@@ -4,15 +4,14 @@ import TextField from 'react-md/lib/TextFields'
 import Button from 'react-md/lib/Buttons'
 import type {SubjectParams} from '../../types'
 
-class SubjectForm extends Component {
-  props: {
-    onEditRegistrationIdentifier: (registrationIdentifier: string) => void,
-    onEditPhoneNumber: (phoneNumber: string) => void,
-    onSubmit: () => void,
-    onCancel: () => void,
-    subject: SubjectParams
-  }
-
+type Props = {
+  onEditRegistrationIdentifier: (registrationIdentifier: string) => void,
+  onEditPhoneNumber: (phoneNumber: string) => void,
+  onSubmit: () => void,
+  onCancel: () => void,
+  subject: SubjectParams
+}
+class SubjectForm extends Component<Props> {
   render() {
     const { subject, onSubmit, onCancel, onEditPhoneNumber, onEditRegistrationIdentifier } = this.props
 

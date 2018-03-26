@@ -8,15 +8,14 @@ import AddButton from './AddButton'
 const IconActive = () =>
   <img src='/images/icon.svg' width='60' height='60' className='logo' />
 
-class SubNav extends Component {
-  props: {
-    addButtonHandler: Function,
-    children: any,
-    navigate: Function,
-    map: Function,
-    tabsList: Function
-  }
-
+type Props = {
+  addButtonHandler: Function,
+  children: any,
+  navigate: Function,
+  map: Function,
+  tabsList: Function
+}
+class SubNav extends Component<Props> {
   goToItem(itemIndex) {
     this.props.navigate(this.props.tabsList[itemIndex].url)
   }

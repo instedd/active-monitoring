@@ -23,18 +23,18 @@ import SubjectForm from './SubjectForm'
 import ActiveCampaignSubNav from '../ActiveCampaignSubNav'
 import type { Subject, SubjectParams, Campaign } from '../../types'
 
-class SubjectsList extends Component {
-  props: {
-    items: Subject[],
-    showSubjectForm: () => void,
-    onPageChange: (page: number) => void,
-    onSubjectClick: (subject: Subject) => void,
-    exportCsv: () => void,
-    currentPage: ?number,
-    rowsPerPage: number,
-    count: number,
-  }
+type SubjectsListProps = {
+  items: Subject[],
+  showSubjectForm: () => void,
+  onPageChange: (page: number) => void,
+  onSubjectClick: (subject: Subject) => void,
+  exportCsv: () => void,
+  currentPage: ?number,
+  rowsPerPage: number,
+  count: number,
+}
 
+class SubjectsList extends Component<SubjectsListProps> {
   render() {
     const subjects = this.props.items || []
 
@@ -88,11 +88,10 @@ class SubjectsList extends Component {
   }
 }
 
-class FormatDate extends Component {
-  props: {
-    date: ?Date,
-  }
-
+type FormatDateProps = {
+  date: ?Date
+}
+class FormatDate extends Component<FormatDateProps> {
   render() {
     const date = this.props.date
 
@@ -104,12 +103,11 @@ class FormatDate extends Component {
   }
 }
 
-class SubjectItem extends Component {
-  props: {
-    subject: Subject,
-    onClick: (subject: Subject) => void,
-  }
-
+type SubjectItemProps = {
+  subject: Subject,
+  onClick: (subject: Subject) => void,
+}
+class SubjectItem extends Component<SubjectItemProps> {
   render() {
     const subject = this.props.subject
     return (
@@ -134,38 +132,37 @@ class SubjectItem extends Component {
   }
 }
 
-class Subjects extends Component {
-  props: {
-    campaignId: number,
-    campaign: {
-      fetching: boolean,
-      data: Campaign
-    },
-    subjects: {
-      count: number,
-      items: Subject[],
-      editingSubject: ?SubjectParams,
-      limit: number,
-      page: ?number,
-      targetPage: number,
-      fetching: boolean,
-    },
-    campaignActions: {
-      campaignFetch: (campaignId: number) => void
-    },
-    collectionActions: {
-      fetchSubjects: (campaignId: number, limit: number, targetPage: number) => void,
-      changeTargetPage: (targetPage: number) => void,
-    },
-    itemActions: {
-      createSubject: (campaignId: number, subject: SubjectParams) => void,
-      updateSubject: (campaignId: number, subject: SubjectParams) => void,
-      editingSubjectCancel: () => void,
-      subjectEditing: (fieldName: string, value: string) => void,
-      editSubject: (subject: SubjectParams) => void,
-    }
+type SubjectsProps = {
+  campaignId: number,
+  campaign: {
+    fetching: boolean,
+    data: Campaign
+  },
+  subjects: {
+    count: number,
+    items: Subject[],
+    editingSubject: ?SubjectParams,
+    limit: number,
+    page: ?number,
+    targetPage: number,
+    fetching: boolean,
+  },
+  campaignActions: {
+    campaignFetch: (campaignId: number) => void
+  },
+  collectionActions: {
+    fetchSubjects: (campaignId: number, limit: number, targetPage: number) => void,
+    changeTargetPage: (targetPage: number) => void,
+  },
+  itemActions: {
+    createSubject: (campaignId: number, subject: SubjectParams) => void,
+    updateSubject: (campaignId: number, subject: SubjectParams) => void,
+    editingSubjectCancel: () => void,
+    subjectEditing: (fieldName: string, value: string) => void,
+    editSubject: (subject: SubjectParams) => void,
   }
-
+}
+class Subjects extends Component<SubjectsProps> {
   closeSubjectFormModal() {
     this.props.itemActions.editingSubjectCancel()
   }
