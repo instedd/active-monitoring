@@ -1,3 +1,4 @@
+// @flow
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
@@ -5,7 +6,9 @@ import values from 'lodash/values'
 import flatten from 'lodash/flatten'
 import capitalize from 'lodash/capitalize'
 
-import { audioEntries, audiosInUse, getAudioFileFor } from '../../selectors/campaign'
+import type { LanguageCode, Message, Step } from '../../types'
+
+import { messagesInUse, neededMessages, getAudioFileFor } from '../../selectors/campaign'
 import { uploadCampaignAudio, removeCampaignAudio } from '../../actions/audios'
 import { codeToName } from '../../langs'
 
@@ -30,7 +33,17 @@ AudiosUploadedCounter.propTypes = {
   total: PropTypes.number.isRequired
 }
 
-class UploadAudioStepComponent extends Component {
+type UploadAudioStepProps = {
+  children: any,
+  langs: string[],
+  symptoms: string[][],
+  neededMessages: { [lang: string]: string[] },
+  messages: Message[],
+  onUploadAudio: (file: string, step: Step, language: ?LanguageCode) => void,
+  onRemoveAudio: (step: Step, language: ?LanguageCode) => void
+}
+
+class UploadAudioStepComponent extends Component<UploadAudioStepProps> {
   getTopicTexts(topic) {
     if (topic == 'welcome') {
       return { title: 'Welcome message', description: 'Present the objectives of this call' }
@@ -47,25 +60,35 @@ class UploadAudioStepComponent extends Component {
     } else if (topic == 'thanks') {
       return { title: 'Thank you message', description: 'Thank the caller for participating' }
     } else if (topic == 'language') {
-      const description = this.props.langs.map((iso, i) => `${i + 1} for ${codeToName(iso)}`).join(', ')
+      const description = this.props.langs.map((iso: string, i) => {
+        const countryName = codeToName(iso) || 'unknown country'
+        return `${i + 1} for ${countryName}`
+      }).join(', ')
       return { title: 'Language options', description: `List the options: ${description}` }
     } else if (topic.startsWith('symptom:')) {
       const id = topic.split(':', 2)[1]
-      const name = this.props.symptoms.find(([_id, _name]) => id == _id)[1]
-      return { title: `${capitalize(name)} symptom question`, description: 'Ask if there are any signs of this symptom: 1 for Yes, 3 for No' }
+      const matchingSymptom = this.props.symptoms.find(([_id, _name]) => id == _id)
+
+      if (Array.isArray(matchingSymptom)) {
+        return { title: `${capitalize(matchingSymptom[1])} symptom question`, description: 'Ask if there are any signs of this symptom: 1 for Yes, 3 for No' }
+      } else {
+        throw new Error(`Malformed symptom list`)
+      }
     } else {
       throw new Error(`Unexpected topic: ${topic}`)
     }
   }
 
   renderLangTab(lang) {
+    const { neededMessages, messages, onUploadAudio, onRemoveAudio } = this.props
+
     return (
       <Tab label={codeToName(lang)} key={lang}>
-        {this.props.entries[lang].map(topic => (
+        {neededMessages[lang].map(topic => (
           <AudioPicker
-            file={getAudioFileFor(this.props.audios, topic, lang)}
-            onUpload={(file) => this.props.onUploadAudio(file, topic, lang)}
-            onRemove={() => this.props.onRemoveAudio(topic, lang)}
+            file={getAudioFileFor(messages, topic, lang)}
+            onUpload={(file) => onUploadAudio(file, topic, lang)}
+            onRemove={() => onRemoveAudio(topic, lang)}
             key={topic}
             {...this.getTopicTexts(topic)} />
         ))}
@@ -74,7 +97,9 @@ class UploadAudioStepComponent extends Component {
   }
 
   render() {
-    const totalAudios = flatten(values(this.props.entries)).length + 1
+    const { neededMessages } = this.props
+
+    const totalAudios = flatten(values(neededMessages)).length + 1
 
     return (
       <section id='audios' className='full-height'>
@@ -87,14 +112,14 @@ class UploadAudioStepComponent extends Component {
           </div>
         </div>
         <div className='md-grid'>
-          <AudiosUploadedCounter uploaded={this.props.audios.length} total={totalAudios} />
+          <AudiosUploadedCounter uploaded={neededMessages.length} total={totalAudios} />
         </div>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
             <AudioPicker
               onUpload={(file) => this.props.onUploadAudio(file, 'language')}
               onRemove={() => this.props.onRemoveAudio('language')}
-              file={getAudioFileFor(this.props.audios, 'language')}
+              file={getAudioFileFor(this.props.messages, 'language')}
               {...this.getTopicTexts('language')} />
           </div>
         </div>
@@ -117,20 +142,10 @@ class UploadAudioStepComponent extends Component {
   }
 }
 
-UploadAudioStepComponent.propTypes = {
-  children: PropTypes.any,
-  langs: PropTypes.arrayOf(PropTypes.string),
-  symptoms: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-  entries: PropTypes.object,
-  audios: PropTypes.array,
-  onUploadAudio: PropTypes.func,
-  onRemoveAudio: PropTypes.func
-}
-
 const mapStateToProps = (state) => {
   return {
-    audios: audiosInUse(state.campaign.data),
-    entries: audioEntries(state.campaign.data),
+    messages: messagesInUse(state.campaign.data),
+    neededMessages: neededMessages(state.campaign.data),
     symptoms: state.campaign.data.symptoms,
     langs: state.campaign.data.langs || []
   }

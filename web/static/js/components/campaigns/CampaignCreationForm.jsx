@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import { ScrollToLink, animatedScrollTo } from '../ScrollToLink'
 import PositionFixer from '../PositionFixer'
+import ModeStep from './ModeStep'
 import SymptomStep from './SymptomStep'
 import LanguageStep from './LanguageStep'
 import UploadAudioStep from './UploadAudioStep'
@@ -16,24 +17,21 @@ import ListItem from 'react-md/lib/Lists/ListItem'
 import FontIcon from 'react-md/lib/FontIcons'
 import Subheader from 'react-md/lib/Subheaders'
 import Button from 'react-md/lib/Buttons'
-import values from 'lodash/values'
-import flatten from 'lodash/flatten'
-import { audioEntries, audiosInUse } from '../../selectors/campaign'
 import type { Campaign } from '../../types'
+import { completedMessages } from '../../selectors/campaign'
 
 type Props = {
   campaign: Campaign,
+  completedMessages: boolean,
   launchCampaign: (campaignId: number) => void,
-  neededAudios: number,
   activeCampaignUsing: (channel: string) => Campaign,
-  uploadedAudios: number
 }
 
 type State = {
   attemptLaunch: boolean
 }
 
-class CampaignCreationFormComponent extends Component {
+class CampaignCreationFormComponent extends Component<Props, State> {
   props: Props
   state: State
 
@@ -45,11 +43,9 @@ class CampaignCreationFormComponent extends Component {
   }
 
   completedSymptomStep() {
-    return this.props.campaign.symptoms.filter((symptom) => symptom[1].length > 0).length > 0 && this.props.campaign.forwardingNumber != null
-  }
-
-  completedAudioStep() {
-    return (this.props.uploadedAudios > 1) && (this.props.uploadedAudios == this.props.neededAudios)
+    const { campaign } = this.props
+    return campaign.symptoms.filter((symptom) => symptom[1].length > 0).length > 0 &&
+      campaign.forwardingContact != null
   }
 
   completedEducationalInformationStep() {
@@ -65,7 +61,13 @@ class CampaignCreationFormComponent extends Component {
   }
 
   completedChannelSelectionStep() {
-    return this.props.campaign.channel != null && !this.props.activeCampaignUsing(this.props.campaign.channel)
+    const { campaign } = this.props
+    return campaign.channel != null &&
+      !this.props.activeCampaignUsing(campaign.channel)
+  }
+
+  completedModeStep() {
+    return false
   }
 
   launch() {
@@ -73,7 +75,15 @@ class CampaignCreationFormComponent extends Component {
   }
 
   render() {
-    const steps = [this.completedSymptomStep(), this.completedAudioStep(), this.completedEducationalInformationStep(), this.completedMonitoringSettingsStep(), this.completedLanguageStep(), this.completedChannelSelectionStep()]
+    const { completedMessages } = this.props
+
+    const steps = [this.completedSymptomStep(),
+      completedMessages,
+      this.completedEducationalInformationStep(),
+      this.completedMonitoringSettingsStep(),
+      this.completedLanguageStep(),
+      this.completedChannelSelectionStep()]
+
     const numberOfCompletedSteps = steps.filter(item => item == true).length
     const percentage = `${(100 / steps.length * numberOfCompletedSteps).toFixed(0)}%`
 
@@ -102,17 +112,25 @@ class CampaignCreationFormComponent extends Component {
                   </div>
                   {launchComponent}
                 </Subheader>
+                <ListItem onClick={(e) => animatedScrollTo(e, 'mode')} leftIcon={<FontIcon className='step-icon'>{this.completedModeStep() ? 'check_circle' : 'message'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Voice calls or chats?' className={this.completedModeStep() ? 'blue-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'symptoms')} leftIcon={<FontIcon className='step-icon'>{this.completedSymptomStep() ? 'check_circle' : 'healing'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Define the symptoms' className={this.completedSymptomStep() ? 'blue-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'information')} leftIcon={<FontIcon className='step-icon'>{this.completedEducationalInformationStep() ? 'check_circle' : 'info'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Educational information' className={this.completedEducationalInformationStep() ? 'blue-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'monitoring')} leftIcon={this.completedMonitoringSettingsStep() ? <FontIcon className='step-icon'>check_circle</FontIcon> : <img src='/images/campaign-black.svg' width='24' />} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Set up monitoring settings' className={this.completedMonitoringSettingsStep() ? 'blue-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'languages')} leftIcon={<FontIcon className='step-icon'>{this.completedLanguageStep() ? 'check_circle' : 'translate'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select languages' className={this.completedLanguageStep() ? 'blue-text' : ''} />
-                <ListItem onClick={(e) => animatedScrollTo(e, 'audios')} leftIcon={<FontIcon className='step-icon'>{this.completedAudioStep() ? 'check_circle' : 'volume_up'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Upload audio files' className={this.completedAudioStep() ? 'blue-text' : ''} />
+                <ListItem onClick={(e) => animatedScrollTo(e, 'audios')}
+                  leftIcon={<FontIcon className='step-icon'>{completedMessages ? 'check_circle' : 'volume_up'}</FontIcon>}
+                  rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>}
+                  primaryText='Upload audio files'
+                  className={completedMessages ? 'blue-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'channel')} leftIcon={<FontIcon className='step-icon'>{this.completedChannelSelectionStep() ? 'check_circle' : 'phone'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select a channel' className={this.completedChannelSelectionStep() ? 'blue-text' : ''} />
               </List>
             </div>
           </PositionFixer>
         </div>
         <div className='md-cell md-cell--12-tablet md-cell--7-desktop md-cell--1-desktop-offset wizard-content'>
+          <ModeStep>
+            <ScrollToLink target='mode'>NEXT: Define symptoms</ScrollToLink>
+          </ModeStep>
           <SymptomStep>
             <ScrollToLink target='information'>NEXT: Educational information</ScrollToLink>
           </SymptomStep>
@@ -145,8 +163,7 @@ const mapStateToProps = (state) => {
 
   return {
     campaign: state.campaign.data,
-    neededAudios: flatten(values(audioEntries(state.campaign.data))).length + 1,
-    uploadedAudios: audiosInUse(state.campaign.data).length,
+    completedMessages: completedMessages(state.campaign.data),
     activeCampaignUsing: activeCampaignUsingChannelIfHaveCampaigns(state.campaigns),
     attemptLaunch: state.attemptLaunch
   }
