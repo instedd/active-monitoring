@@ -10,6 +10,14 @@ defmodule ActiveMonitoring.CampaignTest do
     [campaign: build(:campaign) |> with_audios]
   end
 
+  test "can't create campaign with invalid mode", context do
+    campaign = context[:campaign]
+
+    changeset = Campaign.changeset(campaign, %{mode: "superdupermode"})
+    [mode: {mode_error, _}] = changeset.errors
+    assert String.length(mode_error) > 0
+  end
+
   test "generate steps from symptoms", context do
     assert ["language", "welcome", "identify", "registration", "symptom:id-fever", "symptom:id-rash", "forward", "educational", "thanks"] == Campaign.steps(context[:campaign])
   end

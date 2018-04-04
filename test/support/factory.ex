@@ -21,7 +21,8 @@ defmodule ActiveMonitoring.Factory do
       additional_information: "compulsory",
       monitor_duration: 30,
       timezone: "Europe/London",
-      user: build(:user)
+      user: build(:user),
+      mode: "call"
     }
   end
 

@@ -1,7 +1,7 @@
 defmodule ActiveMonitoring.Campaign do
   use ActiveMonitoring.Web, :model
 
-  alias ActiveMonitoring.{Channel, User, Campaign, Subject, Repo}
+  alias ActiveMonitoring.{User, Campaign, Subject, Repo}
   alias ActiveMonitoring.Router.Helpers
   alias Timex.Timezone
 
@@ -18,6 +18,7 @@ defmodule ActiveMonitoring.Campaign do
     field :timezone, :string
     field :monitor_duration, :integer
     field :last_reminder_time, Ecto.DateTime
+    field :mode, :string # call | chat
     # field :alert_recipients, {:array, :string}
     # field :additional_fields, {:array, :string}
 
@@ -29,9 +30,24 @@ defmodule ActiveMonitoring.Campaign do
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:name, :symptoms, :forwarding_number, :forwarding_condition, :audios, :langs, :channel, :user_id, :additional_information, :timezone, :monitor_duration, :last_reminder_time])
+    |> cast(params, [:name,
+        :symptoms,
+        :forwarding_number,
+        :forwarding_condition,
+        :audios,
+        :langs,
+        :channel,
+        :user_id,
+        :additional_information,
+        :timezone,
+        :monitor_duration,
+        :last_reminder_time,
+        :mode
+      ])
+    |> default_mode
     |> validate_inclusion(:additional_information, ["zero", "optional", "compulsory"])
     |> validate_inclusion(:forwarding_condition, ["any", "all"])
+    |> validate_mode
     |> assoc_constraint(:user)
   end
 
@@ -39,7 +55,7 @@ defmodule ActiveMonitoring.Campaign do
     Enum.map(symptoms, fn([id, _]) -> "symptom:#{id}" end)
   end
 
-  def steps(%{symptoms: symptoms, additional_information: additional_information} = campaign) do
+  def steps(%{additional_information: additional_information} = campaign) do
     Enum.concat([
       ["language",
        "welcome",
@@ -77,7 +93,7 @@ defmodule ActiveMonitoring.Campaign do
 
   def set_up_verboice(campaign) do
     base_url = "https://verboice-stg.instedd.org"
-    client = Verboice.Client.new(base_url,ActiveMonitoring.OAuthTokenServer.get_token("verboice", base_url, campaign.user_id))
+    Verboice.Client.new(base_url,ActiveMonitoring.OAuthTokenServer.get_token("verboice", base_url, campaign.user_id))
     Verboice.Client.create_project("Active Monitoring set up", %{
       status_callback_url: Helpers.verboice_callbacks_url(ActiveMonitoring.Endpoint, :status_callback, campaign.id),
       user: "",
@@ -98,5 +114,23 @@ defmodule ActiveMonitoring.Campaign do
   defp has_not_checked_in_today(_, nil, _), do: true
   defp has_not_checked_in_today(timezone, last_call_date, now) do
     Timex.before?(Timezone.convert(last_call_date, timezone), Timex.beginning_of_day(Timezone.convert(now, timezone)))
+  end
+
+  defp validate_mode(changeset) do
+    validate_change changeset, :mode, fn :mode, mode ->
+      if mode == "call" || mode == "chat" do
+        []
+      else
+        [mode: "must be either 'call' or 'chat', #{mode} is not allowed"]
+      end
+    end
+  end
+
+  #defp default_mode(changeset = %{mode: nil}), do: %{ changeset | mode: "call" }
+  defp default_mode(changeset) do
+    case changeset.changes.mode do
+      nil -> change(changeset, %{mode: "call"})
+      _mode -> changeset
+    end
   end
 end
