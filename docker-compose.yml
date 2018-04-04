@@ -1,6 +1,7 @@
 version: '2'
 volumes:
   db:
+  aida-db:
   node_modules:
   deps:
   build:
@@ -23,6 +24,7 @@ services:
     working_dir: /app
     depends_on:
       - db
+      - aida-backend
     volumes:
       - './:/app'
       - 'deps:/app/deps'
@@ -37,6 +39,7 @@ services:
       VERBOICE_CLIENT_ID: ${VERBOICE_CLIENT_ID}
       VERBOICE_CLIENT_SECRET: ${VERBOICE_CLIENT_SECRET}
       VERBOICE_APP_ID: ${VERBOICE_APP_ID}
+      AIDA_BACKEND_URL: ${AIDA_BACKEND_URL}
       DATABASE_HOST: db
       HTTP_PORT: 80
       TERM: xterm
@@ -64,3 +67,21 @@ services:
       - 4040:4040
     environment:
       NGROK_PORT: 'app:80'
+
+  aida-db:
+    image: postgres:9.6
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD:
+    volumes:
+      - aida-db:/var/lib/postgresql/data
+
+  aida-backend:
+    image: instedd/aida:dev
+    ports:
+      - "4080:80"
+    depends_on:
+      - aida-db
+    environment:
+      DATABASE_URL: ecto://root:@aida-db/aida-backend
+    command: /bin/sh -c 'mix ecto.migrate && mix phx.server'

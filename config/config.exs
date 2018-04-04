@@ -13,6 +13,10 @@ config :active_monitoring,
 config :active_monitoring, :sox,
   bin: System.get_env("SOX_BINARY") || "sox"
 
+# Configures the AIDA backend url
+config :active_monitoring, :aida_backend,
+  url: System.get_env("AIDA_BACKEND_URL") || "http://aida-backend:4080"
+
 # Configures the endpoint
 config :active_monitoring, ActiveMonitoring.Endpoint,
   url: [host: "app.activemonitoring.dev"],
