@@ -97,7 +97,7 @@ class UploadAudioStepComponent extends Component<UploadAudioStepProps> {
   }
 
   render() {
-    const { neededMessages } = this.props
+    const { neededMessages, messages } = this.props
 
     const totalAudios = flatten(values(neededMessages)).length + 1
 
@@ -112,7 +112,7 @@ class UploadAudioStepComponent extends Component<UploadAudioStepProps> {
           </div>
         </div>
         <div className='md-grid'>
-          <AudiosUploadedCounter uploaded={neededMessages.length} total={totalAudios} />
+          <AudiosUploadedCounter uploaded={messages.length} total={totalAudios} />
         </div>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
@@ -142,12 +142,13 @@ class UploadAudioStepComponent extends Component<UploadAudioStepProps> {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const campaign = ownProps.campaign
   return {
-    messages: messagesInUse(state.campaign.data),
-    neededMessages: neededMessages(state.campaign.data),
-    symptoms: state.campaign.data.symptoms,
-    langs: state.campaign.data.langs || []
+    messages: messagesInUse(campaign),
+    neededMessages: neededMessages(campaign),
+    symptoms: campaign.symptoms,
+    langs: campaign.langs || []
   }
 }
 

@@ -24,7 +24,7 @@ type Props = {
   campaign: Campaign,
   completedMessages: boolean,
   launchCampaign: (campaignId: number) => void,
-  activeCampaignUsing: (channel: string) => Campaign,
+  activeCampaignUsing: (channel: string) => Campaign
 }
 
 type State = {
@@ -75,7 +75,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
   }
 
   render() {
-    const { completedMessages } = this.props
+    const { completedMessages, campaign } = this.props
 
     const steps = [
       this.completedModeStep(),
@@ -98,7 +98,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
           tooltipPosition='top'
           className='launch-campaign'
           // TODO: disable Launch button between click and response
-          onClick={() => this.props.launchCampaign(this.props.campaign.id)}>play_arrow</Button>
+          onClick={() => this.props.launchCampaign(campaign.id)}>play_arrow</Button>
       )
     }
 
@@ -146,7 +146,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
           <LanguageStep>
             <ScrollToLink target='audios'>NEXT: Upload audio files</ScrollToLink>
           </LanguageStep>
-          <UploadAudioStep>
+          <UploadAudioStep campaign={campaign}>
             <ScrollToLink target='channel'>NEXT: Select a channel</ScrollToLink>
           </UploadAudioStep>
           <ChannelStep />
@@ -156,7 +156,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   let activeCampaignUsingChannelIfHaveCampaigns = (campaigns) => {
     if (campaigns && campaigns.items) {
       return activeCampaignUsing(campaigns)
@@ -165,8 +165,7 @@ const mapStateToProps = (state) => {
   }
 
   return {
-    campaign: state.campaign.data,
-    completedMessages: completedMessages(state.campaign.data),
+    completedMessages: completedMessages(ownProps.campaign),
     activeCampaignUsing: activeCampaignUsingChannelIfHaveCampaigns(state.campaigns),
     attemptLaunch: state.attemptLaunch
   }

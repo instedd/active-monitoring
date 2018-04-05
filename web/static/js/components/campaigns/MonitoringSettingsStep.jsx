@@ -19,7 +19,7 @@ class MonitoringSettingsComponent extends Component {
         </div>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
-            <TimezoneDropdown selected={this.props.timezone} onEdit={this.props.onEditTimezone} />
+            <TimezoneDropdown selected={this.props.timezone || ''} onEdit={this.props.onEditTimezone} />
           </div>
         </div>
         <div className='md-grid'>
