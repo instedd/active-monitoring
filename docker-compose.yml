@@ -18,7 +18,7 @@ services:
       - 'db:/var/lib/postgresql/data'
 
   app:
-    command: /bin/sh -c 'mix ecto.migrate && mix phoenix.server'
+    command: elixir --sname server -S mix phoenix.server
     build:
       context: ./
       dockerfile: Dockerfile.dev
