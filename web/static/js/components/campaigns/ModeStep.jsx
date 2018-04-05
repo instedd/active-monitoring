@@ -45,7 +45,7 @@ class ModeStepComponent extends Component<Props> {
           </div>
         </div>
       </section>
-    );
+    )
   }
 }
 
