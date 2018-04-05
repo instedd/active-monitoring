@@ -3,6 +3,7 @@ volumes:
   db:
   aida-db:
   node_modules:
+  flow-typed:
   deps:
   build:
 
@@ -17,7 +18,7 @@ services:
       - 'db:/var/lib/postgresql/data'
 
   app:
-    command: elixir --sname server -S mix phoenix.server
+    command: /bin/sh -c 'mix ecto.migrate && mix phoenix.server'
     build:
       context: ./
       dockerfile: Dockerfile.dev
@@ -59,6 +60,7 @@ services:
     volumes:
       - './:/app'
       - 'deps:/app/deps'
+      - 'flow-typed:/app/flow-typed'
       - 'node_modules:/app/node_modules'
 
   ngrok:
