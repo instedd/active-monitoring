@@ -67,7 +67,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
   }
 
   completedModeStep() {
-    return false
+    return this.props.campaign.mode != null
   }
 
   launch() {
@@ -77,12 +77,15 @@ class CampaignCreationFormComponent extends Component<Props, State> {
   render() {
     const { completedMessages } = this.props
 
-    const steps = [this.completedSymptomStep(),
+    const steps = [
+      this.completedModeStep(),
+      this.completedSymptomStep(),
       completedMessages,
       this.completedEducationalInformationStep(),
       this.completedMonitoringSettingsStep(),
       this.completedLanguageStep(),
-      this.completedChannelSelectionStep()]
+      this.completedChannelSelectionStep()
+    ]
 
     const numberOfCompletedSteps = steps.filter(item => item == true).length
     const percentage = `${(100 / steps.length * numberOfCompletedSteps).toFixed(0)}%`
@@ -129,7 +132,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
         </div>
         <div className='md-cell md-cell--12-tablet md-cell--7-desktop md-cell--1-desktop-offset wizard-content'>
           <ModeStep>
-            <ScrollToLink target='mode'>NEXT: Define symptoms</ScrollToLink>
+            <ScrollToLink target='symptoms'>NEXT: Define symptoms</ScrollToLink>
           </ModeStep>
           <SymptomStep>
             <ScrollToLink target='information'>NEXT: Educational information</ScrollToLink>

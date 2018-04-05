@@ -1,19 +1,26 @@
 // @flow
+import { connect } from 'react-redux'
 import React, { Component } from 'react'
+import { campaignUpdate } from '../../actions/campaign'
 import Radio from 'react-md/lib/SelectionControls/Radio'
 
-class ModeStepComponent extends Component<{}> {
-  onEdit(newValue: string) {
-  }
+type Props = {
+  mode: string,
+  onEdit: (mode: string) => void,
+}
+
+class ModeStepComponent extends Component<Props> {
+  props: Props
 
   render() {
     return (
       <section id='mode' className='full-height'>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
-            <h1>Choose how you communicate with monitorees</h1>
+            <h1>Choose how you communicate with subjects</h1>
             <p>
-              You can either communicate with them through phone calls or a Facebook chatbot.
+              You can either communicate with them through phone calls or a
+              Facebook Chatbot.
             </p>
           </div>
           <div className='md-cell md-cell--12'>
@@ -22,8 +29,8 @@ class ModeStepComponent extends Component<{}> {
               name='call'
               value='call'
               label='ActiveMonitoring will call subjects'
-              // checked={this.props.additionalInformation === 'zero'}
-              onChange={() => this.onEdit('call')}
+              checked={this.props.mode === 'call'}
+              onChange={() => this.props.onEdit('call')}
               className='margin-left-none'
             />
             <Radio
@@ -31,17 +38,32 @@ class ModeStepComponent extends Component<{}> {
               name='chat'
               value='chat'
               label='ActiveMonitoring will chat with subjects'
-              // checked={this.props.additionalInformation === 'zero'}
-              onChange={() => this.onEdit('chat')}
+              checked={this.props.mode === 'chat'}
+              onChange={() => this.props.onEdit('chat')}
               className='margin-left-none'
             />
           </div>
         </div>
       </section>
-    )
+    );
   }
 }
 
-const ModeStep = ModeStepComponent
+const mapStateToProps = state => {
+  return {
+    mode: state.campaign.data.mode
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onEdit: (mode) => dispatch(campaignUpdate({ mode: mode }))
+  }
+}
+
+const ModeStep = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ModeStepComponent)
 
 export default ModeStep
