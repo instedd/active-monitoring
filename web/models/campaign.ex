@@ -128,7 +128,7 @@ defmodule ActiveMonitoring.Campaign do
 
   #defp default_mode(changeset = %{mode: nil}), do: %{ changeset | mode: "call" }
   defp default_mode(changeset) do
-    case changeset.changes.mode do
+    case changeset.changes[:mode] do
       nil -> change(changeset, %{mode: "call"})
       _mode -> changeset
     end
