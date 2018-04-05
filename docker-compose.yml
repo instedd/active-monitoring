@@ -51,12 +51,10 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.webpack
-    command: yarn run webpack-dev-server
+    command: /bin/sh -c 'yarn install && yarn run watch'
     restart: always
     working_dir: /app
     stop_signal: SIGKILL
-    ports:
-      - 4001:4001
     volumes:
       - './:/app'
       - 'deps:/app/deps'
