@@ -48,7 +48,7 @@ defmodule ActiveMonitoring.CampaignsController do
   def launch(conn, %{"campaigns_id" => id}) do
     campaign = load_campaign(conn, id)
 
-    if Channel.verify_exclusive(campaign.channel) do
+    if Campaign.ready_to_launch? do
       # Campaign.set_up_verboice(campaign)
       calls = Call.stats(campaign)
       subjects = Subject.stats(id)

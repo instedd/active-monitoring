@@ -111,6 +111,10 @@ defmodule ActiveMonitoring.Campaign do
     subjects |> Enum.filter(fn(s) -> Subject.active_case(s, now) && has_not_checked_in_today(timezone, Subject.last_successful_call_date(s), now) end)
   end
 
+  def ready_to_launch?(campaign) do
+    Channel.verify_exclusive(campaign.channel)
+  end
+
   defp has_not_checked_in_today(_, nil, _), do: true
   defp has_not_checked_in_today(timezone, last_call_date, now) do
     Timex.before?(Timezone.convert(last_call_date, timezone), Timex.beginning_of_day(Timezone.convert(now, timezone)))
