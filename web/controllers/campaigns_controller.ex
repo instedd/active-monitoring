@@ -20,7 +20,8 @@ defmodule ActiveMonitoring.CampaignsController do
   end
 
   def show(conn, %{"id" => id}) do
-    campaign = Repo.get!(Campaign, id) |> authorize_campaign(conn)
+    campaign = load_campaign(conn, id)
+
     if campaign.started_at != nil do
       calls = Call.stats(campaign)
       subjects = Subject.stats(id)
@@ -45,14 +46,15 @@ defmodule ActiveMonitoring.CampaignsController do
   end
 
   def launch(conn, %{"campaigns_id" => id}) do
-    campaign = Repo.get!(Campaign, id) |> authorize_campaign(conn)
-    changeset = Campaign.changeset(campaign, %{})
-    changeset = Ecto.Changeset.put_change(changeset, :started_at, Ecto.DateTime.utc())
+    campaign = load_campaign(conn, id)
+
     if Channel.verify_exclusive(campaign.channel) do
       # Campaign.set_up_verboice(campaign)
       calls = Call.stats(campaign)
       subjects = Subject.stats(id)
 
+      changeset = Campaign.changeset(campaign, %{})
+      changeset = Ecto.Changeset.put_change(changeset, :started_at, Ecto.DateTime.utc())
       case Repo.update(changeset) do
         {:ok, campaign} ->
           render(conn, "show.json", campaign: campaign, calls: calls, subjects: subjects)
@@ -66,7 +68,8 @@ defmodule ActiveMonitoring.CampaignsController do
   end
 
   def update(conn, %{"id" => id, "campaign" => campaign_params}) do
-    campaign = Repo.get!(Campaign, id) |> authorize_campaign(conn)
+    campaign = load_campaign(conn, id)
+
     changeset = Campaign.changeset(campaign, campaign_params)
 
     case Repo.update(changeset) do
@@ -76,5 +79,9 @@ defmodule ActiveMonitoring.CampaignsController do
       {:error, changeset} ->
         render(conn, ChangesetView, "error.json", changeset: changeset)
     end
+  end
+
+  defp load_campaign(conn, id) do
+    Repo.get!(Campaign, id) |> authorize_campaign(conn)
   end
 end
