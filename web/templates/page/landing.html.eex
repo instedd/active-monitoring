@@ -4,7 +4,7 @@
     <ul>
       <li><a href="http://instedd.org/technologies/" class="md-btn md-btn--text md-text--theme-primary">About Instedd Platform</a></li>
       <li><a href="<%= session_path @conn, :login %>" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block">Login</a></li>
-      <li><a href="#" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block outlined">Sign up for free</a></li>
+      <li><a href="https://goo.gl/forms/rsHHX6DkVoA835Zr1" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block outlined">Work with Us</a></li>
     </ul>
   </div>
   <div class='wrapper'>
@@ -22,7 +22,7 @@
             <ul>
               <li><a href="http://instedd.org/technologies/" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block">About Instedd Platform</a></li>
               <li><a href="<%= session_path @conn, :login %>" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block">Login</a></li>
-              <li><a href="#" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block outlined">Sign up for free</a></li>
+              <li><a href="https://goo.gl/forms/rsHHX6DkVoA835Zr1" class="md-btn md-btn--flat md-btn--text md-pointer--hover md-text--theme-primary md-ink--primary md-inline-block outlined">Work with Us</a></li>
             </ul>
           </div>
         </div>
@@ -36,12 +36,12 @@
         <div class='md-cell md-cell--12 section main'>
           <div class="md-grid">
             <div class="md-cell md-cell--12-tablet md-cell--4-desktop">
-              <h1 class="md-display-2 md-font-bold text-white">Early detection</h1>
-              <div class="md-headline text-white">Reduce outbreak risks through active monitoring of exposed populations</div>
+              <h1 class="md-display-2 md-font-bold text-white">Track and Check</h1>
+              <div class="md-headline text-white">Verify health status of traveling staff and beneficiaries</div>
               <p class="top-margin">
                 What is Active Monitoring?
                 <br>
-                Active Monitoring is an open source tool that allow travelers to report their health status daily to an interactive voice recognition system (IVR).
+                Active monitoring allows travelers to report on their wellbeing through automated calls and text message reminders.
               </p>
             </div>
             <div class="md-cell md-cell--12-tablet md-cell--8-desktop md-cell--bottom md-text-right">
@@ -54,7 +54,7 @@
         <div class="md-cell md-cell--12 section right-img">
           <div class="md-grid md-grid--no-spacing">
             <div class="md-cell md-cell--12-tablet md-cell--4-desktop">
-              <h1 class="md-display-2 md-font-light text-black"><span class="md-font-semibold">Monitor</span> your campaign with a stats dashboard</h1>
+              <h1 class="md-display-2 md-font-light text-black"><span class="md-font-semibold">Keep track</span> of all travelers with a data dashboard</h1>
             </div>
             <div class="md-cell md-cell--12-tablet md-cell--8-desktop md-cell--bottom md-text-right">
               <img class="right responsive-img" src='/images/welcome-img01.png' width="646px" />
@@ -70,7 +70,7 @@
             <div class="md-cell md-cell--12-tablet md-cell--4-desktop md-cell--order-1-phone md-cell--order-1-tablet">
               <h1 class="md-display-2 md-font-light text-black">
                 <span class="md-font-semibold">Setup</span>
-                monitoring settings in an easy and flexible way
+                 flexible, time-sensitive monitoring settings
               </h1>
             </div>
           </div>
@@ -91,24 +91,30 @@
         </div>
 
         <div class="md-cell md-cell--12 section map md-text-center">
-          <h1 class="md-display-2 md-font-light text-black">Results from CDC on EBOLA CARE system</h1>
+          <h1 class="md-display-2 md-font-light text-black">A tool founded to monitor travelers from the Ebola Hotzone</h1>
           <p>
-            Check and Report Ebola (CARE) Hotline, a novel approach to monitoring, was designed to allow travelers to report their health status daily to an interactive voice recognition system (IVR). After a rapid development process, The the IVR was piloted with Centers for Disease Control and Prevention (CDC) federal employees who returned from deployments to affected countries. The system was designed using open source tools from InSTEDD, Verboice for IVR and mBuilder for SMS. These tools were packaged together to Together these tools were able to facilitate and promote travelers’ adherence to daily promote self-monitoring reporting requirements. of traveler symptoms and promote adherence among users.
+            Check and Report Ebola (CARE) Hotline, a novel approach to monitoring, was designed to allow travelers to report their health status daily to an interactive voice recognition system (IVR). After a rapid development process, the IVR was piloted with Centers for Disease Control and Prevention (CDC) on federal employees who returned from deployments to affected countries. The system was designed using open source tools from InSTEDD, Verboice for IVR and mBuilder for SMS. These tools were packaged together to facilitate and promote travelers’ adherence to daily self-monitoring reporting requirements of symptoms.
           </p>
           <p>
-            CDC surveyed those participating CDC employees to assess user experience. Results indicated that users became more familiar with and found the system easier to use over the course of their monitoring period. The majority were highly satisfied (94%) and would recommend the system for future monitoring efforts (89%). This technology is easily adaptable and can be modified for future emergency responses, contact investigations, or routine monitoring for public health protections.
+            CDC surveyed the participating employees to assess user experience. Results indicated that users became more familiar with and found the system easier to use over the course of their monitoring period. The majority were highly satisfied (94%) and would recommend the system for future monitoring efforts (89%). This technology is easily adaptable and can be modified for future emergency responses, contact investigations, or routine monitoring for public health protections.
           </p>
         </div>
 
 
         <div class="md-cell md-cell--12 section columns text-black grey">
           <h1 class="md-headline">
-            Project background
+            About CDC GDMQ
           </h1>
           <p class="columnsx2">
-            Diseases are contagious. Outbreaks are best controlled by early reduction of infections. Population can be active partners in early detection and response. This is done best with support of IT. Ebola was an example where early symptom detection was important for early treatment and contact tracing. InSTEDD implemented a system for CDC. It was rapidly assembled in the midst of the crisis and fulfilled a simple role. Low Income countries don’t have the possibility to build such a system. We propose building a simple Active Monitoring system that captures the lessons from Ebola and is made available for the global community.
+            The public health mission of GDMQ is to reduce morbidity and mortality
+            among immigrants, refugees, travelers, expatriates, and other globally
+            mobile populations, and to prevent the introduction, transmission, and
+            spread of communicable diseases through regulation, science, research,
+            preparedness, and response. 
             <br/><span></span>
-            The NCD mobile phone survey is a nationally-representative survey of adults 18 years of age and older using a standard protocol. Using technology platforms such as interactive voice response (IVR), short message service (SMS), computer-assisted telephone interviewing (CATI), mobile web, as well as a mix of these modes, mobile phone surveys provide timely data and allow for rapid feedback of results. It is intended to generate comparable data within and across countries. This survey supplements and supports national household face-to-face surveys. <a href="https://www.ncdmobile.org/" target="_blank">Read more</a>
+            GDMQ also has the regulatory mission to
+            prevent the introduction, transmission, and interstate spread of
+            communicable diseases into the United States and its territories. Read more about CDC GDMQ <a href="http://instedd.org/project/cdc-care-check-and-report-ebola-hotline/">here</a>.
           </p>
         </div>
 
@@ -142,5 +148,7 @@
       document.getElementById("Overlay").style.visibility = "hidden";
   }
 </script>
+
+
 
 </body>
