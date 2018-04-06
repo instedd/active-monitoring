@@ -15,10 +15,11 @@ export type Campaign = {
   name: ?string,
   langs: string[],
   symptoms: string[][],
+  forwardingAddress: ?string,
+  forwardingCondition: ?string,
   additionalInformation: ?string,
   timezone: Timezone,
   monitorDuration: ?number,
-  forwardingContact: ?string,
   channel: ?string,
   mode: Mode,
   messages: Message[]

@@ -9,7 +9,7 @@ defmodule ActiveMonitoring.Campaign do
     field :name, :string
     field :symptoms, {:array, {:array, :string}} # [{id, label}]
     field :forwarding_condition, :string
-    field :forwarding_number, :string
+    field :forwarding_address, :string
     field :audios, {:array, {:array, :string}} # [{(symptom:id|language|welcome|thanks), lang?, audio.uuid}]
     field :langs, {:array, :string}
     field :additional_information, :string
@@ -32,7 +32,7 @@ defmodule ActiveMonitoring.Campaign do
     model
     |> cast(params, [:name,
         :symptoms,
-        :forwarding_number,
+        :forwarding_address,
         :forwarding_condition,
         :audios,
         :langs,

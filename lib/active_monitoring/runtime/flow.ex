@@ -37,7 +37,7 @@ defmodule ActiveMonitoring.Runtime.Flow do
   end
 
   defp data_for(:forward, campaign, step, language), do:
-    %{audio: Campaign.audio_for(campaign, step, language), number: campaign.forwarding_number}
+    %{audio: Campaign.audio_for(campaign, step, language), number: campaign.forwarding_address}
   defp data_for(:gather, campaign, "identify", language), do:
     %{audio: Campaign.audio_for(campaign, "identify", language), finish_on_key: "#"}
   defp data_for(_action, campaign, step, language), do:

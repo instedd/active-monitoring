@@ -14,7 +14,7 @@ defmodule ActiveMonitoring.Factory do
     %Campaign{
       name: "Campaign",
       forwarding_condition: "all",
-      forwarding_number: "5550000",
+      forwarding_address: "5550000",
       symptoms: [["id-fever", "Fever"], ["id-rash", "Rash"]],
       langs: ["en", "es"],
       audios: [],

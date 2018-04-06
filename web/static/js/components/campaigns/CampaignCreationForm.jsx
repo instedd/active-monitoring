@@ -45,7 +45,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
   completedSymptomStep() {
     const { campaign } = this.props
     return campaign.symptoms.filter((symptom) => symptom[1].length > 0).length > 0 &&
-      campaign.forwardingContact != null
+      campaign.forwardingAddress != null
   }
 
   completedEducationalInformationStep() {
@@ -134,7 +134,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
           <ModeStep>
             <ScrollToLink target='symptoms'>NEXT: Define symptoms</ScrollToLink>
           </ModeStep>
-          <SymptomStep>
+          <SymptomStep campaign={campaign}>
             <ScrollToLink target='information'>NEXT: Educational information</ScrollToLink>
           </SymptomStep>
           <EducationalInformationStep>
