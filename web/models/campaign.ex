@@ -13,6 +13,7 @@ defmodule ActiveMonitoring.Campaign do
     field :forwarding_condition, :string
     field :forwarding_address, :string
     field :audios, {:array, {:array, :string}} # [{(symptom:id|language|welcome|thanks), lang?, audio.uuid}]
+    field :chat_texts, {:array, {:array, :string}} # [{(symptom:id|language|welcome|thanks), lang?, text}]
     field :langs, {:array, :string}
     field :additional_information, :string
     field :started_at, Ecto.DateTime
@@ -37,6 +38,7 @@ defmodule ActiveMonitoring.Campaign do
         :forwarding_address,
         :forwarding_condition,
         :audios,
+        :chat_texts,
         :langs,
         :channel,
         :user_id,
@@ -88,9 +90,46 @@ defmodule ActiveMonitoring.Campaign do
   end
 
   def audio_for(%{audios: audios}, topic, language), do: audio_for(audios, topic, language)
-
   def audio_for(audios, topic, language) when is_list(audios) do
     Enum.find_value(audios, fn([t, l, id]) -> t == topic && l == language && id end)
+  end
+
+  def chat_text_for(%{chat_texts: chat_texts}, topic, language), do: chat_text_for(chat_texts, topic, language)
+  def chat_text_for(chat_texts, topic, language) when is_list(chat_texts) do
+    Enum.find_value(chat_texts, fn([t, l, chat_text]) -> t == topic && l == language && chat_text end)
+  end
+
+  def message_for(%{audios: audios, chat_texts: chat_texts}, mode, topic, language), do: message_for(audios, chat_texts, topic, language)
+  def message_for(audios, chat_texts, "call", topic, language), do: audio_for(audios, topic, language)
+  def message_for(audios, chat_texts, "chat", topic, language), do: chat_text_for(chat_texts, topic, language)
+
+  def with_message(campaign, options = %{mode: "call"}), do: with_audio(campaign, options)
+  def with_message(campaign, options = %{mode: "chat"}), do: with_chat_text(campaign, options)
+
+  def with_audio(campaign = %{audios: audios}, %{topic: topic, language: language, value: audio_id}) do
+    new_audios = replace_or_add_message(audios, topic, language, audio_id)
+    %{ campaign | audios: new_audios }
+  end
+
+  def with_chat_text(campaign = %{chat_texts: chat_texts}, %{topic: topic, language: language, value: chat_text}) do
+    new_chat_texts = replace_or_add_message(chat_texts, topic, language, chat_text)
+    %{ campaign | chat_texts: new_chat_texts }
+  end
+
+  defp replace_or_add_message([], topic, language, new_value), do: [[topic, language, new_value]]
+  defp replace_or_add_message([[topic, language, value] | tail], topic, language, new_value), do: [[topic, language, new_value] | tail]
+  defp replace_or_add_message([head | tail], topic, language, new_value), do: [ head | replace_or_add_message(tail, topic, language, new_value)]
+
+  def with_welcome(campaign, %{mode: "call", language: l, value: v}), do: with_audio(campaign, %{topic: "welcome", language: l, value: v})
+  def with_welcome(campaign, %{mode: "chat", language: l, value: v}), do: with_chat_text(campaign, %{topic: "welcome", language: l, value: v})
+
+  def welcome(campaign, %{mode: "chat", language: l}), do: chat_text_for(campaign, "welcome", l)
+  def welcome(campaign, %{mode: "call", language: l}), do: audio_for(campaign, "welcome", l)
+
+  def topics(campaign) do
+    campaign.symptoms
+    |> Enum.map(fn([id, _]) -> "symptom:#{id}" end)
+    |> Enum.concat(["welcome", "identify", "registration", "forward", "additional_information_intro", "educational", "thanks"])
   end
 
   def set_up_verboice(campaign) do

@@ -65,7 +65,7 @@ defmodule ActiveMonitoring.OAuthClientController do
   end
 
   defp get_current_user(conn) do
-    user = User.Helper.current_user(conn)
+    user = ActiveMonitoring.User.Helper.current_user(conn)
     Repo.get(ActiveMonitoring.User, user.id)
   end
 end

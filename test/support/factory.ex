@@ -18,6 +18,7 @@ defmodule ActiveMonitoring.Factory do
       symptoms: [["id-fever", "Fever"], ["id-rash", "Rash"]],
       langs: ["en", "es"],
       audios: [],
+      chat_texts: [],
       additional_information: "compulsory",
       monitor_duration: 30,
       timezone: "Europe/London",
@@ -27,10 +28,7 @@ defmodule ActiveMonitoring.Factory do
   end
 
   def with_audios(campaign) do
-    topics =
-      campaign.symptoms
-      |> Enum.map(fn([id, _]) -> "symptom:#{id}" end)
-      |> Enum.concat(["welcome", "identify", "registration", "forward", "additional_information_intro", "educational", "thanks"])
+    topics = Campaign.topics(campaign)
 
     lang_audios =
       for lang <- campaign.langs,
@@ -41,6 +39,22 @@ defmodule ActiveMonitoring.Factory do
       [["language", nil, "id-language"] | lang_audios]
 
     %{campaign | audios: audios}
+  end
+
+  def with_chat_texts(campaign), do: with_messages(campaign, :chat_texts)
+
+  defp with_messages(campaign, collection) do
+    topics = Campaign.topics(campaign)
+
+    entries =
+      for lang <- campaign |> Map.get(collection),
+          topic <- topics,
+          do: [topic, lang, "id-#{topic}-#{lang}"]
+
+    values =
+      [["language", nil, "id-language"] | entries]
+
+    campaign |> Map.put(collection, values)
   end
 
   def with_channel(campaign) do
