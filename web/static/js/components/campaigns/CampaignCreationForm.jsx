@@ -140,7 +140,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
           <EducationalInformationStep>
             <ScrollToLink target='monitoring'>NEXT: Set up Monitoring Settings</ScrollToLink>
           </EducationalInformationStep>
-          <MonitoringSettingsStep>
+          <MonitoringSettingsStep campaign={campaign}>
             <ScrollToLink target='languages'>NEXT: Select Languages</ScrollToLink>
           </MonitoringSettingsStep>
           <LanguageStep>
