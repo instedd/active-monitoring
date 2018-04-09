@@ -1,7 +1,7 @@
 defmodule ActiveMonitoring.Campaign do
   use ActiveMonitoring.Web, :model
 
-  alias ActiveMonitoring.{User, Campaign, Subject, Repo}
+  alias ActiveMonitoring.{User, Campaign, Subject, Channel, Repo}
   alias ActiveMonitoring.Router.Helpers
   alias Timex.Timezone
 
