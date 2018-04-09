@@ -115,6 +115,10 @@ defmodule ActiveMonitoring.Campaign do
     Channel.verify_exclusive(campaign.channel)
   end
 
+  def load(conn, id) do
+    Repo.get!(Campaign, id) |> User.Helper.authorize_campaign(conn)
+  end
+
   defp has_not_checked_in_today(_, nil, _), do: true
   defp has_not_checked_in_today(timezone, last_call_date, now) do
     Timex.before?(Timezone.convert(last_call_date, timezone), Timex.beginning_of_day(Timezone.convert(now, timezone)))
