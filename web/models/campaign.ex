@@ -103,7 +103,7 @@ defmodule ActiveMonitoring.Campaign do
   end
 
   def mark_as_reminded(campaign, now) do
-    Campaign.changeset(campaign, %{last_reminder_time: now})
+    changeset(campaign, %{last_reminder_time: now})
     |> Repo.update!
   end
 
@@ -117,6 +117,16 @@ defmodule ActiveMonitoring.Campaign do
 
   def load(conn, id) do
     Repo.get!(Campaign, id) |> User.Helper.authorize_campaign(conn)
+  end
+
+  def launch(campaign) do
+    if ready_to_launch?(campaign) do
+      changeset(campaign, %{})
+      |> Ecto.Changeset.put_change(:started_at, Ecto.DateTime.utc())
+      |> Repo.update
+    else
+      {:error, %{ errors: %{channel: "already in use"}}}
+    end
   end
 
   defp has_not_checked_in_today(_, nil, _), do: true

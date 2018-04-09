@@ -45,22 +45,17 @@ defmodule ActiveMonitoring.CampaignsController do
     end
   end
 
-  def launch(conn, %{"campaigns_id" => id}) do
-    campaign = Campaign.load(conn, id)
+  def launch(conn, %{"campaigns_id" => campaign_id}) do
+    campaign = Campaign.load(conn, campaign_id)
 
-    if Campaign.ready_to_launch?(campaign) do
-      changeset = Campaign.changeset(campaign, %{})
-      changeset = Ecto.Changeset.put_change(changeset, :started_at, Ecto.DateTime.utc())
-      case Repo.update(changeset) do
-        {:ok, campaign} ->
-          calls = Call.stats(campaign)
-          render(conn, "show.json", campaign: campaign, calls: calls, subjects: subjects)
+    case Campaign.launch(campaign) do
+      {:ok, campaign} ->
+        calls = Call.stats(campaign)
+        subjects = Subject.stats(campaign_id)
+        render(conn, "show.json", campaign: campaign, calls: calls, subjects: subjects)
 
-        {:error, changeset} ->
-          put_status(conn, 403) |> render(ChangesetView, "error.json", changeset: changeset)
-      end
-    else
-      put_status(conn, 403) |> render(ChangesetView, "error.json", errors: %{channel: "already in use"})
+      {:error, errors} ->
+        put_status(conn, 403) |> render(ChangesetView, "error.json", errors)
     end
   end
 
