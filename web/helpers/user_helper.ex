@@ -1,4 +1,4 @@
-defmodule User.Helper do
+defmodule ActiveMonitoring.User.Helper do
   alias ActiveMonitoring.UnauthorizedError
 
   def current_user(conn) do

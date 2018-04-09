@@ -1,9 +1,11 @@
 defmodule ActiveMonitoring.Campaign do
   use ActiveMonitoring.Web, :model
 
-  alias ActiveMonitoring.{User, Campaign, Subject, Channel, Repo}
-  alias ActiveMonitoring.Router.Helpers
   alias Timex.Timezone
+
+  alias ActiveMonitoring.{AidaBot, Campaign, Channel, Repo, Subject, User}
+  alias ActiveMonitoring.User.Helper
+  alias ActiveMonitoring.Router.Helpers
 
   schema "campaigns" do
     field :name, :string
@@ -121,9 +123,20 @@ defmodule ActiveMonitoring.Campaign do
 
   def launch(campaign) do
     if ready_to_launch?(campaign) do
-      changeset(campaign, %{})
-      |> Ecto.Changeset.put_change(:started_at, Ecto.DateTime.utc())
-      |> Repo.update
+      change =
+        changeset(campaign, %{})
+        |> Ecto.Changeset.put_change(:started_at, Ecto.DateTime.utc())
+
+      case Repo.update(change) do
+        {:ok, campaign} ->
+          if campaign.mode == "chat" do
+            AidaBot.manifest(campaign)
+            |> IO.inspect
+          end
+          {:ok, campaign}
+
+        error -> error
+      end
     else
       {:error, %{ errors: %{channel: "already in use"}}}
     end
