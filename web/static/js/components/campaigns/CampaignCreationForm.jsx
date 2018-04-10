@@ -7,6 +7,7 @@ import ModeStep from './ModeStep'
 import SymptomStep from './SymptomStep'
 import LanguageStep from './LanguageStep'
 import UploadAudioStep from './UploadAudioStep'
+import ChatTextStep from './ChatTextStep'
 import ChannelStep from './ChannelStep'
 import EducationalInformationStep from './EducationalInformationStep'
 import MonitoringSettingsStep from './MonitoringSettingsStep'
@@ -102,6 +103,21 @@ class CampaignCreationFormComponent extends Component<Props, State> {
       )
     }
 
+    let messageComponent = null
+    if (campaign.mode === 'chat') {
+      messageComponent = (
+        <ChatTextStep campaign={campaign}>
+          <ScrollToLink target='channel'>NEXT: Select a channel</ScrollToLink>
+        </ChatTextStep>
+      )
+    } else {
+      messageComponent = (
+        <UploadAudioStep campaign={campaign}>
+          <ScrollToLink target='channel'>NEXT: Select a channel</ScrollToLink>
+        </UploadAudioStep>
+      )
+    }
+
     return (
       <div className='md-grid white'>
         <div className='md-cell md-cell--12-tablet md-cell--4-desktop md-cell--tablet-hidden '>
@@ -146,9 +162,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
           <LanguageStep>
             <ScrollToLink target='audios'>NEXT: Upload audio files</ScrollToLink>
           </LanguageStep>
-          <UploadAudioStep campaign={campaign}>
-            <ScrollToLink target='channel'>NEXT: Select a channel</ScrollToLink>
-          </UploadAudioStep>
+          {messageComponent}
           <ChannelStep />
         </div>
       </div>

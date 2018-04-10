@@ -18,7 +18,7 @@ export const campaignClear = () => (dispatch) => {
 
 export const createCampaign = (campaignParams) => (dispatch) => {
   dispatch({type: CAMPAIGN_CREATE})
-  const defaultProps = { symptoms: [], langs: [], name: '', audios: [] }
+  const defaultProps = { symptoms: [], langs: [], name: '', chat_texts: [], audios: [] }
   const params = assign({}, defaultProps, campaignParams)
 
   api.createCampaign(params)

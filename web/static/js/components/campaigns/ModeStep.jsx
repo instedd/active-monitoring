@@ -10,8 +10,6 @@ type Props = {
 }
 
 class ModeStepComponent extends Component<Props> {
-  props: Props
-
   render() {
     return (
       <section id='mode' className='full-height'>

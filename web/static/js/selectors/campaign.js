@@ -59,6 +59,11 @@ export const getAudioFileFor = (messages: Message[], step: string, language: ?La
   return audio && audio.value
 }
 
+export const getChatTextFor = (messages: Message[], step: string, language: ?LanguageCode): string | void => {
+  const chatMessage = messages.find((msg) => (step == msg.step && language == msg.language && msg.mode === 'chat'))
+  return chatMessage && chatMessage.value
+}
+
 export const completedMessages = (campaign: Campaign): boolean => {
   const uploadedMessages = messagesInUse(campaign).length
   const necessaryMessages = flatten(values(neededMessages(campaign))).length + 1
