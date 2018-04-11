@@ -117,7 +117,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
           {completedMessages ? 'check_circle' : 'description'}
         </FontIcon>
       )
-      messageStepLabel = 'Chatbot Texts'
+      messageStepLabel = 'Chatbot texts'
     } else {
       messageComponent = (
         <UploadAudioStep campaign={campaign}>
@@ -174,7 +174,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
             <ScrollToLink target='languages'>NEXT: Select Languages</ScrollToLink>
           </MonitoringSettingsStep>
           <LanguageStep>
-            <ScrollToLink target='audios'>NEXT: Upload audio files</ScrollToLink>
+            <ScrollToLink target='audios'>{messageStepLabel}</ScrollToLink>
           </LanguageStep>
           {messageComponent}
           <ChannelStep />
