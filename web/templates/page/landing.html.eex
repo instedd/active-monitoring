@@ -41,11 +41,11 @@
               <p class="top-margin">
                 What is Active Monitoring?
                 <br>
-                Active monitoring allows travelers to report on their wellbeing through automated calls and text message reminders.
+                Active Monitoring allows travelers to report on their wellbeing through automated calls with an Interactive Voice Response (IVR) system.
               </p>
             </div>
             <div class="md-cell md-cell--12-tablet md-cell--8-desktop md-cell--bottom md-text-right">
-              <img class="md-text-right responsive-img" src="/images/welcome-main.png" width="695px" />
+              <img class="md-text-right responsive-img" src="welcome-main.png" width="695px" />
             </div>
           </div>
         </div>
@@ -57,7 +57,7 @@
               <h1 class="md-display-2 md-font-light text-black"><span class="md-font-semibold">Keep track</span> of all travelers with a data dashboard</h1>
             </div>
             <div class="md-cell md-cell--12-tablet md-cell--8-desktop md-cell--bottom md-text-right">
-              <img class="right responsive-img" src='/images/welcome-img01.png' width="646px" />
+              <img class="right responsive-img" src='welcome-img01.png' width="646px" />
             </div>
           </div>
         </div>
