@@ -39,31 +39,27 @@ type ChatTextStepProps = {
 class ChatTextStepComponent extends Component<ChatTextStepProps> {
   getTopicTexts(topic) {
     if (topic == 'welcome') {
-      return { title: 'Welcome message', description: 'Present the objectives of this call' }
+      return { title: 'Welcome message', description: 'Present the objectives of this chat' }
     } else if (topic == 'identify') {
-      return { title: 'Identify message', description: 'Ask subject to dial their ID or to press # if they do not have one' }
+      return { title: 'Identify message', description: 'Ask subject to dial their ID or request it if they do not have one' }
     } else if (topic == 'registration') {
-      return { title: 'Registration message', description: 'Inform the caller the call will be forwarded to an agent for registration' }
+      return { title: 'Registration message', description: 'Inform the subject will be forwarded to an agent for registration' }
     } else if (topic == 'forward') {
       return { title: 'Forward call message', description: 'Explain that the current call will be forwarded to an agent due to positive symptoms' }
     } else if (topic == 'educational') {
       return { title: 'Educational information', description: 'Inform the caller about additional information such as prevention measures' }
     } else if (topic == 'additional_information_intro') {
-      return { title: 'Additional information introduction', description: 'Ask the caller whether they want to listen to educational information: 1 for Yes, 3 for No' }
+      return { title: 'Additional information introduction', description: 'Ask the subject whether they want to talk about to educational information' }
     } else if (topic == 'thanks') {
       return { title: 'Thank you message', description: 'Thank the caller for participating' }
     } else if (topic == 'language') {
-      const description = this.props.langs.map((iso: string, i) => {
-        const countryName = codeToName(iso) || 'unknown country'
-        return `${i + 1} for ${countryName}`
-      }).join(', ')
-      return { title: 'Language options', description: `List the options: ${description}` }
+      return { title: 'Language options', description: '' }
     } else if (topic.startsWith('symptom:')) {
       const id = topic.split(':', 2)[1]
       const matchingSymptom = this.props.symptoms.find(([_id, _name]) => id == _id)
 
       if (Array.isArray(matchingSymptom)) {
-        return { title: `${capitalize(matchingSymptom[1])} symptom question`, description: 'Ask if there are any signs of this symptom: 1 for Yes, 3 for No' }
+        return { title: `${capitalize(matchingSymptom[1])} symptom question`, description: 'Ask if there are any signs of this symptom.' }
       } else {
         throw new Error(`Malformed symptom list`)
       }
