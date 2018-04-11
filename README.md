@@ -4,8 +4,6 @@
 
 To get started checkout the project, then execute `./dev-setup.sh`
 
-then setup the AIDA backend: `docker-compose run --rm aida-backend mix ecto.setup`
-
 To run the app: `docker-compose up`
 
 Now you can visit [`app.activemonitoring.local.test`](app.activemonitoring.local.test) from your browser.
