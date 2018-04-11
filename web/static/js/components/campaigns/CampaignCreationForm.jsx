@@ -104,18 +104,32 @@ class CampaignCreationFormComponent extends Component<Props, State> {
     }
 
     let messageComponent = null
+    let messageStepLeftIcon = null
+    let messageStepLabel = ''
     if (campaign.mode === 'chat') {
       messageComponent = (
         <ChatTextStep campaign={campaign}>
           <ScrollToLink target='channel'>NEXT: Select a channel</ScrollToLink>
         </ChatTextStep>
       )
+      messageStepLeftIcon = (
+        <FontIcon className='step-icon'>
+          {completedMessages ? 'check_circle' : 'description'}
+        </FontIcon>
+      )
+      messageStepLabel = 'Chatbot Texts'
     } else {
       messageComponent = (
         <UploadAudioStep campaign={campaign}>
           <ScrollToLink target='channel'>NEXT: Select a channel</ScrollToLink>
         </UploadAudioStep>
       )
+      messageStepLeftIcon = (
+        <FontIcon className='step-icon'>
+          {completedMessages ? 'check_circle' : 'volume_up'}
+        </FontIcon>
+      )
+      messageStepLabel = 'Upload audio files'
     }
 
     return (
@@ -137,9 +151,9 @@ class CampaignCreationFormComponent extends Component<Props, State> {
                 <ListItem onClick={(e) => animatedScrollTo(e, 'monitoring')} leftIcon={this.completedMonitoringSettingsStep() ? <FontIcon className='step-icon'>check_circle</FontIcon> : <img src='/images/campaign-black.svg' width='24' />} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Set up monitoring settings' className={this.completedMonitoringSettingsStep() ? 'blue-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'languages')} leftIcon={<FontIcon className='step-icon'>{this.completedLanguageStep() ? 'check_circle' : 'translate'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select languages' className={this.completedLanguageStep() ? 'blue-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'audios')}
-                  leftIcon={<FontIcon className='step-icon'>{completedMessages ? 'check_circle' : 'volume_up'}</FontIcon>}
+                  leftIcon={messageStepLeftIcon}
                   rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>}
-                  primaryText='Upload audio files'
+                  primaryText={messageStepLabel}
                   className={completedMessages ? 'blue-text' : ''} />
                 <ListItem onClick={(e) => animatedScrollTo(e, 'channel')} leftIcon={<FontIcon className='step-icon'>{this.completedChannelSelectionStep() ? 'check_circle' : 'phone'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select a channel' className={this.completedChannelSelectionStep() ? 'blue-text' : ''} />
               </List>
