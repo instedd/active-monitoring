@@ -17,7 +17,7 @@ export class ChatText extends Component<Props> {
     ) : null
 
     return (
-      <div>
+      <div className='md-cell md-cell--12 audio-picker rounded-corners'>
         <div className='md-grid'>
           <div className='mdockd-cell md-cell--12'>
             {action}
