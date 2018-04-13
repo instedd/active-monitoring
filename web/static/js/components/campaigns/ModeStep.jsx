@@ -27,7 +27,7 @@ class ModeStepComponent extends Component<Props> {
               name='call'
               value='call'
               label='ActiveMonitoring will call subjects'
-              checked={this.props.mode === 'call'}
+              checked={this.props.mode == 'call'}
               onChange={() => this.props.onEdit('call')}
               className='margin-left-none'
             />
@@ -36,7 +36,7 @@ class ModeStepComponent extends Component<Props> {
               name='chat'
               value='chat'
               label='ActiveMonitoring will chat with subjects'
-              checked={this.props.mode === 'chat'}
+              checked={this.props.mode == 'chat'}
               onChange={() => this.props.onEdit('chat')}
               className='margin-left-none'
             />

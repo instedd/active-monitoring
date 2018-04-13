@@ -1,5 +1,5 @@
 // @flow
-import type { Campaign, LanguageCode, Message } from '../types'
+import type { Campaign, LanguageCode } from '../types'
 import values from 'lodash/values'
 import flatten from 'lodash/flatten'
 
@@ -32,36 +32,42 @@ export const neededMessages = (campaign: Campaign): { [lang: string]: string[] }
   return entries
 }
 
-export const messagesInUse = (campaign: Campaign): Message[] => {
+export const messagesInUse = (campaign: Campaign): [] => {
   const entries = neededMessages(campaign)
 
-  let inUse : Message[] = []
+  let inUse = []
 
-  const welcomeMessage = campaign.messages.find((msg) => msg.step == 'language' && msg.language == null && msg.mode === campaign.mode)
-  if (welcomeMessage) {
+  let messages = campaign.audios
+  if (campaign.mode == 'chat') {
+    messages = campaign.chatTexts
+  }
+
+  const welcomeMessage = messages.find((msg) => msg[0] == 'language' && msg[1] == '')
+  if (welcomeMessage && welcomeMessage[2] != '') {
     inUse.push(welcomeMessage)
   }
 
   for (const language in entries) {
     const steps = entries[language]
     steps.forEach((step) => {
-      const msg = campaign.messages.find((msg) => campaign.mode === msg.mode && msg.step == step && msg.language == language)
-      if (msg) {
+      const msg = messages.find((msg) => msg[0] == step && msg[1] == language)
+      if (msg && msg[2] != '') {
         inUse.push(msg)
       }
     })
   }
+
   return inUse
 }
 
-export const getAudioFileFor = (messages: Message[], step: string, language: ?LanguageCode): string | void => {
-  const audio = messages.find((msg) => (step == msg.step && language == msg.language && msg.mode === 'call'))
-  return audio && audio.value
+export const getAudioFileFor = (messages: string[][], step: string, language: ?LanguageCode): string | void => {
+  const audio = messages.find(([_topic, _language, _uuid]) => (step == _topic && language == _language))
+  return audio && audio[2]
 }
 
-export const getChatTextFor = (messages: Message[], step: string, language: ?LanguageCode): string | void => {
-  const chatMessage = messages.find((msg) => (step == msg.step && language == msg.language && msg.mode === 'chat'))
-  return chatMessage && chatMessage.value
+export const getChatTextFor = (messages: string[][], step: string, language: ?LanguageCode): string | void => {
+  const chatMessage = messages.find(([_topic, _language, _text]) => (step == _topic && language == _language))
+  return chatMessage && chatMessage[2]
 }
 
 export const completedMessages = (campaign: Campaign): boolean => {

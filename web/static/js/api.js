@@ -148,10 +148,6 @@ export const createAudio = (files) => {
   return apiPostFile('audios', files[0])
 }
 
-export const createChatText = (text) => {
-  return apiPostFile('chat_texts', text)
-}
-
 export const fetchAuthorizations = () => {
   return apiFetchJSONWithCallback(`authorizations`, null, (json, _) => () => json)
 }

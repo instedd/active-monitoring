@@ -6,7 +6,7 @@ import values from 'lodash/values'
 import flatten from 'lodash/flatten'
 import capitalize from 'lodash/capitalize'
 
-import type { LanguageCode, Message, Step } from '../../types'
+import type { LanguageCode, Step } from '../../types'
 
 import { messagesInUse, neededMessages, getAudioFileFor } from '../../selectors/campaign'
 import { uploadCampaignAudio, removeCampaignAudio } from '../../actions/audios'
@@ -38,7 +38,7 @@ type UploadAudioStepProps = {
   langs: string[],
   symptoms: string[][],
   neededMessages: { [lang: string]: string[] },
-  messages: Message[],
+  messages: string[][],
   onUploadAudio: (file: string, step: Step, language: ?LanguageCode) => void,
   onRemoveAudio: (step: Step, language: ?LanguageCode) => void
 }

@@ -109,7 +109,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
     if (campaign.mode === 'chat') {
       messageComponent = (
         <ChatTextStep campaign={campaign}>
-          <ScrollToLink target='channel'>NEXT: Select a channel</ScrollToLink>
+          <ScrollToLink target='channel'>NEXT: Setup Facebook Channel</ScrollToLink>
         </ChatTextStep>
       )
       messageStepLeftIcon = (

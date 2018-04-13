@@ -22,7 +22,9 @@ export type Campaign = {
   monitorDuration: ?number,
   channel: ?string,
   mode: Mode,
-  messages: Message[]
+  messages: Message[],
+  chatTexts: string[][],
+  audios: string[][]
 }
 
 export type Subject = {

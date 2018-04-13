@@ -28,6 +28,8 @@ defmodule ActiveMonitoring.CampaignsView do
       forwarding_address: campaign.forwarding_address,
       forwarding_condition: campaign.forwarding_condition,
       messages: campaign.audios,
+      audios: campaign.audios,
+      chat_texts: campaign.chat_texts,
       langs: campaign.langs,
       additional_information: campaign.additional_information,
       started_at: campaign.started_at,

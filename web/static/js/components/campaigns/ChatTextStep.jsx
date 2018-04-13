@@ -5,10 +5,9 @@ import values from 'lodash/values'
 import flatten from 'lodash/flatten'
 import capitalize from 'lodash/capitalize'
 
-import type { LanguageCode, Message, Step } from '../../types'
+import type { LanguageCode, Step } from '../../types'
 
 import { messagesInUse, neededMessages, getChatTextFor } from '../../selectors/campaign'
-import { addCampaignChatText, removeCampaignChatText } from '../../actions/chat_texts'
 import { codeToName } from '../../langs'
 
 import FontIcon from 'react-md/lib/FontIcons'
@@ -31,7 +30,7 @@ type ChatTextStepProps = {
   langs: string[],
   symptoms: string[][],
   neededMessages: { [lang: string]: string[] },
-  messages: Message[],
+  messages: string[][],
   onAddChatText: (text: string, step: Step, language: ?LanguageCode) => void,
   onRemoveChatText: (step: Step, language: ?LanguageCode) => void
 }
@@ -45,13 +44,13 @@ class ChatTextStepComponent extends Component<ChatTextStepProps> {
     } else if (topic == 'registration') {
       return { title: 'Registration message', description: 'Inform the subject will be forwarded to an agent for registration' }
     } else if (topic == 'forward') {
-      return { title: 'Forward call message', description: 'Explain that the current call will be forwarded to an agent due to positive symptoms' }
+      return { title: 'Forward call message', description: 'Explain that the current chat will be forwarded to an agent due to positive symptoms' }
     } else if (topic == 'educational') {
-      return { title: 'Educational information', description: 'Inform the caller about additional information such as prevention measures' }
+      return { title: 'Educational information', description: 'Inform the subject about additional information such as prevention measures' }
     } else if (topic == 'additional_information_intro') {
-      return { title: 'Additional information introduction', description: 'Ask the subject whether they want to talk about to educational information' }
+      return { title: 'Additional information introduction', description: 'Ask the subject whether they want to chat about to educational information' }
     } else if (topic == 'thanks') {
-      return { title: 'Thank you message', description: 'Thank the caller for participating' }
+      return { title: 'Thank you message', description: 'Thank the subject for participating' }
     } else if (topic == 'language') {
       return { title: 'Language options', description: '' }
     } else if (topic.startsWith('symptom:')) {
@@ -69,15 +68,15 @@ class ChatTextStepComponent extends Component<ChatTextStepProps> {
   }
 
   renderLangTab(lang) {
-    const { neededMessages, messages, onAddChatText, onRemoveChatText } = this.props
+    const { neededMessages, messages } = this.props
 
     return (
       <Tab label={codeToName(lang)} key={lang}>
         {neededMessages[lang].map(topic => (
           <ChatText
             text={getChatTextFor(messages, topic, lang)}
-            onAdd={(text) => onAddChatText(text, topic, lang)}
-            onRemove={() => onRemoveChatText(topic, lang)}
+            step={topic}
+            language={lang}
             key={topic}
             {...this.getTopicTexts(topic)}
           />
@@ -95,9 +94,9 @@ class ChatTextStepComponent extends Component<ChatTextStepProps> {
       <section id='audios' className='full-height'>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
-            <h1>Add text messages</h1>
+            <h1>Add Chatbot texts</h1>
             <p>
-              Add a text file for each message. After that you will be able to test the call flow.
+              Add the text for each chat message. After that you will be able to test the chat flow.
             </p>
           </div>
         </div>
@@ -107,9 +106,9 @@ class ChatTextStepComponent extends Component<ChatTextStepProps> {
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
             <ChatText
-              onAdd={(text) => this.props.onAddChatText(text, 'language')}
-              onRemove={() => this.props.onRemoveChatText('language')}
-              text={getChatTextFor(messages, 'language')}
+              step={'language'}
+              language={''}
+              text={getChatTextFor(messages, 'language', '')}
               {...this.getTopicTexts('language')}
             />
           </div>
@@ -138,21 +137,13 @@ const mapStateToProps = (state, ownProps) => {
   return {
     messages: messagesInUse(campaign),
     neededMessages: neededMessages(campaign),
-    symptoms: campaign.symptoms,
+    symptoms: campaign.symptoms || [],
     langs: campaign.langs || []
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onAddChatText: (text, topic, language) => dispatch(addCampaignChatText(text, topic, language)),
-    onRemoveChatText: (topic, language) => dispatch(removeCampaignChatText(topic, language))
-  }
-}
-
 const ChatTextStep = connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
 )(ChatTextStepComponent)
 
 export default ChatTextStep
