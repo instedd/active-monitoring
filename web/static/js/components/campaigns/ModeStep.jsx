@@ -47,9 +47,10 @@ class ModeStepComponent extends Component<Props> {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
+  const campaign = ownProps.campaign
   return {
-    mode: state.campaign.data.mode
+    mode: campaign.mode
   }
 }
 

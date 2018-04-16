@@ -2,12 +2,6 @@
 export type Mode = 'call' | 'chat'
 export type Step = string
 export type LanguageCode = string
-export type Message = {
-  step: Step,
-  language: ?LanguageCode,
-  mode: Mode,
-  value: string
-}
 export type Timezone = string
 
 export type Campaign = {
@@ -21,8 +15,10 @@ export type Campaign = {
   timezone: Timezone,
   monitorDuration: ?number,
   channel: ?string,
+  fbPageId: ?string,
+  fbVerifyToken: ?string,
+  fbAccessToken: ?string,
   mode: Mode,
-  messages: Message[],
   chatTexts: string[][],
   audios: string[][]
 }

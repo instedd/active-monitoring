@@ -22,6 +22,9 @@ defmodule ActiveMonitoring.Campaign do
     field :monitor_duration, :integer
     field :last_reminder_time, Ecto.DateTime
     field :mode, :string # call | chat
+    field :fb_page_id, :string
+    field :fb_verify_token, :string
+    field :fb_access_token, :string
     # field :alert_recipients, {:array, :string}
     # field :additional_fields, {:array, :string}
 
@@ -46,7 +49,10 @@ defmodule ActiveMonitoring.Campaign do
         :timezone,
         :monitor_duration,
         :last_reminder_time,
-        :mode
+        :mode,
+        :fb_page_id,
+        :fb_verify_token,
+        :fb_access_token
       ])
     |> default_mode
     |> validate_inclusion(:additional_information, ["zero", "optional", "compulsory"])

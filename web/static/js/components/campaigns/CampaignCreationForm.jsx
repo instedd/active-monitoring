@@ -9,6 +9,7 @@ import LanguageStep from './LanguageStep'
 import UploadAudioStep from './UploadAudioStep'
 import ChatTextStep from './ChatTextStep'
 import ChannelStep from './ChannelStep'
+import BotChannelStep from './BotChannelStep'
 import EducationalInformationStep from './EducationalInformationStep'
 import MonitoringSettingsStep from './MonitoringSettingsStep'
 import { campaignLaunch } from '../../actions/campaign'
@@ -105,8 +106,11 @@ class CampaignCreationFormComponent extends Component<Props, State> {
 
     let messageComponent = null
     let messageStepLeftIcon = null
+    let channelComponent = null
+    let channelStepLeftIcon = null
     let messageStepLabel = ''
-    if (campaign.mode === 'chat') {
+    let channelStepLabel = ''
+    if (campaign.mode == 'chat') {
       messageComponent = (
         <ChatTextStep campaign={campaign}>
           <ScrollToLink target='channel'>NEXT: Setup Facebook Channel</ScrollToLink>
@@ -117,7 +121,17 @@ class CampaignCreationFormComponent extends Component<Props, State> {
           {completedMessages ? 'check_circle' : 'description'}
         </FontIcon>
       )
+      channelStepLeftIcon = (
+        <FontIcon className='step-icon'>
+          {this.completedChannelSelectionStep() ? 'check_circle' : 'chat'}
+        </FontIcon>
+      )
+      channelComponent = (
+        <BotChannelStep campaign={campaign} />
+      )
+
       messageStepLabel = 'Chatbot texts'
+      channelStepLabel = 'Setup Facebook Bot'
     } else {
       messageComponent = (
         <UploadAudioStep campaign={campaign}>
@@ -129,7 +143,17 @@ class CampaignCreationFormComponent extends Component<Props, State> {
           {completedMessages ? 'check_circle' : 'volume_up'}
         </FontIcon>
       )
+      channelStepLeftIcon = (
+        <FontIcon className='step-icon'>
+          {this.completedChannelSelectionStep() ? 'check_circle' : 'phone'}
+        </FontIcon>
+      )
+      channelComponent = (
+        <ChannelStep />
+      )
+
       messageStepLabel = 'Upload audio files'
+      channelStepLabel = 'Select a channel'
     }
 
     return (
@@ -155,13 +179,17 @@ class CampaignCreationFormComponent extends Component<Props, State> {
                   rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>}
                   primaryText={messageStepLabel}
                   className={completedMessages ? 'blue-text' : ''} />
-                <ListItem onClick={(e) => animatedScrollTo(e, 'channel')} leftIcon={<FontIcon className='step-icon'>{this.completedChannelSelectionStep() ? 'check_circle' : 'phone'}</FontIcon>} rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>} primaryText='Select a channel' className={this.completedChannelSelectionStep() ? 'blue-text' : ''} />
+                <ListItem onClick={(e) => animatedScrollTo(e, 'channel')}
+                  leftIcon={channelStepLeftIcon}
+                  rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>}
+                  primaryText={channelStepLabel}
+                  className={this.completedChannelSelectionStep() ? 'blue-text' : ''} />
               </List>
             </div>
           </PositionFixer>
         </div>
         <div className='md-cell md-cell--12-tablet md-cell--7-desktop md-cell--1-desktop-offset wizard-content'>
-          <ModeStep>
+          <ModeStep campaign={campaign}>
             <ScrollToLink target='symptoms'>NEXT: Define symptoms</ScrollToLink>
           </ModeStep>
           <SymptomStep campaign={campaign}>
@@ -177,7 +205,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
             <ScrollToLink target='audios'>{messageStepLabel}</ScrollToLink>
           </LanguageStep>
           {messageComponent}
-          <ChannelStep />
+          {channelComponent}
         </div>
       </div>
     )
