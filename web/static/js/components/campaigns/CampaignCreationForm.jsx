@@ -131,7 +131,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
       )
 
       messageStepLabel = 'Chatbot texts'
-      channelStepLabel = 'Setup Facebook Bot'
+      channelStepLabel = 'Setup Facebook Channel'
     } else {
       messageComponent = (
         <UploadAudioStep campaign={campaign}>
