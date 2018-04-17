@@ -21,20 +21,6 @@ defmodule ActiveMonitoring.OAuthClientController do
     send_resp(conn, :no_content, "")
   end
 
-  def synchronize(conn, _params) do
-    user = get_current_user(conn)
-
-    user
-    |> assoc(:oauth_tokens)
-    |> Repo.all
-    |> Enum.each(fn token ->
-      provider = ActiveMonitoring.Channel.provider(token.provider)
-      provider.sync_channels(user.id, token.base_url)
-    end)
-
-    send_resp(conn, :no_content, "")
-  end
-
   def callback(conn, %{"code" => code, "state" => state}) do
     [provider_name, base_url] = String.split(state, "|", parts: 2)
 

@@ -41,20 +41,18 @@ defmodule ActiveMonitoring.Factory do
     %{campaign | audios: audios}
   end
 
-  def with_chat_texts(campaign), do: with_messages(campaign, :chat_texts)
-
-  defp with_messages(campaign, collection) do
+  def with_chat_texts(campaign) do
     topics = Campaign.topics(campaign)
 
     entries =
-      for lang <- campaign |> Map.get(collection),
+      for lang <- campaign.chat_texts,
           topic <- topics,
           do: [topic, lang, "id-#{topic}-#{lang}"]
 
     values =
       [["language", nil, "id-language"] | entries]
 
-    campaign |> Map.put(collection, values)
+    campaign |> Map.put(:chat_texts, values)
   end
 
   def with_channel(campaign) do

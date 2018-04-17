@@ -48,15 +48,4 @@ defmodule ActiveMonitoring.Call do
     changeset(call, %{subject_id: subject.id})
     |> Repo.update!
   end
-
-  defp render_one(call) do
-    %{
-      id: call.id,
-      sid: call.sid,
-      current_step: call.current_step,
-      language: call.language,
-      campaign: call.campaign_id,
-      subject: call.subject.phone_number
-    }
-  end
 end

@@ -2,7 +2,6 @@ defmodule ActiveMonitoring.Runtime.Broker do
   use GenServer
   use Timex
   import Ecto.Query
-  import Ecto
   require Logger
   alias ActiveMonitoring.{Repo, Campaign, Channel}
 

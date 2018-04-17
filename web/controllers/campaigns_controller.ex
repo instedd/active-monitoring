@@ -6,8 +6,7 @@ defmodule ActiveMonitoring.CampaignsController do
     ChangesetView,
     Repo,
     Call,
-    Subject,
-    Channel
+    Subject
   }
 
   def index(conn, _) do
