@@ -27,7 +27,6 @@ defmodule ActiveMonitoring.CampaignsView do
       symptoms: campaign.symptoms,
       forwarding_address: campaign.forwarding_address,
       forwarding_condition: campaign.forwarding_condition,
-      messages: campaign.audios,
       audios: campaign.audios,
       chat_texts: campaign.chat_texts,
       langs: campaign.langs,
