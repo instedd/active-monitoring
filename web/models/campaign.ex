@@ -8,7 +8,7 @@ defmodule ActiveMonitoring.Campaign do
 
   schema "campaigns" do
     field :name, :string
-    field :symptoms, {:array, {:array, :string}} # [{id, label}]
+    field :symptoms, {:array, {:array, :string}} # [[id, label]]
     field :forwarding_condition, :string
     field :forwarding_address, :string
     field :audios, {:array, {:array, :string}} # [[(symptom:id|language|welcome|thanks), lang?, audio.uuid]]
