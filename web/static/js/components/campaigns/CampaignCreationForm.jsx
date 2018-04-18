@@ -64,8 +64,13 @@ class CampaignCreationFormComponent extends Component<Props, State> {
 
   completedChannelSelectionStep() {
     const { campaign } = this.props
-    return campaign.channel != null &&
-      !this.props.activeCampaignUsing(campaign.channel)
+    if (campaign.mode == 'call') {
+      return campaign.channel != null &&
+        !this.props.activeCampaignUsing(campaign.channel)
+    } else {
+      return campaign.fbAccessToken != null && campaign.fbPageId &&
+        campaign.fbVerifyToken != null
+    }
   }
 
   completedModeStep() {
@@ -89,7 +94,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
       this.completedChannelSelectionStep()
     ]
 
-    const numberOfCompletedSteps = steps.filter(item => item == true).length
+    const numberOfCompletedSteps = steps.filter(item => item !== '').length
     const percentage = `${(100 / steps.length * numberOfCompletedSteps).toFixed(0)}%`
 
     let launchComponent = null

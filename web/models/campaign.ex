@@ -156,7 +156,11 @@ defmodule ActiveMonitoring.Campaign do
   end
 
   def ready_to_launch?(campaign) do
-    Channel.verify_exclusive(campaign.channel)
+    case campaign.mode do
+      "call" -> Channel.verify_exclusive(campaign.channel)
+      "chat" -> campaign.fb_access_token != nil && campaign.fb_page_id != nil && campaign.fb_verify_token != nil
+      _ -> false
+    end
   end
 
   def load(conn, id) do
