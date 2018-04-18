@@ -12,7 +12,7 @@ if [ $MIX -eq 0 ]; then
 fi
 
 echo "----==== Running Flow tests ====----"
-docker-compose run --rm webpack yarn flow check
+docker-compose run --rm webpack yarn flow
 FLOW=$?
 
 if [ $FLOW -eq 0 ]; then
