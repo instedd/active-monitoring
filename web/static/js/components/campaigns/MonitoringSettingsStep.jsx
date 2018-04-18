@@ -56,7 +56,7 @@ class MonitoringSettingsComponent extends Component<Props> {
               type='number'
               min={0}
               step={1}
-              onChange={this.props.onEditMonitorDuration}
+              onBlur={(e) => this.props.onEditMonitorDuration(e.target.value)}
               rightIcon={<span>days</span>}
             />
           </div>
