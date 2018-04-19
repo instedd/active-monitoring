@@ -24,6 +24,7 @@ defmodule ActiveMonitoring.Campaign do
     field :fb_page_id, :string
     field :fb_verify_token, :string
     field :fb_access_token, :string
+    field :aida_bot_id, :string
     # field :alert_recipients, {:array, :string}
     # field :additional_fields, {:array, :string}
 
@@ -51,7 +52,8 @@ defmodule ActiveMonitoring.Campaign do
         :mode,
         :fb_page_id,
         :fb_verify_token,
-        :fb_access_token
+        :fb_access_token,
+        :aida_bot_id
       ])
     |> default_mode
     |> validate_inclusion(:additional_information, ["zero", "optional", "compulsory"])
