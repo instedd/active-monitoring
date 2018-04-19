@@ -1,5 +1,7 @@
 //------------- Overrides react-md classes ------------- //
-
+* {
+  line-height: initial;
+}
 .material-icons {
     font-family: 'Material Icons';
     font-weight: normal;
@@ -49,7 +51,14 @@ p {
     box-shadow: none;
   }
 }
+.md-background--secondary-hover,
+.md-background--secondary-hover:hover {
+  background-color: $md-secondary-color;
+}
 
+.md-icon-text:first-child {
+  padding-right: 8px;
+}
 //------------ Tabs -----------------
 
 .tabs-container {

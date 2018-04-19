@@ -19,7 +19,13 @@
   bottom: -45px;
 }
 
-
+.app-header-title-view {
+  i {
+    color: $md-grey-500;
+    margin-left: 10px;
+    vertical-align: baseline;
+  }
+}
 //------------- Campaign Form ------------- //
 
 

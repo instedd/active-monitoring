@@ -30,6 +30,7 @@ main {
       .md-btn--text {
         text-transform: none;
         color: $md-grey-500;
+        padding-top: 6px;
       }
     }
     #user-menu {
@@ -37,6 +38,7 @@ main {
       display: flex;
       button {
         font-size: 1rem;
+        padding-top: 6px;
       }
     }
   }
@@ -59,8 +61,12 @@ nav.sub-nav {
     display: inline-block;
     vertical-align: middle;
   }
+  .logo {
+    margin-left: -60px;
+  }
   h1 {
     font-size: 1.7rem;
+    line-height: 2.4;
     color: $md-white-base;
     margin: 0 0 0 1rem;
     .md-text-field-container {
