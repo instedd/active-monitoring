@@ -94,7 +94,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
       this.completedChannelSelectionStep()
     ]
 
-    const numberOfCompletedSteps = steps.filter(item => item !== '').length
+    const numberOfCompletedSteps = steps.filter(item => item === true).length
     const percentage = `${(100 / steps.length * numberOfCompletedSteps).toFixed(0)}%`
 
     let launchComponent = null
