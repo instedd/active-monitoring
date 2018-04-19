@@ -6,7 +6,7 @@ import { Tabs, Tab } from 'react-md'
 import AddButton from './AddButton'
 
 const IconActive = () =>
-  <img src='/images/icon.svg' width='60' height='60' className="logo" />
+  <img src='/images/icon.svg' width='60' height='60' className='logo' />
 
 class SubNav extends Component {
   props: {
