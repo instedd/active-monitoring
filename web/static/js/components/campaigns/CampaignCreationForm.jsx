@@ -68,7 +68,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
       return campaign.channel != null &&
         !this.props.activeCampaignUsing(campaign.channel)
     } else {
-      return campaign.fbAccessToken != null && campaign.fbPageId &&
+      return campaign.fbAccessToken != null && campaign.fbPageId != null &&
         campaign.fbVerifyToken != null
     }
   }
