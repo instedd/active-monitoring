@@ -37,9 +37,11 @@ export const messagesInUse = (campaign: Campaign): [] => {
 
   let inUse = []
 
-  let messages = campaign.audios
+  let messages = []
   if (campaign.mode == 'chat') {
     messages = campaign.chatTexts
+  } else if (campaign.mode == 'call') {
+    messages = campaign.audios
   }
 
   const welcomeMessage = messages.find((msg) => msg[0] == 'language' && msg[1] == '')
