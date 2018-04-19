@@ -52,7 +52,7 @@ class MonitoringSettingsComponent extends Component<Props> {
             <TextField
               label='Duration'
               id='monitor-duration'
-              value={campaign.monitorDuration || ''}
+              defaultValue={campaign.monitorDuration || ''}
               type='number'
               min={0}
               step={1}
