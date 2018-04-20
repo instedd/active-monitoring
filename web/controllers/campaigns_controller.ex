@@ -58,6 +58,12 @@ defmodule ActiveMonitoring.CampaignsController do
     end
   end
 
+  def manifest(conn, %{"campaigns_id" => campaign_id}) do
+    campaign = Campaign.load(conn, campaign_id)
+
+    render(conn, "manifest.json", campaign: campaign)
+  end
+
   def update(conn, %{"id" => id, "campaign" => campaign_params}) do
     campaign = Campaign.load(conn, id)
 
