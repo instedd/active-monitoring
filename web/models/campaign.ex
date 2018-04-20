@@ -160,7 +160,7 @@ defmodule ActiveMonitoring.Campaign do
   def ready_to_launch?(campaign) do
     case campaign.mode do
       "call" -> Channel.verify_exclusive(campaign.channel)
-      "chat" -> campaign.fb_access_token != nil && campaign.fb_page_id != nil && campaign.fb_verify_token != nil
+      "chat" -> not(is_nil(campaign.fb_access_token)) && not(is_nil(campaign.fb_page_id)) && not(is_nil(campaign.fb_verify_token))
       _ -> false
     end
   end
