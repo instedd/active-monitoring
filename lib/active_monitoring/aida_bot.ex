@@ -1,6 +1,10 @@
 defmodule ActiveMonitoring.AidaBot do
   alias ActiveMonitoring.{Campaign, Repo}
 
+  def publish(manifest) do
+    HTTPoison.post(Application.get_env(:active_monitoring, :aida_backend)[:url], manifest)
+  end
+
   def manifest(campaign) do
     campaign =
       campaign

@@ -48,6 +48,7 @@ defmodule ActiveMonitoring.Mixfile do
       {:proper_case, "~> 1.0.2"},
       {:xml_builder, "~> 0.1.1"},
       {:ex_machina, "~> 2.0", only: :test},
+      {:mock, "~> 0.3.0", only: :test},
       {:oauth2, "~> 0.9"},
       {:csv, "~> 1.4.4"}
     ]

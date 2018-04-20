@@ -2,6 +2,7 @@ defmodule ActiveMonitoring.AidaBotTest do
   use ActiveMonitoring.ModelCase
   use Timex
   import ActiveMonitoring.Factory
+  import Mock
 
   alias ActiveMonitoring.{AidaBot, Campaign}
 
@@ -286,6 +287,17 @@ defmodule ActiveMonitoring.AidaBotTest do
       #   "symptom:famine": "yes"
       #   ".survey": %{"step" : 1}
       # }
+    end
+  end
+
+  describe "publish" do
+    test "should send the manifest to aida" do
+      with_mock HTTPoison, [post: fn(_url, _body) -> "ok" end] do
+        "THE MANIFEST"
+        |> AidaBot.publish()
+
+        assert called HTTPoison.post("http://aida-backend", "THE MANIFEST")
+      end
     end
   end
 end

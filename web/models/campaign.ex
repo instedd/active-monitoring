@@ -178,15 +178,18 @@ defmodule ActiveMonitoring.Campaign do
       case Repo.update(change) do
         {:ok, campaign} ->
           if campaign.mode == "chat" do
-            AidaBot.manifest(campaign)
-            |> IO.inspect
+            campaign
+            |> AidaBot.manifest()
+            |> AidaBot.publish()
           end
+
           {:ok, campaign}
 
-        error -> error
+        error ->
+          error
       end
     else
-      {:error, %{ errors: %{channel: "already in use"}}}
+      {:error, %{errors: %{channel: "already in use"}}}
     end
   end
 
