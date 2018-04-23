@@ -55,6 +55,28 @@ defmodule ActiveMonitoring.CampaignsControllerTest do
     end
   end
 
+  describe "manifest.json" do
+    setup [:with_user_campaign]
+
+    test "a user campaign manifest", %{conn: conn, campaign: campaign} do
+      response = conn |> get(campaigns_manifest_path(conn, :manifest, campaign)) |> json_response(200)
+      assert response["data"]["version"] == "1"
+      assert response["data"]["languages"] == campaign.langs
+    end
+
+    test "unauthorized when trying to view another user's campaign manifest", %{conn: conn, other_user_campaign: other_user_campaign} do
+      assert_error_sent 403, fn ->
+        conn |> get(campaigns_manifest_path(conn, :manifest, other_user_campaign))
+      end
+    end
+
+    test "not found when trying to view the manifest of a campaign that doesn't exist", %{conn: conn} do
+      assert_error_sent 404, fn ->
+        conn |> get(campaigns_manifest_path(conn, :manifest, -1))
+      end
+    end
+  end
+
   describe "update" do
     setup [:with_user_campaign]
 
