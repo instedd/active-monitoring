@@ -36,20 +36,30 @@ Register both ActiveMonitoring and Verboice there as new, trusted applications. 
 
 Edit the Verboice GUISSO app and replace the `guisso.yml` from Verboice working directory. Then run Verboice.
 
-Export ActiveMonitoring environment variables as follows:
+Create `config/local.exs` with the following structure and set up your config variables:
 
-| Variable                   | Content                                                                                        |
-|----------------------------|------------------------------------------------------------------------------------------------|
-| `GUISSO_CLIENT_ID`         | ActiveMonitoring's Client ID on GUISSO                                                         |
-| `GUISSO_CLIENT_SECRET`     | ActiveMonitoring's Client Secret on GUISSO                                                     |
-| `GUISSO_REDIRECT_URI`      | ActiveMonitoring `/oauth_callback`'s URL                                                       |
-| `GUISSO_BASE_URL`          | GUISSO's URL to use for login                                                                  |
-| `VERBOICE_BASE_URL`        | Verboice's URL                                                                                 |
-| `VERBOICE_GUISSO_BASE_URL` | GUISSO's URL to use for authorizing Verboice resources (usually the same as `GUISSO_BASE_URL`) |
-| `VERBOICE_CLIENT_ID`       | Verboice's Client ID on GUISSO                                                                 |
-| `VERBOICE_CLIENT_SECRET`   | Verboice's Client Secret on GUISSO                                                             |
-| `VERBOICE_APP_ID`          | Verboice's Hostname on GUISSO                                                                  |
-| `AIDA_BACKEND_URL`         | Aida's backend URL                                                                             |
+```
+
+use Mix.Config
+
+config :active_monitoring, :verboice,
+  base_url: "",
+  guisso: [
+    base_url: "",
+    client_id: "",
+    client_secret: "",
+    app_id: ""
+  ]
+
+config :active_monitoring, :guisso,
+  base_url: "",
+  auth_url: "",
+  token_url: "",
+  redirect_uri: "",
+  client_id: "",
+  client_secret: ""
+
+```
 
 ## Coherence
 
