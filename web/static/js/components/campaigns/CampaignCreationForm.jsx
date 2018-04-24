@@ -115,7 +115,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
     let channelStepLeftIcon = null
     let messageStepLabel = ''
     let channelStepLabel = ''
-    if (campaign.mode == 'chat') {
+    if (campaign.mode === 'chat') {
       messageComponent = (
         <ChatTextStep campaign={campaign}>
           <ScrollToLink target='channel'>NEXT: Setup Facebook Channel</ScrollToLink>
@@ -137,7 +137,7 @@ class CampaignCreationFormComponent extends Component<Props, State> {
 
       messageStepLabel = 'Chatbot texts'
       channelStepLabel = 'Setup Facebook Channel'
-    } else if (campaign.mode == 'chat') {
+    } else if (campaign.mode === 'call') {
       messageComponent = (
         <UploadAudioStep campaign={campaign}>
           <ScrollToLink target='channel'>NEXT: Select a channel</ScrollToLink>
