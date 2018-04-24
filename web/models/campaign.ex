@@ -212,7 +212,8 @@ defmodule ActiveMonitoring.Campaign do
   defp default_mode(changeset) do
     case changeset.changes[:mode] do
       "chat" -> change(changeset, %{mode: "chat"})
-      _ -> change(changeset, %{mode: "call"})
+      "call" -> change(changeset, %{mode: "call"})
+      _mode -> changeset
     end
   end
 end

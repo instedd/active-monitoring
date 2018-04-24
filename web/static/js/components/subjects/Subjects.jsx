@@ -24,6 +24,7 @@ import ActiveCampaignSubNav from '../ActiveCampaignSubNav'
 import type { Subject, SubjectParams, Campaign } from '../../types'
 
 type SubjectsListProps = {
+  campaignMode: string,
   items: Subject[],
   showSubjectForm: () => void,
   onPageChange: (page: number) => void,
@@ -37,6 +38,7 @@ type SubjectsListProps = {
 class SubjectsList extends Component<SubjectsListProps> {
   render() {
     const subjects = this.props.items || []
+    const { campaignMode } = this.props
 
     if (subjects.length == 0) {
       return (
@@ -45,6 +47,13 @@ class SubjectsList extends Component<SubjectsListProps> {
           <NavLink to='#' onClick={this.props.showSubjectForm}>Add subject</NavLink>
         </EmptyListing>
       )
+    }
+
+    let actionTitle = ''
+    if (campaignMode === 'call') {
+      actionTitle = 'Call'
+    } else if (campaignMode === 'chat') {
+      actionTitle = 'Message'
     }
 
     return (
@@ -58,9 +67,9 @@ class SubjectsList extends Component<SubjectsListProps> {
                   <TableColumn>ID</TableColumn>
                   <TableColumn>Phone Number</TableColumn>
                   <TableColumn>Enroll Date</TableColumn>
-                  <TableColumn>First Call</TableColumn>
-                  <TableColumn>Last Call</TableColumn>
-                  <TableColumn>Last Successful Call</TableColumn>
+                  <TableColumn>{`First ${actionTitle}`}</TableColumn>
+                  <TableColumn>{`Last ${actionTitle}`}</TableColumn>
+                  <TableColumn>{`Last Successful ${actionTitle}`}</TableColumn>
                   <TableColumn>Active?</TableColumn>
                 </TableRow>
               </TableHeader>
@@ -228,7 +237,7 @@ class Subjects extends Component<SubjectsProps> {
     return (<CircularProgress id='subjects-fetching-progress' />)
   }
 
-  subjectsList() {
+  subjectsList(campaignMode) {
     const {
       page,
       items,
@@ -237,16 +246,20 @@ class Subjects extends Component<SubjectsProps> {
       count
     } = this.props.subjects
 
-    return (<SubjectsList
-      items={items}
-      count={count}
-      fetching={fetching}
-      currentPage={page}
-      rowsPerPage={limit}
-      showSubjectForm={() => this.showSubjectForm()}
-      exportCsv={() => this.exportCsv()}
-      onSubjectClick={(subject) => this.editSubject(subject)}
-      onPageChange={(targetPage) => this.goToPage(targetPage)} />)
+    return (
+      <SubjectsList
+        items={items}
+        campaignMode={campaignMode}
+        count={count}
+        fetching={fetching}
+        currentPage={page}
+        rowsPerPage={limit}
+        showSubjectForm={() => this.showSubjectForm()}
+        exportCsv={() => this.exportCsv()}
+        onSubjectClick={(subject) => this.editSubject(subject)}
+        onPageChange={(targetPage) => this.goToPage(targetPage)}
+      />
+    )
   }
 
   componentDidUpdate() {
@@ -279,7 +292,7 @@ class Subjects extends Component<SubjectsProps> {
     if (editingSubject != null) {
       subjectForm = this.subjectForm(editingSubject)
     }
-    let tableOrLoadingIndicator = fetching ? this.circularProgress() : this.subjectsList()
+    let tableOrLoadingIndicator = fetching ? this.circularProgress() : this.subjectsList(this.props.campaign.data.mode)
 
     return (
       <div className='md-grid--no-spacing'>
