@@ -69,6 +69,20 @@ defmodule ActiveMonitoring.AidaBotTest do
       }}
     end
 
+    test "there is no language detector skill if the campaign has only one language" do
+      manifest =
+        insert(:campaign, %{langs: ["en"]})
+        |> Campaign.with_chat_text(%{topic: "language", value: "To chat in english say 'en'. Para hablar en español escribe 'es'"})
+        |> AidaBot.manifest
+        |> Poison.decode!
+
+      assert manifest["skills"] |> Enum.count() == 1
+
+      {:ok, survey}= manifest["skills"] |> Enum.fetch(0)
+
+      assert survey["id"] == "registration"
+    end
+
     test "it should have a survey with a text question to ask for the registration identifier" do
       campaign =
         insert(:campaign, %{langs: ["en", "es"]})
@@ -109,7 +123,7 @@ defmodule ActiveMonitoring.AidaBotTest do
       }}
     end
 
-    test "it should have a survey with a question for every symptom without subjects" do
+    test "it shouldn't have a survey without subjects" do
       campaign =
         insert(:campaign, %{langs: ["en", "es"]})
         |> Campaign.with_chat_text(%{
@@ -133,66 +147,15 @@ defmodule ActiveMonitoring.AidaBotTest do
           value: "¿Tiene alguna erupción?"
         })
 
-
       manifest =
         campaign
         |> AidaBot.manifest
         |> Poison.decode!
 
-      assert {:ok, %{
-        "type" => "survey",
-        "id" => "survey",
-        "name" => "Campaign",
-        "schedule" => schedule,
-        "relevant" => nil,
-        "questions" => [
-          %{
-            "type" => "select_one",
-            "choices" => "yes_no",
-            "name" => "symptom:id-fever",
-            "message" => %{
-              "en" => "Do you have fever?",
-              "es" => "¿Tiene usted fiebre?"
-            }
-          },
-          %{
-            "type" => "select_one",
-            "choices" => "yes_no",
-            "name" => "symptom:id-rash",
-            "message" => %{
-              "en" => "Do you have rash?",
-              "es" => "¿Tiene alguna erupción?"
-            }
-          }
-        ],
-        "choice_lists" => [
-          %{
-            "name" => "yes_no",
-            "choices" => [
-              %{
-                "name" => "yes",
-                "labels" => %{
-                  "en" => ["yes"],
-                  "es" => ["yes"]
-                }
-              },
-              %{
-                "name" => "no",
-                "labels" => %{
-                  "en" => ["no"],
-                  "es" => ["no"]
-                }
-              }
-            ]
-          }
-        ]
-      }} = manifest["skills"] |> Enum.fetch(2)
-
-      {:ok, schedule_date_time, _} = DateTime.from_iso8601(schedule)
-      assert schedule_date_time in Interval.new(from: Timex.shift(DateTime.utc_now(), seconds: -5), until: Timex.shift(DateTime.utc_now(), seconds: 5), step: [seconds: 1])
+      assert manifest["skills"] |> Enum.count == 2
     end
 
-    test "it should have a survey with a question for every symptom with subjects" do
+    test "surveys should have a question for every symptom" do
       campaign =
         insert(:campaign, %{langs: ["en", "es"]})
         |> Campaign.with_chat_text(%{
@@ -223,14 +186,12 @@ defmodule ActiveMonitoring.AidaBotTest do
 
       manifest =
         campaign
-        # |> Repo.get!(campaign.id)
-        # |> Repo.preload(:subjects)
-        |> AidaBot.manifest()
+        |> AidaBot.manifest(%{1 => [subject1, subject2]})
         |> Poison.decode!()
 
       assert {:ok, %{
         "type" => "survey",
-        "id" => "survey",
+        "id" => "1",
         "name" => "Campaign",
         "schedule" => schedule,
         "relevant" => ^relevance,
@@ -279,14 +240,151 @@ defmodule ActiveMonitoring.AidaBotTest do
 
       {:ok, schedule_date_time, _} = DateTime.from_iso8601(schedule)
       assert schedule_date_time in Interval.new(from: Timex.shift(DateTime.utc_now(), seconds: -5), until: Timex.shift(DateTime.utc_now(), seconds: 5), step: [seconds: 1])
+    end
 
+    test "should have one survey per monitor duration day if there is at least one subject for that day" do
+        campaign =
+        insert(:campaign, %{langs: ["en", "es"], monitor_duration: 3})
+        |> Campaign.with_chat_text(%{
+          topic: "symptom:id-fever",
+          language: "en",
+          value: "Do you have fever?"
+        })
+        |> Campaign.with_chat_text(%{
+          topic: "symptom:id-fever",
+          language: "es",
+          value: "¿Tiene usted fiebre?"
+        })
+        |> Campaign.with_chat_text(%{
+          topic: "symptom:id-rash",
+          language: "en",
+          value: "Do you have rash?"
+        })
+        |> Campaign.with_chat_text(%{
+          topic: "symptom:id-rash",
+          language: "es",
+          value: "¿Tiene alguna erupción?"
+        })
 
-      # %{
-      #   "language": "en",
-      #   "registration/registration_id": "12345",
-      #   "symptom:famine": "yes"
-      #   ".survey": %{"step" : 1}
-      # }
+      subject1 = insert(:subject, campaign: campaign)
+      subject2 = insert(:subject, campaign: campaign)
+
+      subject3 = insert(:subject, campaign: campaign)
+
+      relevance1 = "${registration_id} == #{subject1.registration_identifier} || ${registration_id} == #{subject2.registration_identifier}"
+
+      relevance3 = "${registration_id} == #{subject3.registration_identifier}"
+
+      manifest =
+        campaign
+        |> AidaBot.manifest(%{1 => [subject1, subject2], 3 => [subject3]})
+        |> Poison.decode!()
+
+      assert manifest["skills"] |> Enum.count == 4
+
+      assert {:ok, %{
+        "type" => "survey",
+        "id" => "1",
+        "name" => "Campaign",
+        "schedule" => schedule,
+        "relevant" => ^relevance1,
+        "questions" => [
+          %{
+            "type" => "select_one",
+            "choices" => "yes_no",
+            "name" => "symptom:id-fever",
+            "message" => %{
+              "en" => "Do you have fever?",
+              "es" => "¿Tiene usted fiebre?"
+            }
+          },
+          %{
+            "type" => "select_one",
+            "choices" => "yes_no",
+            "name" => "symptom:id-rash",
+            "message" => %{
+              "en" => "Do you have rash?",
+              "es" => "¿Tiene alguna erupción?"
+            }
+          }
+        ],
+        "choice_lists" => [
+          %{
+            "name" => "yes_no",
+            "choices" => [
+              %{
+                "name" => "yes",
+                "labels" => %{
+                  "en" => ["yes"],
+                  "es" => ["yes"]
+                }
+              },
+              %{
+                "name" => "no",
+                "labels" => %{
+                  "en" => ["no"],
+                  "es" => ["no"]
+                }
+              }
+            ]
+          }
+        ]
+      }} = manifest["skills"] |> Enum.fetch(2)
+
+      {:ok, schedule_date_time, _} = DateTime.from_iso8601(schedule)
+      assert schedule_date_time in Interval.new(from: Timex.shift(DateTime.utc_now(), seconds: -5), until: Timex.shift(DateTime.utc_now(), seconds: 5), step: [seconds: 1])
+
+      assert {:ok, %{
+        "type" => "survey",
+        "id" => "3",
+        "name" => "Campaign",
+        "schedule" => schedule,
+        "relevant" => ^relevance3,
+        "questions" => [
+          %{
+            "type" => "select_one",
+            "choices" => "yes_no",
+            "name" => "symptom:id-fever",
+            "message" => %{
+              "en" => "Do you have fever?",
+              "es" => "¿Tiene usted fiebre?"
+            }
+          },
+          %{
+            "type" => "select_one",
+            "choices" => "yes_no",
+            "name" => "symptom:id-rash",
+            "message" => %{
+              "en" => "Do you have rash?",
+              "es" => "¿Tiene alguna erupción?"
+            }
+          }
+        ],
+        "choice_lists" => [
+          %{
+            "name" => "yes_no",
+            "choices" => [
+              %{
+                "name" => "yes",
+                "labels" => %{
+                  "en" => ["yes"],
+                  "es" => ["yes"]
+                }
+              },
+              %{
+                "name" => "no",
+                "labels" => %{
+                  "en" => ["no"],
+                  "es" => ["no"]
+                }
+              }
+            ]
+          }
+        ]
+      }} = manifest["skills"] |> Enum.fetch(3)
+
+      {:ok, schedule_date_time, _} = DateTime.from_iso8601(schedule)
+      assert schedule_date_time in Interval.new(from: Timex.shift(DateTime.utc_now(), seconds: -5), until: Timex.shift(DateTime.utc_now(), seconds: 5), step: [seconds: 1])
     end
   end
 
@@ -296,7 +394,7 @@ defmodule ActiveMonitoring.AidaBotTest do
         "THE MANIFEST"
         |> AidaBot.publish()
 
-        assert called HTTPoison.post("http://aida-backend", "THE MANIFEST")
+        assert called HTTPoison.post("http://aida-backend/api/bots", "THE MANIFEST")
       end
     end
   end
