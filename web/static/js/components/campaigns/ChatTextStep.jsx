@@ -43,8 +43,6 @@ class ChatTextStepComponent extends Component<ChatTextStepProps> {
       return { title: 'Identify message', description: 'Ask subject to dial their ID or request it if they do not have one' }
     } else if (topic == 'registration') {
       return { title: 'Registration message', description: 'Inform the subject will be forwarded to an agent for registration' }
-    } else if (topic == 'forward') {
-      return { title: 'Forward call message', description: 'Explain that the current chat will be forwarded to an agent due to positive symptoms' }
     } else if (topic == 'educational') {
       return { title: 'Educational information', description: 'Inform the subject about additional information such as prevention measures' }
     } else if (topic == 'additional_information_intro') {

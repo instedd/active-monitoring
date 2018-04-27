@@ -8,9 +8,16 @@ export const neededMessages = (campaign: Campaign): { [lang: string]: string[] }
     .filter(([id, name]) => name && name != '')
     .map(([id, name]) => `symptom:${id}`)
 
+  let modeMessages = []
+  if (campaign.mode == 'chat') {
+    modeMessages = ['additional_information_intro', 'educational', 'thanks']
+  } else if (campaign.mode == 'call') {
+    modeMessages = ['forward', 'additional_information_intro', 'educational', 'thanks']
+  }
+
   let topics = ['welcome', 'identify', 'registration']
     .concat(symptoms)
-    .concat(['forward', 'additional_information_intro', 'educational', 'thanks'])
+    .concat(modeMessages)
 
   if (campaign.additionalInformation == 'zero' || campaign.additionalInformation == undefined) {
     const i = topics.indexOf('additional_information_intro')
