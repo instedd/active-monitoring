@@ -15,7 +15,7 @@ defmodule ActiveMonitoring.Factory do
       name: "Campaign",
       forwarding_condition: "all",
       forwarding_address: "5550000",
-      symptoms: [["id-fever", "Fever"], ["id-rash", "Rash"]],
+      symptoms: [["123e4567-e89b-12d3-a456-426655440111", "Fever"], ["123e4567-e89b-12d3-a456-426655440222", "Rash"]],
       langs: ["en", "es"],
       audios: [],
       chat_texts: [],
@@ -81,7 +81,7 @@ defmodule ActiveMonitoring.Factory do
 
   def call_answer_factory do
     %CallAnswer{
-      symptom: "id-fever",
+      symptom: "123e4567-e89b-12d3-a456-426655440111",
       response: true
     }
   end

@@ -192,22 +192,22 @@ defmodule ActiveMonitoring.AidaBotTest do
       campaign =
         insert(:campaign, %{langs: ["en", "es"]})
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-fever",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440111",
           language: "en",
           value: "Do you have fever?"
         })
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-fever",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440111",
           language: "es",
           value: "¿Tiene usted fiebre?"
         })
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-rash",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440222",
           language: "en",
           value: "Do you have rash?"
         })
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-rash",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440222",
           language: "es",
           value: "¿Tiene alguna erupción?"
         })
@@ -223,22 +223,22 @@ defmodule ActiveMonitoring.AidaBotTest do
       campaign =
         insert(:campaign, %{langs: ["en", "es"], additional_information: nil})
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-fever",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440111",
           language: "en",
           value: "Do you have fever?"
         })
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-fever",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440111",
           language: "es",
           value: "¿Tiene usted fiebre?"
         })
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-rash",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440222",
           language: "en",
           value: "Do you have rash?"
         })
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-rash",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440222",
           language: "es",
           value: "¿Tiene alguna erupción?"
         })
@@ -283,7 +283,7 @@ defmodule ActiveMonitoring.AidaBotTest do
                    %{
                      type: "select_one",
                      choices: "yes_no",
-                     name: "symptom:id-fever",
+                     name: "symptom:123e4567-e89b-12d3-a456-426655440111",
                      message: %{
                        "en" => "Do you have fever?",
                        "es" => "¿Tiene usted fiebre?"
@@ -292,7 +292,7 @@ defmodule ActiveMonitoring.AidaBotTest do
                    %{
                      type: "select_one",
                      choices: "yes_no",
-                     name: "symptom:id-rash",
+                     name: "symptom:123e4567-e89b-12d3-a456-426655440222",
                      message: %{
                        "en" => "Do you have rash?",
                        "es" => "¿Tiene alguna erupción?"
@@ -335,22 +335,22 @@ defmodule ActiveMonitoring.AidaBotTest do
       campaign =
         insert(:campaign, %{langs: ["en", "es"], monitor_duration: 3, additional_information: nil})
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-fever",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440111",
           language: "en",
           value: "Do you have fever?"
         })
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-fever",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440111",
           language: "es",
           value: "¿Tiene usted fiebre?"
         })
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-rash",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440222",
           language: "en",
           value: "Do you have rash?"
         })
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-rash",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440222",
           language: "es",
           value: "¿Tiene alguna erupción?"
         })
@@ -401,7 +401,7 @@ defmodule ActiveMonitoring.AidaBotTest do
                    %{
                      type: "select_one",
                      choices: "yes_no",
-                     name: "symptom:id-fever",
+                     name: "symptom:123e4567-e89b-12d3-a456-426655440111",
                      message: %{
                        "en" => "Do you have fever?",
                        "es" => "¿Tiene usted fiebre?"
@@ -410,7 +410,7 @@ defmodule ActiveMonitoring.AidaBotTest do
                    %{
                      type: "select_one",
                      choices: "yes_no",
-                     name: "symptom:id-rash",
+                     name: "symptom:123e4567-e89b-12d3-a456-426655440222",
                      message: %{
                        "en" => "Do you have rash?",
                        "es" => "¿Tiene alguna erupción?"
@@ -461,7 +461,7 @@ defmodule ActiveMonitoring.AidaBotTest do
                    %{
                      type: "select_one",
                      choices: "yes_no",
-                     name: "symptom:id-fever",
+                     name: "symptom:123e4567-e89b-12d3-a456-426655440111",
                      message: %{
                        "en" => "Do you have fever?",
                        "es" => "¿Tiene usted fiebre?"
@@ -470,7 +470,7 @@ defmodule ActiveMonitoring.AidaBotTest do
                    %{
                      type: "select_one",
                      choices: "yes_no",
-                     name: "symptom:id-rash",
+                     name: "symptom:123e4567-e89b-12d3-a456-426655440222",
                      message: %{
                        "en" => "Do you have rash?",
                        "es" => "¿Tiene alguna erupción?"
@@ -513,12 +513,12 @@ defmodule ActiveMonitoring.AidaBotTest do
       campaign =
         insert(:campaign, %{langs: ["en"], additional_information: "optional"})
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-fever",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440111",
           language: "en",
           value: "Do you have fever?"
         })
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-rash",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440222",
           language: "en",
           value: "Do you have rash?"
         })
@@ -567,7 +567,7 @@ defmodule ActiveMonitoring.AidaBotTest do
                  %{
                    type: "select_one",
                    choices: "yes_no",
-                   name: "symptom:id-fever",
+                   name: "symptom:123e4567-e89b-12d3-a456-426655440111",
                    message: %{
                      "en" => "Do you have fever?"
                    }
@@ -575,7 +575,7 @@ defmodule ActiveMonitoring.AidaBotTest do
                  %{
                    type: "select_one",
                    choices: "yes_no",
-                   name: "symptom:id-rash",
+                   name: "symptom:123e4567-e89b-12d3-a456-426655440222",
                    message: %{
                      "en" => "Do you have rash?"
                    }
@@ -630,12 +630,12 @@ defmodule ActiveMonitoring.AidaBotTest do
       campaign =
         insert(:campaign, %{langs: ["en"], additional_information: "compulsory"})
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-fever",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440111",
           language: "en",
           value: "Do you have fever?"
         })
         |> Campaign.with_chat_text(%{
-          topic: "symptom:id-rash",
+          topic: "symptom:123e4567-e89b-12d3-a456-426655440222",
           language: "en",
           value: "Do you have rash?"
         })
@@ -685,7 +685,7 @@ defmodule ActiveMonitoring.AidaBotTest do
                    %{
                      type: "select_one",
                      choices: "yes_no",
-                     name: "symptom:id-fever",
+                     name: "symptom:123e4567-e89b-12d3-a456-426655440111",
                      message: %{
                        "en" => "Do you have fever?"
                      }
@@ -693,7 +693,7 @@ defmodule ActiveMonitoring.AidaBotTest do
                    %{
                      type: "select_one",
                      choices: "yes_no",
-                     name: "symptom:id-rash",
+                     name: "symptom:123e4567-e89b-12d3-a456-426655440222",
                      message: %{
                        "en" => "Do you have rash?"
                      }
