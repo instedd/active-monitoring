@@ -18,6 +18,7 @@ campaign = Repo.insert!(%Campaign{
   symptoms: symptoms,
   forwarding_condition: "any",
   forwarding_address: "12345678",
+  mode: "call",
   langs: ["en"],
   additional_information: "zero",
   started_at: Ecto.DateTime.utc()
