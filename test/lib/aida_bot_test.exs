@@ -390,11 +390,58 @@ defmodule ActiveMonitoring.AidaBotTest do
 
   describe "publish" do
     test "should send the manifest to aida" do
-      with_mock HTTPoison, [post: fn(_url, _body) -> "ok" end] do
-        "THE MANIFEST"
-        |> AidaBot.publish()
+      with_mock HTTPoison,
+        post: fn _url, _body ->
+          %{
+            data: %{
+              id: "82f0c3dd-7313-4896-9797-f0479e236219",
+              manifest: "Stored Manifest",
+              temp: false
+            }
+          }
+          |> Poison.encode!()
+        end do
+        response =
+          "THE MANIFEST"
+          |> AidaBot.publish()
 
-        assert called HTTPoison.post("http://aida-backend/api/bots", "THE MANIFEST")
+        assert response == %{
+                 "id" => "82f0c3dd-7313-4896-9797-f0479e236219",
+                 "manifest" => "Stored Manifest",
+                 "temp" => false
+               }
+
+        assert called(HTTPoison.post("http://aida-backend/api/bots", "THE MANIFEST"))
+      end
+    end
+
+    test "should update the manifest" do
+      with_mock HTTPoison,
+        put: fn _url, _body ->
+          %{
+            data: %{
+              id: "e8762231-d624-4986-ac2d-b8a4d95f7226",
+              manifest: "Stored Manifest",
+              temp: false
+            }
+          }
+          |> Poison.encode!()
+        end do
+        response = "THE MANIFEST"
+        |> AidaBot.update("e8762231-d624-4986-ac2d-b8a4d95f7226")
+
+        assert response == %{
+                 "id" => "e8762231-d624-4986-ac2d-b8a4d95f7226",
+                 "manifest" => "Stored Manifest",
+                 "temp" => false
+               }
+
+        assert called(
+                 HTTPoison.put(
+                   "http://aida-backend/api/bots/e8762231-d624-4986-ac2d-b8a4d95f7226",
+                   "THE MANIFEST"
+                 )
+               )
       end
     end
   end

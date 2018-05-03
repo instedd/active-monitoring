@@ -6,6 +6,17 @@ defmodule ActiveMonitoring.AidaBot do
       "#{Application.get_env(:active_monitoring, :aida_backend)[:url]}/api/bots",
       manifest
     )
+    |> Poison.decode!()
+    |> Map.get("data")
+  end
+
+  def update(manifest, bot_id) do
+    HTTPoison.put(
+      "#{Application.get_env(:active_monitoring, :aida_backend)[:url]}/api/bots/#{bot_id}",
+      manifest
+    )
+    |> Poison.decode!()
+    |> Map.get("data")
   end
 
   def manifest(campaign, subjects \\ %{}) do
@@ -82,35 +93,38 @@ defmodule ActiveMonitoring.AidaBot do
   defp survey(surveys, _, nil, _), do: surveys
 
   defp survey(surveys, %{name: name} = campaign, subjects, campaign_day) do
-    surveys ++ [%{
-      type: "survey",
-      id: "#{campaign_day}",
-      name: name,
-      schedule: DateTime.utc_now() |> DateTime.to_iso8601(),
-      relevant: survey_relevance(subjects),
-      questions: questions(campaign),
-      choice_lists: [
+    surveys ++
+      [
         %{
-          name: "yes_no",
-          choices: [
+          type: "survey",
+          id: "#{campaign_day}",
+          name: name,
+          schedule: DateTime.utc_now() |> DateTime.to_iso8601(),
+          relevant: survey_relevance(subjects),
+          questions: questions(campaign),
+          choice_lists: [
             %{
-              name: "yes",
-              labels: %{
-                en: ["yes"],
-                es: ["yes"]
-              }
-            },
-            %{
-              name: "no",
-              labels: %{
-                en: ["no"],
-                es: ["no"]
-              }
+              name: "yes_no",
+              choices: [
+                %{
+                  name: "yes",
+                  labels: %{
+                    en: ["yes"],
+                    es: ["yes"]
+                  }
+                },
+                %{
+                  name: "no",
+                  labels: %{
+                    en: ["no"],
+                    es: ["no"]
+                  }
+                }
+              ]
             }
           ]
         }
       ]
-    }]
   end
 
   defp survey_relevance(nil), do: nil

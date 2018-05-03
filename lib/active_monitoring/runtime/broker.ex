@@ -3,7 +3,7 @@ defmodule ActiveMonitoring.Runtime.Broker do
   use Timex
   import Ecto.Query
   require Logger
-  alias ActiveMonitoring.{Repo, Campaign, Channel}
+  alias ActiveMonitoring.{Repo, Campaign, Channel, AidaBot, Subject}
 
   @poll_interval :timer.minutes(15)
   @server_ref {:global, __MODULE__}
@@ -62,6 +62,33 @@ defmodule ActiveMonitoring.Runtime.Broker do
         local_3pm = Timex.set(local_now, [hour: 15, minute: 0, second: 0])
         Timex.before?(local_3pm, local_now)
     end
+  end
+
+  defp call_pending_subjects(%{subjects: subjects, mode: "chat"} = campaign, now) do
+    subjects =
+      subjects
+      |> Enum.filter(fn s -> Subject.active_case(s, now) end)
+      |> Enum.group_by(fn subject ->
+        # TODO: Check with Mati if we asume the first day as day 0
+        Timex.diff(now, subject.inserted_at, :days) + 1
+      end)
+
+    case campaign
+         |> AidaBot.manifest(subjects)
+         |> AidaBot.update(campaign.bot_id) do
+      {:ok, _} ->
+        true
+
+      {:error, reason} ->
+        Logger.error("Error publishing manifest: #{campaign.bot_id}\n#{inspect(reason)}\n\n")
+
+      response ->
+        Logger.error(
+          "Unknown response publishing manifest: #{campaign.bot_id}\n#{inspect(response)}\n\n"
+        )
+    end
+
+    Campaign.mark_as_reminded(campaign, now)
   end
 
   defp call_pending_subjects(%{subjects: subjects} = campaign, now) do

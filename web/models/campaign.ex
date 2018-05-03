@@ -175,19 +175,20 @@ defmodule ActiveMonitoring.Campaign do
         changeset(campaign, %{})
         |> Ecto.Changeset.put_change(:started_at, Ecto.DateTime.utc())
 
-      case Repo.update(change) do
-        {:ok, campaign} ->
-          if campaign.mode == "chat" do
+      change =
+        if campaign.mode == "chat" do
+          {:ok, bot_id} =
             campaign
             |> AidaBot.manifest()
             |> AidaBot.publish()
-          end
 
-          {:ok, campaign}
+          change
+          |> Ecto.Changeset.put_change(:bot_id, bot_id)
+        else
+          change
+        end
 
-        error ->
-          error
-      end
+      Repo.update(change)
     else
       {:error, %{errors: %{channel: "already in use"}}}
     end
