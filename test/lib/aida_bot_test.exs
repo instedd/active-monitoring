@@ -187,6 +187,16 @@ defmodule ActiveMonitoring.AidaBotTest do
           language: "es",
           value: "¿Tiene alguna erupción?"
         })
+        |> Campaign.with_chat_text(%{
+          topic: "educational",
+          language: "en",
+          value: "educational copy"
+        })
+        |> Campaign.with_chat_text(%{
+          topic: "thanks",
+          language: "en",
+          value: "thanks!"
+        })
 
       subject1 = insert(:subject, campaign: campaign)
       subject2 = insert(:subject, campaign: campaign)
@@ -224,6 +234,20 @@ defmodule ActiveMonitoring.AidaBotTest do
              "message" => %{
                "en" => "Do you have rash?",
                "es" => "¿Tiene alguna erupción?"
+             }
+           },
+           %{
+             "type" => "note",
+             "name" => "educational",
+             "message" => %{
+               "en" => "educational copy",
+             }
+           },
+           %{
+             "type" => "note",
+             "name" => "thanks",
+             "message" => %{
+               "en" => "thanks!",
              }
            }
          ],
@@ -282,6 +306,16 @@ defmodule ActiveMonitoring.AidaBotTest do
           language: "es",
           value: "¿Tiene alguna erupción?"
         })
+        |> Campaign.with_chat_text(%{
+          topic: "educational",
+          language: "en",
+          value: "educational copy"
+        })
+        |> Campaign.with_chat_text(%{
+          topic: "thanks",
+          language: "en",
+          value: "thanks!"
+        })
 
       subject1 = insert(:subject, campaign: campaign)
       subject2 = insert(:subject, campaign: campaign)
@@ -326,6 +360,20 @@ defmodule ActiveMonitoring.AidaBotTest do
              "message" => %{
                "en" => "Do you have rash?",
                "es" => "¿Tiene alguna erupción?"
+             }
+           },
+           %{
+             "type" => "note",
+             "name" => "educational",
+             "message" => %{
+               "en" => "educational copy",
+             }
+           },
+           %{
+             "type" => "note",
+             "name" => "thanks",
+             "message" => %{
+               "en" => "thanks!",
              }
            }
          ],
@@ -384,6 +432,20 @@ defmodule ActiveMonitoring.AidaBotTest do
              "message" => %{
                "en" => "Do you have rash?",
                "es" => "¿Tiene alguna erupción?"
+             }
+           },
+           %{
+             "type" => "note",
+             "name" => "educational",
+             "message" => %{
+               "en" => "educational copy",
+             }
+           },
+           %{
+             "type" => "note",
+             "name" => "thanks",
+             "message" => %{
+               "en" => "thanks!",
              }
            }
          ],

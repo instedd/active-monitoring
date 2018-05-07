@@ -173,6 +173,44 @@ defmodule ActiveMonitoring.AidaBot do
           end)
       }
     end)
+    |> Enum.concat(additional_information(campaign))
+    |> Enum.concat(notes(campaign))
+  end
+
+  defp additional_information(%{additional_information: "optional"} = campaign) do
+    [
+      %{
+        "type" => "note",
+        "name" => "additional_information_intro",
+        "message" =>
+          localize(campaign, fn lang ->
+            campaign |> Campaign.chat_text_for("additional_information_intro", lang)
+          end)
+      }
+    ]
+  end
+
+  defp additional_information(_), do: []
+
+  defp notes(campaign) do
+    [
+      %{
+        "type" => "note",
+        "name" => "educational",
+        "message" =>
+          localize(campaign, fn lang ->
+            campaign |> Campaign.chat_text_for("educational", lang)
+          end)
+      },
+      %{
+        "type" => "note",
+        "name" => "thanks",
+        "message" =>
+          localize(campaign, fn lang ->
+            campaign |> Campaign.chat_text_for("thanks", lang)
+          end)
+      }
+    ]
   end
 
   defp localize(%{langs: langs}, func) do
