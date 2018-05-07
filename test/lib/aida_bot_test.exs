@@ -386,6 +386,35 @@ defmodule ActiveMonitoring.AidaBotTest do
       {:ok, schedule_date_time, _} = DateTime.from_iso8601(schedule)
       assert schedule_date_time in Interval.new(from: Timex.shift(DateTime.utc_now(), seconds: -5), until: Timex.shift(DateTime.utc_now(), seconds: 5), step: [seconds: 1])
     end
+
+    test "should have a websocket channel and a facebook channel" do
+      manifest =
+        insert(:campaign, %{
+          langs: ["en"],
+          fb_page_id: "the_page_id",
+          fb_verify_token: "the_verify_token",
+          fb_access_token: "the_access_token"
+        })
+        |> Campaign.with_chat_text(%{
+          topic: "language",
+          value: "To chat in english say 'en'. Para hablar en español escribe 'es'"
+        })
+        |> AidaBot.manifest()
+        |> Poison.decode!()
+
+      assert manifest["channels"] == [
+               %{
+                 "type" => "facebook",
+                 "page_id" => "the_page_id",
+                 "verify_token" => "the_verify_token",
+                 "access_token" => "the_access_token"
+               },
+               %{
+                 "type" => "websocket",
+                 "access_token" => "the_access_token"
+               }
+             ]
+    end
   end
 
   describe "publish" do

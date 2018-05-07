@@ -24,7 +24,8 @@ defmodule ActiveMonitoring.AidaBot do
       version: "1",
       languages: campaign.langs,
       front_desk: front_desk(campaign),
-      skills: skills(campaign, subjects)
+      skills: skills(campaign, subjects),
+      channels: channels(campaign)
     }
     |> Poison.encode!()
   end
@@ -38,6 +39,27 @@ defmodule ActiveMonitoring.AidaBot do
         }
       }
     }
+  end
+
+  defp channels(campaign) do
+    %{
+      fb_page_id: fb_page_id,
+      fb_verify_token: fb_verify_token,
+      fb_access_token: fb_access_token
+    } = campaign
+
+    [
+      %{
+        "type" => "facebook",
+        "page_id" => fb_page_id,
+        "verify_token" => fb_verify_token,
+        "access_token" => fb_access_token
+      },
+      %{
+        "type" => "websocket",
+        "access_token" => fb_access_token
+      }
+    ]
   end
 
   defp skills(campaign, subjects) do
