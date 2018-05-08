@@ -101,6 +101,7 @@ defmodule ActiveMonitoring.AidaBot do
               end)
           }
         ]
+        |> Enum.concat(thanks_note(campaign))
       }
     ]
   end
@@ -174,7 +175,8 @@ defmodule ActiveMonitoring.AidaBot do
       }
     end)
     |> Enum.concat(additional_information(campaign))
-    |> Enum.concat(notes(campaign))
+    |> Enum.concat(educational_note(campaign))
+    |> Enum.concat(thanks_note(campaign))
   end
 
   defp additional_information(%{additional_information: "optional"} = campaign) do
@@ -192,7 +194,7 @@ defmodule ActiveMonitoring.AidaBot do
 
   defp additional_information(_), do: []
 
-  defp notes(campaign) do
+  defp educational_note(campaign) do
     [
       %{
         "type" => "note",
@@ -201,7 +203,12 @@ defmodule ActiveMonitoring.AidaBot do
           localize(campaign, fn lang ->
             campaign |> Campaign.chat_text_for("educational", lang)
           end)
-      },
+      }
+    ]
+  end
+
+  defp thanks_note(campaign) do
+    [
       %{
         "type" => "note",
         "name" => "thanks",

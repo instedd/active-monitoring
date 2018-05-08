@@ -103,6 +103,16 @@ defmodule ActiveMonitoring.AidaBotTest do
           language: "es",
           value: "Por favor dígame su número de registro"
         })
+        |> Campaign.with_chat_text(%{
+          topic: "thanks",
+          language: "en",
+          value: "thanks!"
+        })
+        |> Campaign.with_chat_text(%{
+          topic: "thanks",
+          language: "es",
+          value: "gracias!"
+        })
 
       manifest =
         campaign
@@ -126,6 +136,14 @@ defmodule ActiveMonitoring.AidaBotTest do
                    "message" => %{
                      "en" => "Please tell me your Registration Id",
                      "es" => "Por favor dígame su número de registro"
+                   }
+                 },
+                 %{
+                   "type" => "note",
+                   "name" => "thanks",
+                   "message" => %{
+                     "en" => "thanks!",
+                     "es" => "gracias!"
                    }
                  }
                ]
