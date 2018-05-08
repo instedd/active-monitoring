@@ -15,18 +15,16 @@ defmodule ActiveMonitoring.AidaBotTest do
       manifest =
         context[:campaign]
         |> AidaBot.manifest()
-        |> Poison.decode!()
 
-      assert manifest["version"] == "1"
+      assert manifest[:version] == "1"
     end
 
     test "it takes languages from campaign", context do
       manifest =
         context[:campaign]
         |> AidaBot.manifest()
-        |> Poison.decode!()
 
-      assert manifest["languages"] == ["en", "es"]
+      assert manifest[:languages] == ["en", "es"]
     end
 
     test "there is a greeting for each language", context do
@@ -43,9 +41,8 @@ defmodule ActiveMonitoring.AidaBotTest do
           value: "Bienvenidos a la campaña!"
         })
         |> AidaBot.manifest()
-        |> Poison.decode!()
 
-      assert manifest["front_desk"]["greeting"]["message"] == %{
+      assert manifest[:front_desk][:greeting][:message] == %{
                "en" => "Welcome to the campaign!",
                "es" => "Bienvenidos a la campaña!"
              }
@@ -59,14 +56,13 @@ defmodule ActiveMonitoring.AidaBotTest do
           value: "To chat in english say 'en'. Para hablar en español escribe 'es'"
         })
         |> AidaBot.manifest()
-        |> Poison.decode!()
 
-      {:ok, skill} = manifest["skills"] |> Enum.fetch(0)
+      {:ok, skill} = manifest[:skills] |> Enum.fetch(0)
 
       assert skill == %{
-               "type" => "language_detector",
-               "explanation" => "To chat in english say 'en'. Para hablar en español escribe 'es'",
-               "languages" => %{
+               type: "language_detector",
+               explanation: "To chat in english say 'en'. Para hablar en español escribe 'es'",
+               languages: %{
                  "en" => ["en"],
                  "es" => ["es"]
                }
@@ -81,13 +77,12 @@ defmodule ActiveMonitoring.AidaBotTest do
           value: "To chat in english say 'en'. Para hablar en español escribe 'es'"
         })
         |> AidaBot.manifest()
-        |> Poison.decode!()
 
-      assert manifest["skills"] |> Enum.count() == 1
+      assert manifest[:skills] |> Enum.count() == 1
 
-      {:ok, survey} = manifest["skills"] |> Enum.fetch(0)
+      {:ok, survey} = manifest[:skills] |> Enum.fetch(0)
 
-      assert survey["id"] == "registration"
+      assert survey[:id] == "registration"
     end
 
     test "it should have a survey with a text question to ask for the registration identifier" do
@@ -117,37 +112,46 @@ defmodule ActiveMonitoring.AidaBotTest do
       manifest =
         campaign
         |> AidaBot.manifest()
-        |> Poison.decode!()
 
-      {:ok, skill} = manifest["skills"] |> Enum.fetch(1)
+      {:ok, skill} = manifest[:skills] |> Enum.fetch(1)
 
-      assert skill == %{
-               "type" => "survey",
-               "id" => "registration",
-               "name" => campaign.name,
-               "keywords" => %{
-                 "en" => ["registration"],
-                 "es" => ["registration"]
-               },
-               "questions" => [
-                 %{
-                   "type" => "text",
-                   "name" => "registration_id",
-                   "message" => %{
-                     "en" => "Please tell me your Registration Id",
-                     "es" => "Por favor dígame su número de registro"
-                   }
-                 },
-                 %{
-                   "type" => "note",
-                   "name" => "thanks",
-                   "message" => %{
-                     "en" => "thanks!",
-                     "es" => "gracias!"
-                   }
-                 }
-               ]
-             }
+      %{
+        type: "survey",
+        id: "registration",
+        name: "registration",
+        keywords: %{
+          "en" => ["registration"],
+          "es" => ["registration"]
+        },
+        questions: [
+          %{
+            type: "text",
+            name: "registration_id",
+            message: %{
+              "en" => "Please tell me your Registration Id",
+              "es" => "Por favor dígame su número de registro"
+            }
+          },
+          %{
+            type: "note",
+            name: "thanks",
+            message: %{
+              "en" => "thanks!",
+              "es" => "gracias!"
+            }
+          }
+        ],
+        choice_lists: [],
+        schedule: schedule
+      } = skill
+
+      {:ok, schedule_date_time, _} = DateTime.from_iso8601(schedule)
+
+      assert schedule_date_time in Interval.new(
+               from: Timex.shift(DateTime.utc_now(), seconds: -5),
+               until: Timex.shift(DateTime.utc_now(), seconds: 5),
+               step: [seconds: 1]
+             )
     end
 
     test "it shouldn't have a survey without subjects" do
@@ -177,9 +181,8 @@ defmodule ActiveMonitoring.AidaBotTest do
       manifest =
         campaign
         |> AidaBot.manifest()
-        |> Poison.decode!()
 
-      assert manifest["skills"] |> Enum.count() == 2
+      assert manifest[:skills] |> Enum.count() == 2
     end
 
     test "surveys should have a question for every symptom" do
@@ -226,63 +229,62 @@ defmodule ActiveMonitoring.AidaBotTest do
       manifest =
         campaign
         |> AidaBot.manifest(%{1 => [subject1, subject2]})
-        |> Poison.decode!()
 
       {:ok,
        %{
-         "type" => "survey",
-         "id" => "1",
-         "name" => "Campaign",
-         "schedule" => schedule,
-         "relevant" => ^relevance,
-         "questions" => [
+         type: "survey",
+         id: "1",
+         name: "survey_1",
+         schedule: schedule,
+         relevant: ^relevance,
+         questions: [
            %{
-             "type" => "select_one",
-             "choices" => "yes_no",
-             "name" => "symptom:id-fever",
-             "message" => %{
+             type: "select_one",
+             choices: "yes_no",
+             name: "symptom:id-fever",
+             message: %{
                "en" => "Do you have fever?",
                "es" => "¿Tiene usted fiebre?"
              }
            },
            %{
-             "type" => "select_one",
-             "choices" => "yes_no",
-             "name" => "symptom:id-rash",
-             "message" => %{
+             type: "select_one",
+             choices: "yes_no",
+             name: "symptom:id-rash",
+             message: %{
                "en" => "Do you have rash?",
                "es" => "¿Tiene alguna erupción?"
              }
            },
            %{
-             "type" => "note",
-             "name" => "educational",
-             "message" => %{
-               "en" => "educational copy",
+             type: "note",
+             name: "educational",
+             message: %{
+               "en" => "educational copy"
              }
            },
            %{
-             "type" => "note",
-             "name" => "thanks",
-             "message" => %{
-               "en" => "thanks!",
+             type: "note",
+             name: "thanks",
+             message: %{
+               "en" => "thanks!"
              }
            }
          ],
-         "choice_lists" => [
+         choice_lists: [
            %{
-             "name" => "yes_no",
-             "choices" => [
+             name: "yes_no",
+             choices: [
                %{
-                 "name" => "yes",
-                 "labels" => %{
+                 name: "yes",
+                 labels: %{
                    "en" => ["yes"],
                    "es" => ["yes"]
                  }
                },
                %{
-                 "name" => "no",
-                 "labels" => %{
+                 name: "no",
+                 labels: %{
                    "en" => ["no"],
                    "es" => ["no"]
                  }
@@ -290,7 +292,7 @@ defmodule ActiveMonitoring.AidaBotTest do
              ]
            }
          ]
-       }} = manifest["skills"] |> Enum.fetch(2)
+       }} = manifest[:skills] |> Enum.fetch(2)
 
       {:ok, schedule_date_time, _} = DateTime.from_iso8601(schedule)
 
@@ -350,65 +352,64 @@ defmodule ActiveMonitoring.AidaBotTest do
       manifest =
         campaign
         |> AidaBot.manifest(%{1 => [subject1, subject2], 3 => [subject3]})
-        |> Poison.decode!()
 
-      assert manifest["skills"] |> Enum.count() == 4
+      assert manifest[:skills] |> Enum.count() == 4
 
       {:ok,
        %{
-         "type" => "survey",
-         "id" => "1",
-         "name" => "Campaign",
-         "schedule" => schedule,
-         "relevant" => ^relevance1,
-         "questions" => [
+         type: "survey",
+         id: "1",
+         name: "survey_1",
+         schedule: schedule,
+         relevant: ^relevance1,
+         questions: [
            %{
-             "type" => "select_one",
-             "choices" => "yes_no",
-             "name" => "symptom:id-fever",
-             "message" => %{
+             type: "select_one",
+             choices: "yes_no",
+             name: "symptom:id-fever",
+             message: %{
                "en" => "Do you have fever?",
                "es" => "¿Tiene usted fiebre?"
              }
            },
            %{
-             "type" => "select_one",
-             "choices" => "yes_no",
-             "name" => "symptom:id-rash",
-             "message" => %{
+             type: "select_one",
+             choices: "yes_no",
+             name: "symptom:id-rash",
+             message: %{
                "en" => "Do you have rash?",
                "es" => "¿Tiene alguna erupción?"
              }
            },
            %{
-             "type" => "note",
-             "name" => "educational",
-             "message" => %{
-               "en" => "educational copy",
+             type: "note",
+             name: "educational",
+             message: %{
+               "en" => "educational copy"
              }
            },
            %{
-             "type" => "note",
-             "name" => "thanks",
-             "message" => %{
-               "en" => "thanks!",
+             type: "note",
+             name: "thanks",
+             message: %{
+               "en" => "thanks!"
              }
            }
          ],
-         "choice_lists" => [
+         choice_lists: [
            %{
-             "name" => "yes_no",
-             "choices" => [
+             name: "yes_no",
+             choices: [
                %{
-                 "name" => "yes",
-                 "labels" => %{
+                 name: "yes",
+                 labels: %{
                    "en" => ["yes"],
                    "es" => ["yes"]
                  }
                },
                %{
-                 "name" => "no",
-                 "labels" => %{
+                 name: "no",
+                 labels: %{
                    "en" => ["no"],
                    "es" => ["no"]
                  }
@@ -416,7 +417,7 @@ defmodule ActiveMonitoring.AidaBotTest do
              ]
            }
          ]
-       }} = manifest["skills"] |> Enum.fetch(2)
+       }} = manifest[:skills] |> Enum.fetch(2)
 
       {:ok, schedule_date_time, _} = DateTime.from_iso8601(schedule)
 
@@ -428,59 +429,59 @@ defmodule ActiveMonitoring.AidaBotTest do
 
       {:ok,
        %{
-         "type" => "survey",
-         "id" => "3",
-         "name" => "Campaign",
-         "schedule" => schedule,
-         "relevant" => ^relevance3,
-         "questions" => [
+         type: "survey",
+         id: "3",
+         name: "survey_3",
+         schedule: schedule,
+         relevant: ^relevance3,
+         questions: [
            %{
-             "type" => "select_one",
-             "choices" => "yes_no",
-             "name" => "symptom:id-fever",
-             "message" => %{
+             type: "select_one",
+             choices: "yes_no",
+             name: "symptom:id-fever",
+             message: %{
                "en" => "Do you have fever?",
                "es" => "¿Tiene usted fiebre?"
              }
            },
            %{
-             "type" => "select_one",
-             "choices" => "yes_no",
-             "name" => "symptom:id-rash",
-             "message" => %{
+             type: "select_one",
+             choices: "yes_no",
+             name: "symptom:id-rash",
+             message: %{
                "en" => "Do you have rash?",
                "es" => "¿Tiene alguna erupción?"
              }
            },
            %{
-             "type" => "note",
-             "name" => "educational",
-             "message" => %{
-               "en" => "educational copy",
+             type: "note",
+             name: "educational",
+             message: %{
+               "en" => "educational copy"
              }
            },
            %{
-             "type" => "note",
-             "name" => "thanks",
-             "message" => %{
-               "en" => "thanks!",
+             type: "note",
+             name: "thanks",
+             message: %{
+               "en" => "thanks!"
              }
            }
          ],
-         "choice_lists" => [
+         choice_lists: [
            %{
-             "name" => "yes_no",
-             "choices" => [
+             name: "yes_no",
+             choices: [
                %{
-                 "name" => "yes",
-                 "labels" => %{
+                 name: "yes",
+                 labels: %{
                    "en" => ["yes"],
                    "es" => ["yes"]
                  }
                },
                %{
-                 "name" => "no",
-                 "labels" => %{
+                 name: "no",
+                 labels: %{
                    "en" => ["no"],
                    "es" => ["no"]
                  }
@@ -488,7 +489,7 @@ defmodule ActiveMonitoring.AidaBotTest do
              ]
            }
          ]
-       }} = manifest["skills"] |> Enum.fetch(3)
+       }} = manifest[:skills] |> Enum.fetch(3)
 
       {:ok, schedule_date_time, _} = DateTime.from_iso8601(schedule)
 
@@ -512,18 +513,17 @@ defmodule ActiveMonitoring.AidaBotTest do
           value: "To chat in english say 'en'. Para hablar en español escribe 'es'"
         })
         |> AidaBot.manifest()
-        |> Poison.decode!()
 
-      assert manifest["channels"] == [
+      assert manifest[:channels] == [
                %{
-                 "type" => "facebook",
-                 "page_id" => "the_page_id",
-                 "verify_token" => "the_verify_token",
-                 "access_token" => "the_access_token"
+                 type: "facebook",
+                 page_id: "the_page_id",
+                 verify_token: "the_verify_token",
+                 access_token: "the_access_token"
                },
                %{
-                 "type" => "websocket",
-                 "access_token" => "the_access_token"
+                 type: "websocket",
+                 access_token: "the_access_token"
                }
              ]
     end
@@ -532,15 +532,21 @@ defmodule ActiveMonitoring.AidaBotTest do
   describe "publish" do
     test "should send the manifest to aida" do
       with_mock HTTPoison,
-        post: fn _url, _body ->
-          %{
-            data: %{
-              id: "82f0c3dd-7313-4896-9797-f0479e236219",
-              manifest: "Stored Manifest",
-              temp: false
+        post: fn _url, _body, _params ->
+          {
+            :ok,
+            %HTTPoison.Response{
+              body:
+                %{
+                  data: %{
+                    id: "82f0c3dd-7313-4896-9797-f0479e236219",
+                    manifest: "Stored Manifest",
+                    temp: false
+                  }
+                }
+                |> Poison.encode!()
             }
           }
-          |> Poison.encode!()
         end do
         response =
           "THE MANIFEST"
@@ -552,21 +558,33 @@ defmodule ActiveMonitoring.AidaBotTest do
                  "temp" => false
                }
 
-        assert called(HTTPoison.post("http://aida-backend/api/bots", "THE MANIFEST"))
+        assert called(
+                 HTTPoison.post(
+                   "http://aida-backend/api/bots",
+                   %{bot: %{manifest: "THE MANIFEST"}} |> Poison.encode!(),
+                   [{'Accept', 'application/json'}, {"Content-Type", "application/json"}]
+                 )
+               )
       end
     end
 
     test "should update the manifest" do
       with_mock HTTPoison,
-        put: fn _url, _body ->
-          %{
-            data: %{
-              id: "e8762231-d624-4986-ac2d-b8a4d95f7226",
-              manifest: "Stored Manifest",
-              temp: false
+        put: fn _url, _body, _params ->
+          {
+            :ok,
+            %HTTPoison.Response{
+              body:
+                %{
+                  data: %{
+                    id: "e8762231-d624-4986-ac2d-b8a4d95f7226",
+                    manifest: "Stored Manifest",
+                    temp: false
+                  }
+                }
+                |> Poison.encode!()
             }
           }
-          |> Poison.encode!()
         end do
         response =
           "THE MANIFEST"
@@ -581,7 +599,8 @@ defmodule ActiveMonitoring.AidaBotTest do
         assert called(
                  HTTPoison.put(
                    "http://aida-backend/api/bots/e8762231-d624-4986-ac2d-b8a4d95f7226",
-                   "THE MANIFEST"
+                   %{bot: %{manifest: "THE MANIFEST"}} |> Poison.encode!(),
+                   [{'Accept', 'application/json'}, {"Content-Type", "application/json"}]
                  )
                )
       end

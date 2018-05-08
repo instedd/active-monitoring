@@ -6,6 +6,8 @@ defmodule ActiveMonitoring.Campaign do
   alias ActiveMonitoring.{AidaBot, Campaign, Channel, Repo, Subject, User}
   alias ActiveMonitoring.Router.Helpers
 
+  require Logger
+
   schema "campaigns" do
     field :name, :string
     field :symptoms, {:array, {:array, :string}} # [[id, label]]
@@ -175,20 +177,33 @@ defmodule ActiveMonitoring.Campaign do
         changeset(campaign, %{})
         |> Ecto.Changeset.put_change(:started_at, Ecto.DateTime.utc())
 
-      change =
         if campaign.mode == "chat" do
-          {:ok, bot_id} =
+          result =
             campaign
             |> AidaBot.manifest()
             |> AidaBot.publish()
 
-          change
-          |> Ecto.Changeset.put_change(:bot_id, bot_id)
+          case result do
+            {:ok, bot_id} ->
+              change
+              |> Ecto.Changeset.put_change(:aida_bot_id, bot_id)
+              |> Repo.update()
+
+            {:error, reason} ->
+              error = "Error publishing manifest: #{inspect(reason)}"
+              Logger.error(error)
+              {:error, %{errors: %{manifest: error}}}
+
+            response ->
+              error = "Unknown response publishing manifest: #{inspect(response)}"
+              Logger.error(error)
+              {:error, %{errors: %{manifest: error}}}
+          end
         else
           change
+          |> Repo.update()
         end
 
-      Repo.update(change)
     else
       {:error, %{errors: %{channel: "already in use"}}}
     end

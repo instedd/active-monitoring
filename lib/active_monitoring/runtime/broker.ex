@@ -75,16 +75,16 @@ defmodule ActiveMonitoring.Runtime.Broker do
 
     case campaign
          |> AidaBot.manifest(subjects)
-         |> AidaBot.update(campaign.bot_id) do
+         |> AidaBot.update(campaign.aida_bot_id) do
       {:ok, _} ->
         true
 
       {:error, reason} ->
-        Logger.error("Error publishing manifest: #{campaign.bot_id}\n#{inspect(reason)}\n\n")
+        Logger.error("Error publishing manifest: #{campaign.aida_bot_id}\n#{inspect(reason)}\n\n")
 
       response ->
         Logger.error(
-          "Unknown response publishing manifest: #{campaign.bot_id}\n#{inspect(response)}\n\n"
+          "Unknown response publishing manifest: #{campaign.aida_bot_id}\n#{inspect(response)}\n\n"
         )
     end
 

@@ -60,8 +60,9 @@ defmodule ActiveMonitoring.CampaignsControllerTest do
 
     test "a user campaign manifest", %{conn: conn, campaign: campaign} do
       response = conn |> get(campaigns_manifest_path(conn, :manifest, campaign)) |> json_response(200)
-      assert response["data"]["version"] == "1"
-      assert response["data"]["languages"] == campaign.langs
+      manifest = Poison.decode!(response["data"])
+      assert manifest["version"] == "1"
+      assert manifest["languages"] == campaign.langs
     end
 
     test "unauthorized when trying to view another user's campaign manifest", %{conn: conn, other_user_campaign: other_user_campaign} do

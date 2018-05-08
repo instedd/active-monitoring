@@ -22,7 +22,7 @@ defmodule ActiveMonitoring.CampaignsView do
 
   def render("manifest.json", %{campaign: campaign}) do
     %{
-      data: campaign |> AidaBot.manifest() |> Poison.decode!()
+      data: campaign |> AidaBot.manifest() |> Poison.encode!()
     }
   end
 

@@ -6,6 +6,7 @@ volumes:
   flow-typed:
   deps:
   build:
+  mix:
 
 services:
   db:
@@ -29,6 +30,7 @@ services:
     volumes:
       - './:/app'
       - 'deps:/app/deps'
+      - 'mix:/root/.mix'
       - 'build:/app/_build'
     environment:
       AIDA_BACKEND_URL: http://aida-backend

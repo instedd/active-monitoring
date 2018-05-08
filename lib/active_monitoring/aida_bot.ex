@@ -2,19 +2,27 @@ defmodule ActiveMonitoring.AidaBot do
   alias ActiveMonitoring.Campaign
 
   def publish(manifest) do
-    HTTPoison.post(
-      "#{Application.get_env(:active_monitoring, :aida_backend)[:url]}/api/bots",
-      manifest
-    )
+    {:ok, response} =
+      HTTPoison.post(
+        "#{Application.get_env(:active_monitoring, :aida_backend)[:url]}/api/bots",
+        %{bot: %{manifest: manifest}} |> Poison.encode!(),
+        [{'Accept', 'application/json'}, {"Content-Type", "application/json"}]
+      )
+
+    response.body
     |> Poison.decode!()
     |> Map.get("data")
   end
 
   def update(manifest, bot_id) do
+    {:ok, response} =
     HTTPoison.put(
       "#{Application.get_env(:active_monitoring, :aida_backend)[:url]}/api/bots/#{bot_id}",
-      manifest
+      %{bot: %{manifest: manifest}} |> Poison.encode!(),
+      [{'Accept', 'application/json'}, {"Content-Type", "application/json"}]
     )
+
+    response.body
     |> Poison.decode!()
     |> Map.get("data")
   end
@@ -25,19 +33,38 @@ defmodule ActiveMonitoring.AidaBot do
       languages: campaign.langs,
       front_desk: front_desk(campaign),
       skills: skills(campaign, subjects),
-      channels: channels(campaign)
+      channels: channels(campaign),
+      variables: []
     }
-    |> Poison.encode!()
   end
 
   defp front_desk(campaign) do
     %{
       greeting: %{
-        message: %{
-          en: campaign |> Campaign.welcome(%{mode: "chat", language: "en"}),
-          es: campaign |> Campaign.welcome(%{mode: "chat", language: "es"})
-        }
-      }
+        message:
+          localize(campaign, fn lang ->
+            campaign |> Campaign.welcome(%{mode: "chat", language: lang})
+          end)
+      },
+      introduction: %{
+        message:
+          localize(campaign, fn lang ->
+            campaign |> Campaign.welcome(%{mode: "chat", language: lang})
+          end)
+      },
+      not_understood: %{
+        message:
+          localize(campaign, fn lang ->
+            campaign |> Campaign.welcome(%{mode: "chat", language: lang})
+          end)
+      },
+      clarification: %{
+        message:
+          localize(campaign, fn lang ->
+            campaign |> Campaign.welcome(%{mode: "chat", language: lang})
+          end)
+      },
+      threshold: 0.5
     }
   end
 
@@ -50,14 +77,14 @@ defmodule ActiveMonitoring.AidaBot do
 
     [
       %{
-        "type" => "facebook",
-        "page_id" => fb_page_id,
-        "verify_token" => fb_verify_token,
-        "access_token" => fb_access_token
+        type: "facebook",
+        page_id: fb_page_id,
+        verify_token: fb_verify_token,
+        access_token: fb_access_token
       },
       %{
-        "type" => "websocket",
-        "access_token" => fb_access_token
+        type: "websocket",
+        access_token: fb_access_token
       }
     ]
   end
@@ -86,22 +113,32 @@ defmodule ActiveMonitoring.AidaBot do
       %{
         type: "survey",
         id: "registration",
-        name: campaign.name,
+        name: "registration",
+        # TODO: check for empty schedule
+        schedule:
+          DateTime.utc_now()
+          |> DateTime.to_naive()
+          |> NaiveDateTime.to_erl()
+          |> NaiveDateTime.from_erl!()
+          |> DateTime.from_naive!("Etc/UTC")
+          |> DateTime.to_iso8601(),
         keywords:
           localize(campaign, fn _ ->
             ["registration"]
           end),
-        questions: [
-          %{
-            "type" => "text",
-            "name" => "registration_id",
-            "message" =>
-              localize(campaign, fn lang ->
-                campaign |> Campaign.chat_text_for("registration", lang)
-              end)
-          }
-        ]
-        |> Enum.concat(thanks_note(campaign))
+        questions:
+          [
+            %{
+              type: "text",
+              name: "registration_id",
+              message:
+                localize(campaign, fn lang ->
+                  campaign |> Campaign.chat_text_for("registration", lang)
+                end)
+            }
+          ]
+          |> Enum.concat(thanks_note(campaign)),
+        choice_lists: []
       }
     ]
   end
@@ -115,14 +152,21 @@ defmodule ActiveMonitoring.AidaBot do
 
   defp survey(surveys, _, nil, _), do: surveys
 
-  defp survey(surveys, %{name: name} = campaign, subjects, campaign_day) do
+  defp survey(surveys, campaign, subjects, campaign_day) do
     surveys ++
       [
         %{
           type: "survey",
           id: "#{campaign_day}",
-          name: name,
-          schedule: DateTime.utc_now() |> DateTime.to_iso8601(),
+          name: "survey_#{campaign_day}",
+          # TODO: at 1500hs on campaign timezone
+          schedule:
+            DateTime.utc_now()
+            |> DateTime.to_naive()
+            |> NaiveDateTime.to_erl()
+            |> NaiveDateTime.from_erl!()
+            |> DateTime.from_naive!("Etc/UTC")
+            |> DateTime.to_iso8601(),
           relevant: survey_relevance(subjects),
           questions: questions(campaign),
           choice_lists: [
@@ -131,17 +175,15 @@ defmodule ActiveMonitoring.AidaBot do
               choices: [
                 %{
                   name: "yes",
-                  labels: %{
-                    en: ["yes"],
-                    es: ["yes"]
-                  }
+                  labels: localize(campaign, fn _lang ->
+                    ["yes"]
+                  end)
                 },
                 %{
                   name: "no",
-                  labels: %{
-                    en: ["no"],
-                    es: ["no"]
-                  }
+                  labels: localize(campaign, fn _lang ->
+                    ["no"]
+                  end)
                 }
               ]
             }
@@ -165,10 +207,10 @@ defmodule ActiveMonitoring.AidaBot do
     symptoms
     |> Enum.map(fn [symptom_id, _label] ->
       %{
-        "type" => "select_one",
-        "choices" => "yes_no",
-        "name" => "symptom:#{symptom_id}",
-        "message" =>
+        type: "select_one",
+        choices: "yes_no",
+        name: "symptom:#{symptom_id}",
+        message:
           localize(campaign, fn lang ->
             campaign |> Campaign.chat_text_for("symptom:#{symptom_id}", lang)
           end)
@@ -182,9 +224,9 @@ defmodule ActiveMonitoring.AidaBot do
   defp additional_information(%{additional_information: "optional"} = campaign) do
     [
       %{
-        "type" => "note",
-        "name" => "additional_information_intro",
-        "message" =>
+        type: "note",
+        name: "additional_information_intro",
+        message:
           localize(campaign, fn lang ->
             campaign |> Campaign.chat_text_for("additional_information_intro", lang)
           end)
@@ -197,9 +239,9 @@ defmodule ActiveMonitoring.AidaBot do
   defp educational_note(campaign) do
     [
       %{
-        "type" => "note",
-        "name" => "educational",
-        "message" =>
+        type: "note",
+        name: "educational",
+        message:
           localize(campaign, fn lang ->
             campaign |> Campaign.chat_text_for("educational", lang)
           end)
@@ -210,9 +252,9 @@ defmodule ActiveMonitoring.AidaBot do
   defp thanks_note(campaign) do
     [
       %{
-        "type" => "note",
-        "name" => "thanks",
-        "message" =>
+        type: "note",
+        name: "thanks",
+        message:
           localize(campaign, fn lang ->
             campaign |> Campaign.chat_text_for("thanks", lang)
           end)
