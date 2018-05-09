@@ -76,11 +76,8 @@ defmodule ActiveMonitoring.Runtime.Broker do
     case campaign
          |> AidaBot.manifest(subjects)
          |> AidaBot.update(campaign.aida_bot_id) do
-      {:ok, _} ->
+      %{"id" => _} ->
         true
-
-      {:error, reason} ->
-        Logger.error("Error publishing manifest: #{campaign.aida_bot_id}\n#{inspect(reason)}\n\n")
 
       response ->
         Logger.error(

@@ -184,15 +184,10 @@ defmodule ActiveMonitoring.Campaign do
             |> AidaBot.publish()
 
           case result do
-            {:ok, bot_id} ->
+            %{"id" => bot_id} ->
               change
               |> Ecto.Changeset.put_change(:aida_bot_id, bot_id)
               |> Repo.update()
-
-            {:error, reason} ->
-              error = "Error publishing manifest: #{inspect(reason)}"
-              Logger.error(error)
-              {:error, %{errors: %{manifest: error}}}
 
             response ->
               error = "Unknown response publishing manifest: #{inspect(response)}"

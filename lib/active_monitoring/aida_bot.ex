@@ -16,11 +16,11 @@ defmodule ActiveMonitoring.AidaBot do
 
   def update(manifest, bot_id) do
     {:ok, response} =
-    HTTPoison.put(
-      "#{Application.get_env(:active_monitoring, :aida_backend)[:url]}/api/bots/#{bot_id}",
-      %{bot: %{manifest: manifest}} |> Poison.encode!(),
-      [{'Accept', 'application/json'}, {"Content-Type", "application/json"}]
-    )
+      HTTPoison.put(
+        "#{Application.get_env(:active_monitoring, :aida_backend)[:url]}/api/bots/#{bot_id}",
+        %{bot: %{manifest: manifest}} |> Poison.encode!(),
+        [{'Accept', 'application/json'}, {"Content-Type", "application/json"}]
+      )
 
     response.body
     |> Poison.decode!()
@@ -42,8 +42,8 @@ defmodule ActiveMonitoring.AidaBot do
     %{
       greeting: %{
         message:
-          localize(campaign, fn lang ->
-            campaign |> Campaign.welcome(%{mode: "chat", language: lang})
+          localize(campaign, fn _lang ->
+            "Hello!"
           end)
       },
       introduction: %{
@@ -54,14 +54,14 @@ defmodule ActiveMonitoring.AidaBot do
       },
       not_understood: %{
         message:
-          localize(campaign, fn lang ->
-            campaign |> Campaign.welcome(%{mode: "chat", language: lang})
+          localize(campaign, fn _lang ->
+            "Sorry, I did not understood that"
           end)
       },
       clarification: %{
         message:
           localize(campaign, fn lang ->
-            campaign |> Campaign.welcome(%{mode: "chat", language: lang})
+            campaign |> Campaign.chat_text_for("registration", lang)
           end)
       },
       threshold: 0.5
@@ -114,14 +114,6 @@ defmodule ActiveMonitoring.AidaBot do
         type: "survey",
         id: "registration",
         name: "registration",
-        # TODO: check for empty schedule
-        schedule:
-          DateTime.utc_now()
-          |> DateTime.to_naive()
-          |> NaiveDateTime.to_erl()
-          |> NaiveDateTime.from_erl!()
-          |> DateTime.from_naive!("Etc/UTC")
-          |> DateTime.to_iso8601(),
         keywords:
           localize(campaign, fn _ ->
             ["registration"]
@@ -133,7 +125,7 @@ defmodule ActiveMonitoring.AidaBot do
               name: "registration_id",
               message:
                 localize(campaign, fn lang ->
-                  campaign |> Campaign.chat_text_for("registration", lang)
+                  campaign |> Campaign.chat_text_for("identify", lang)
                 end)
             }
           ]
@@ -144,29 +136,28 @@ defmodule ActiveMonitoring.AidaBot do
   end
 
   defp survey(%{monitor_duration: monitor_duration} = campaign, subjects) do
+    survey_start = {Timex.today() |> Timex.to_erl(), {15, 0, 0}}
+
+    schedule =
+      Timex.Timezone.resolve(campaign.timezone, survey_start)
+      |> DateTime.to_iso8601()
+
     1..monitor_duration
     |> Enum.reduce([], fn campaign_day, surveys ->
-      survey(surveys, campaign, subjects |> Map.get(campaign_day), campaign_day)
+      survey(surveys, campaign, subjects |> Map.get(campaign_day), campaign_day, schedule)
     end)
   end
 
-  defp survey(surveys, _, nil, _), do: surveys
+  defp survey(surveys, _campaign, nil, _campaign_day, _schedule), do: surveys
 
-  defp survey(surveys, campaign, subjects, campaign_day) do
+  defp survey(surveys, campaign, subjects, campaign_day, schedule) do
     surveys ++
       [
         %{
           type: "survey",
           id: "#{campaign_day}",
           name: "survey_#{campaign_day}",
-          # TODO: at 1500hs on campaign timezone
-          schedule:
-            DateTime.utc_now()
-            |> DateTime.to_naive()
-            |> NaiveDateTime.to_erl()
-            |> NaiveDateTime.from_erl!()
-            |> DateTime.from_naive!("Etc/UTC")
-            |> DateTime.to_iso8601(),
+          schedule: schedule,
           relevant: survey_relevance(subjects),
           questions: questions(campaign),
           choice_lists: [
@@ -175,15 +166,17 @@ defmodule ActiveMonitoring.AidaBot do
               choices: [
                 %{
                   name: "yes",
-                  labels: localize(campaign, fn _lang ->
-                    ["yes"]
-                  end)
+                  labels:
+                    localize(campaign, fn _lang ->
+                      ["yes"]
+                    end)
                 },
                 %{
                   name: "no",
-                  labels: localize(campaign, fn _lang ->
-                    ["no"]
-                  end)
+                  labels:
+                    localize(campaign, fn _lang ->
+                      ["no"]
+                    end)
                 }
               ]
             }
@@ -217,26 +210,33 @@ defmodule ActiveMonitoring.AidaBot do
       }
     end)
     |> Enum.concat(additional_information(campaign))
-    |> Enum.concat(educational_note(campaign))
     |> Enum.concat(thanks_note(campaign))
   end
 
   defp additional_information(%{additional_information: "optional"} = campaign) do
     [
       %{
-        type: "note",
-        name: "additional_information_intro",
+        type: "select_one",
+        choices: "yes_no",
+        name: "additional_information",
         message:
           localize(campaign, fn lang ->
             campaign |> Campaign.chat_text_for("additional_information_intro", lang)
+          end)
+      },
+      %{
+        type: "note",
+        name: "educational",
+        relevant: "${additional_information} == 'yes'",
+        message:
+          localize(campaign, fn lang ->
+            campaign |> Campaign.chat_text_for("educational", lang)
           end)
       }
     ]
   end
 
-  defp additional_information(_), do: []
-
-  defp educational_note(campaign) do
+  defp additional_information(%{additional_information: "compulsory"} = campaign) do
     [
       %{
         type: "note",
@@ -248,6 +248,8 @@ defmodule ActiveMonitoring.AidaBot do
       }
     ]
   end
+
+  defp additional_information(_), do: []
 
   defp thanks_note(campaign) do
     [
