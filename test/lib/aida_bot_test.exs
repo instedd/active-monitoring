@@ -257,8 +257,8 @@ defmodule ActiveMonitoring.AidaBotTest do
       subject2 = insert(:subject, campaign: campaign)
 
       relevance =
-        "${registration_id} == #{subject1.registration_identifier} " <>
-          "|| ${registration_id} == #{subject2.registration_identifier}"
+        "${registration_id} = #{subject1.registration_identifier} " <>
+          "or ${registration_id} = #{subject2.registration_identifier}"
 
       manifest =
         campaign
@@ -371,11 +371,10 @@ defmodule ActiveMonitoring.AidaBotTest do
       subject3 = insert(:subject, campaign: campaign)
 
       relevance1 =
-        "${registration_id} == #{subject1.registration_identifier} || ${registration_id} == #{
-          subject2.registration_identifier
-        }"
+        "${registration_id} = #{subject1.registration_identifier} " <>
+          "or ${registration_id} = #{subject2.registration_identifier}"
 
-      relevance3 = "${registration_id} == #{subject3.registration_identifier}"
+      relevance3 = "${registration_id} = #{subject3.registration_identifier}"
 
       manifest =
         campaign
@@ -543,8 +542,8 @@ defmodule ActiveMonitoring.AidaBotTest do
       subject2 = insert(:subject, campaign: campaign)
 
       relevance =
-        "${registration_id} == #{subject1.registration_identifier} " <>
-          "|| ${registration_id} == #{subject2.registration_identifier}"
+        "${registration_id} = #{subject1.registration_identifier} " <>
+          "or ${registration_id} = #{subject2.registration_identifier}"
 
       manifest =
         campaign
@@ -660,8 +659,8 @@ defmodule ActiveMonitoring.AidaBotTest do
       subject2 = insert(:subject, campaign: campaign)
 
       relevance =
-        "${registration_id} == #{subject1.registration_identifier} " <>
-          "|| ${registration_id} == #{subject2.registration_identifier}"
+        "${registration_id} = #{subject1.registration_identifier} " <>
+          "or ${registration_id} = #{subject2.registration_identifier}"
 
       manifest =
         campaign

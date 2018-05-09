@@ -191,9 +191,9 @@ defmodule ActiveMonitoring.AidaBot do
     subjects
     |> Enum.map(fn subject -> subject.registration_identifier end)
     |> Enum.map(fn registration_identifier ->
-      "${registration_id} == #{registration_identifier}"
+      "${registration_id} = #{registration_identifier}"
     end)
-    |> Enum.join(" || ")
+    |> Enum.join(" or ")
   end
 
   defp questions(%{symptoms: symptoms} = campaign) do
