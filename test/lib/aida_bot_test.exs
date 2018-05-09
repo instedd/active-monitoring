@@ -257,8 +257,8 @@ defmodule ActiveMonitoring.AidaBotTest do
       subject2 = insert(:subject, campaign: campaign)
 
       relevance =
-        "${registration_id} = #{subject1.registration_identifier} " <>
-          "or ${registration_id} = #{subject2.registration_identifier}"
+        "${survey\/registration\/registration_id} = \"#{subject1.registration_identifier}\" " <>
+          "or ${survey\/registration\/registration_id} = \"#{subject2.registration_identifier}\""
 
       manifest =
         campaign
@@ -371,10 +371,10 @@ defmodule ActiveMonitoring.AidaBotTest do
       subject3 = insert(:subject, campaign: campaign)
 
       relevance1 =
-        "${registration_id} = #{subject1.registration_identifier} " <>
-          "or ${registration_id} = #{subject2.registration_identifier}"
+        "${survey\/registration\/registration_id} = \"#{subject1.registration_identifier}\" " <>
+          "or ${survey\/registration\/registration_id} = \"#{subject2.registration_identifier}\""
 
-      relevance3 = "${registration_id} = #{subject3.registration_identifier}"
+      relevance3 = "${survey\/registration\/registration_id} = \"#{subject3.registration_identifier}\""
 
       manifest =
         campaign
@@ -542,8 +542,8 @@ defmodule ActiveMonitoring.AidaBotTest do
       subject2 = insert(:subject, campaign: campaign)
 
       relevance =
-        "${registration_id} = #{subject1.registration_identifier} " <>
-          "or ${registration_id} = #{subject2.registration_identifier}"
+        "${survey\/registration\/registration_id} = \"#{subject1.registration_identifier}\" " <>
+          "or ${survey\/registration\/registration_id} = \"#{subject2.registration_identifier}\""
 
       manifest =
         campaign
@@ -591,7 +591,7 @@ defmodule ActiveMonitoring.AidaBotTest do
                  %{
                    type: "note",
                    name: "educational",
-                   relevant: "${additional_information} = 'yes'",
+                   relevant: "${survey\/1\/additional_information} = 'yes'",
                    message: %{
                      "en" => "educational copy"
                    }
@@ -659,8 +659,8 @@ defmodule ActiveMonitoring.AidaBotTest do
       subject2 = insert(:subject, campaign: campaign)
 
       relevance =
-        "${registration_id} = #{subject1.registration_identifier} " <>
-          "or ${registration_id} = #{subject2.registration_identifier}"
+        "${survey\/registration\/registration_id} = \"#{subject1.registration_identifier}\" " <>
+          "or ${survey\/registration\/registration_id} = \"#{subject2.registration_identifier}\""
 
       manifest =
         campaign

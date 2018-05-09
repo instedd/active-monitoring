@@ -159,7 +159,7 @@ defmodule ActiveMonitoring.AidaBot do
           name: "survey_#{campaign_day}",
           schedule: schedule,
           relevant: survey_relevance(subjects),
-          questions: questions(campaign),
+          questions: questions(campaign, campaign_day),
           choice_lists: [
             %{
               name: "yes_no",
@@ -191,12 +191,12 @@ defmodule ActiveMonitoring.AidaBot do
     subjects
     |> Enum.map(fn subject -> subject.registration_identifier end)
     |> Enum.map(fn registration_identifier ->
-      "${registration_id} = #{registration_identifier}"
+      "${survey\/registration\/registration_id} = \"#{registration_identifier}\""
     end)
     |> Enum.join(" or ")
   end
 
-  defp questions(%{symptoms: symptoms} = campaign) do
+  defp questions(%{symptoms: symptoms} = campaign, campaign_day) do
     symptoms
     |> Enum.map(fn [symptom_id, _label] ->
       %{
@@ -209,11 +209,11 @@ defmodule ActiveMonitoring.AidaBot do
           end)
       }
     end)
-    |> Enum.concat(additional_information(campaign))
+    |> Enum.concat(additional_information(campaign, campaign_day))
     |> Enum.concat(thanks_note(campaign))
   end
 
-  defp additional_information(%{additional_information: "optional"} = campaign) do
+  defp additional_information(%{additional_information: "optional"} = campaign, campaign_day) do
     [
       %{
         type: "select_one",
@@ -227,7 +227,7 @@ defmodule ActiveMonitoring.AidaBot do
       %{
         type: "note",
         name: "educational",
-        relevant: "${additional_information} = 'yes'",
+        relevant: "${survey\/#{campaign_day}\/additional_information} = 'yes'",
         message:
           localize(campaign, fn lang ->
             campaign |> Campaign.chat_text_for("educational", lang)
@@ -236,7 +236,7 @@ defmodule ActiveMonitoring.AidaBot do
     ]
   end
 
-  defp additional_information(%{additional_information: "compulsory"} = campaign) do
+  defp additional_information(%{additional_information: "compulsory"} = campaign, _) do
     [
       %{
         type: "note",
@@ -249,7 +249,7 @@ defmodule ActiveMonitoring.AidaBot do
     ]
   end
 
-  defp additional_information(_), do: []
+  defp additional_information(_, _), do: []
 
   defp thanks_note(campaign) do
     [
