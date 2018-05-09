@@ -591,7 +591,7 @@ defmodule ActiveMonitoring.AidaBotTest do
                  %{
                    type: "note",
                    name: "educational",
-                   relevant: "${additional_information} == 'yes'",
+                   relevant: "${additional_information} = 'yes'",
                    message: %{
                      "en" => "educational copy"
                    }

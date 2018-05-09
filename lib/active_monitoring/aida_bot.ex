@@ -227,7 +227,7 @@ defmodule ActiveMonitoring.AidaBot do
       %{
         type: "note",
         name: "educational",
-        relevant: "${additional_information} == 'yes'",
+        relevant: "${additional_information} = 'yes'",
         message:
           localize(campaign, fn lang ->
             campaign |> Campaign.chat_text_for("educational", lang)

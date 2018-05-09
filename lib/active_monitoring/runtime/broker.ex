@@ -84,8 +84,6 @@ defmodule ActiveMonitoring.Runtime.Broker do
           "Unknown response publishing manifest: #{campaign.aida_bot_id}\n#{inspect(response)}\n\n"
         )
     end
-
-    Campaign.mark_as_reminded(campaign, now)
   end
 
   defp call_pending_subjects(%{subjects: subjects} = campaign, now) do
