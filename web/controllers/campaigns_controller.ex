@@ -69,7 +69,14 @@ defmodule ActiveMonitoring.CampaignsController do
 
     manifest = campaign |> AidaBot.manifest(subjects)
 
-    render(conn, "manifest.json", manifest: manifest)
+    conn
+    |> put_status(:ok)
+    |> put_resp_content_type("application/json")
+    |> text(
+      manifest
+      |> ProperCase.to_snake_case
+      |> Poison.encode!
+    )
   end
 
   def update(conn, %{"id" => id, "campaign" => campaign_params}) do
