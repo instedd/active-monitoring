@@ -108,7 +108,7 @@ defmodule ActiveMonitoring.CampaignsControllerTest do
     test "launch", %{conn: conn, campaign: campaign, user: user} do
       build(:campaign, user: user, channel: campaign.channel) |> Repo.insert!
       conn = conn |> put(campaigns_launch_path(conn, :launch, campaign))
-      assert json_response(conn, 403) == %{"errors" => %{"channel" => "already in use"}}
+      assert json_response(conn, 422) == %{"errors" => %{"channel" => "already in use"}}
     end
   end
 

@@ -1,6 +1,5 @@
 defmodule ActiveMonitoring.CampaignsView do
   use ActiveMonitoring.Web, :view
-  alias ActiveMonitoring.{AidaBot}
 
   def render("index.json", %{campaigns: campaigns}) do
     rendered = campaigns |> Enum.map(fn(campaign) ->
@@ -20,9 +19,9 @@ defmodule ActiveMonitoring.CampaignsView do
     %{data: render_one(campaign)}
   end
 
-  def render("manifest.json", %{campaign: campaign}) do
+  def render("manifest.json", %{manifest: manifest}) do
     %{
-      data: campaign |> AidaBot.manifest() |> Poison.encode!()
+      data: manifest |> Poison.encode!()
     }
   end
 

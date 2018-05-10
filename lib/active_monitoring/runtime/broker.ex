@@ -65,13 +65,7 @@ defmodule ActiveMonitoring.Runtime.Broker do
   end
 
   defp call_pending_subjects(%{subjects: subjects, mode: "chat"} = campaign, now) do
-    subjects =
-      subjects
-      |> Enum.filter(fn s -> Subject.active_case(s, now) end)
-      |> Enum.group_by(fn subject ->
-        # TODO: Check with Mati if we asume the first day as day 0
-        Timex.diff(now, subject.inserted_at, :days) + 1
-      end)
+    subjects = Subject.active_cases_per_day(subjects, now)
 
     case campaign
          |> AidaBot.manifest(subjects)

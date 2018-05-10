@@ -6,14 +6,16 @@ defmodule ActiveMonitoring.CampaignsController do
     ChangesetView,
     Repo,
     Call,
-    Subject
+    Subject,
+    AidaBot
   }
 
   def index(conn, _) do
-    campaigns = conn
-    |> current_user
-    |> assoc(:campaigns)
-    |> Repo.all
+    campaigns =
+      conn
+      |> current_user
+      |> assoc(:campaigns)
+      |> Repo.all()
 
     render(conn, "index.json", campaigns: campaigns)
   end
@@ -54,14 +56,20 @@ defmodule ActiveMonitoring.CampaignsController do
         render(conn, "show.json", campaign: campaign, calls: calls, subjects: subjects)
 
       {:error, errors} ->
-        put_status(conn, 403) |> render(ChangesetView, "error.json", errors)
+        put_status(conn, :unprocessable_entity) |> render(ChangesetView, "error.json", errors)
     end
   end
 
   def manifest(conn, %{"campaigns_id" => campaign_id}) do
-    campaign = Campaign.load(conn, campaign_id)
+    campaign =
+      Campaign.load(conn, campaign_id)
+      |> Repo.preload(subjects: :campaign)
 
-    render(conn, "manifest.json", campaign: campaign)
+    subjects = Subject.active_cases_per_day(campaign.subjects, DateTime.utc_now())
+
+    manifest = campaign |> AidaBot.manifest(subjects)
+
+    render(conn, "manifest.json", manifest: manifest)
   end
 
   def update(conn, %{"id" => id, "campaign" => campaign_params}) do
