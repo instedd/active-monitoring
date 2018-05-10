@@ -59,13 +59,19 @@ defmodule ActiveMonitoring.CampaignsController do
         put_status(conn, :unprocessable_entity) |> render(ChangesetView, "error.json", errors)
     end
   end
+  def manifest(conn, %{"campaigns_id" => campaign_id} = params) do
+    target_day = Map.get(params, "target_day")
 
-  def manifest(conn, %{"campaigns_id" => campaign_id}) do
+    target_date = case Timex.parse target_day, "{YYYY}{0M}{0D}" do
+      {:ok, target_date} -> Timex.shift(target_date, seconds: 1)
+      _ -> Timex.now
+    end
+
     campaign =
       Campaign.load(conn, campaign_id)
       |> Repo.preload(subjects: :campaign)
 
-    subjects = Subject.active_cases_per_day(campaign.subjects, DateTime.utc_now())
+    subjects = Subject.active_cases_per_day(campaign.subjects, target_date)
 
     manifest = campaign |> AidaBot.manifest(subjects)
 
