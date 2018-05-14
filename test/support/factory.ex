@@ -23,6 +23,7 @@ defmodule ActiveMonitoring.Factory do
       monitor_duration: 30,
       timezone: "Europe/London",
       user: build(:user),
+      aida_bot_id: "123e4567-e89b-12d3-a456-426655440000",
       mode: "call"
     }
   end

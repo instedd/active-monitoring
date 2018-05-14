@@ -23,7 +23,7 @@ defmodule ActiveMonitoring.Call do
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:sid, :from, :current_step, :language, :campaign_id, :subject_id])
+    |> cast(params, [:sid, :from, :current_step, :language, :campaign_id, :subject_id, :inserted_at])
     |> assoc_constraint(:campaign)
   end
 

@@ -4,10 +4,20 @@ defmodule ActiveMonitoring.AidaBotTest do
   import ActiveMonitoring.Factory
   import Mock
 
-  alias ActiveMonitoring.{AidaBot, Campaign}
+  alias ActiveMonitoring.{AidaBot, Campaign, Call}
 
   setup do
-    [campaign: insert(:campaign)]
+    [campaign: insert(:campaign) |> Repo.preload(:subjects)]
+  end
+
+  defp with_campaign_subjects %{campaign: campaign} do
+    subject = insert(:subject, campaign: campaign)
+    [subject: subject, campaign: campaign |> Repo.preload(:subjects)]
+  end
+
+  defp with_subject_calls %{campaign: campaign, subject: subject} do
+    call = insert(:call, campaign: campaign, subject: subject, inserted_at: AidaBot.date_for_monitoring_index(subject, 1))
+    [call: call]
   end
 
   describe "manifest" do
@@ -761,6 +771,245 @@ defmodule ActiveMonitoring.AidaBotTest do
                  access_token: "the_access_token"
                }
              ]
+    end
+  end
+
+  describe "poll" do
+    test "should poll data from AIDA", %{campaign: campaign} do
+      with_mock HTTPoison, [get: fn(_url) ->
+        {:ok, %HTTPoison.Response{ body: Poison.encode! %{ "data" => [] }}}
+        end] do
+        AidaBot.retrieve_responses(campaign)
+        assert called HTTPoison.get("http://aida-backend/api/bots/123e4567-e89b-12d3-a456-426655440000/session_data?include_internal=true")
+      end
+    end
+
+    test "should find no new sessions on empty answer", %{campaign: campaign} do
+      assert AidaBot.subject_answers(campaign, []) == %{}
+    end
+
+    test "should ignore sessions without registration ID", %{campaign: campaign} do
+      data = [
+        %{
+          "id" => "aaaaaaaa-336c-4ad2-ba5c-b49676da20f6",
+          "data" => %{
+            "language" => "en"
+          }
+        }
+      ]
+      assert AidaBot.subject_answers(campaign, data) == %{}
+    end
+  end
+
+  describe "with subjects" do
+    setup [:with_campaign_subjects]
+
+    test "should create a new call when AIDA reports a session with an known registration ID", %{campaign: campaign, subject: subject} do
+      data = [
+        %{
+          "id" => "aaaaaaaa-336c-4ad2-ba5c-b49676da20f6",
+          "data" => %{
+            "language" => "en",
+            "survey/registration/registration_id" => subject.registration_identifier
+          }
+        }
+      ]
+      assert AidaBot.subject_answers(campaign, data) == %{subject.registration_identifier => %{"answers" => %{}, "language" => "en"}}
+    end
+
+    test "should create a call with a symptom when AIDA reports a session with a symptom answer", %{campaign: campaign, subject: subject} do
+      data = [
+        %{
+          "id" => "aaaaaaaa-336c-4ad2-ba5c-b49676da20f6",
+          "data" => %{
+            "language" => "en",
+            "survey/registration/registration_id" => subject.registration_identifier,
+            "survey/1/symptom:123e4567-e89b-12d3-a456-426655440222" => "yes",
+            "survey/1/symptom:123e4567-e89b-12d3-a456-426655440111" => "no",
+            "survey/4/symptom:123e4567-e89b-12d3-a456-426655440222" => "no",
+            "survey/4/symptom:123e4567-e89b-12d3-a456-426655440111" => "yes"
+          }
+        }
+      ]
+      assert AidaBot.subject_answers(campaign, data) == %{
+        subject.registration_identifier => %{
+          "language" => "en",
+          "answers" => %{
+            1 => %{
+              "current_step" => "thanks",
+              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
+            },
+            4 => %{
+              "current_step" => "thanks",
+              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => true, "123e4567-e89b-12d3-a456-426655440222" => false}
+            }
+          }
+        }
+      }
+    end
+  end
+
+  describe "with subjects and calls" do
+    setup [:with_campaign_subjects, :with_subject_calls]
+
+    test "should not create calls for unknown subjects", %{subject: subject} do
+      parsed_answers = %{
+        subject.registration_identifier => %{
+          "language" => "en",
+          "answers" => %{
+            1 => %{
+              "current_step" => "thanks",
+              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
+            },
+            4 => %{
+              "current_step" => "thanks",
+              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => true, "123e4567-e89b-12d3-a456-426655440222" => false}
+            }
+          }
+        },
+        "XXX_NON_EXISTING_REGISTRATION_IDENTIFIER_XXX" => %{
+          "language" => "es",
+          "answers" => %{
+            1 => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
+          }
+        }
+      }
+      assert AidaBot.known_subjects_answers(parsed_answers, [subject]) == %{
+        subject => %{
+          "language" => "en",
+          "answers" => %{
+            1 => %{
+              "current_step" => "thanks",
+              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
+            },
+            4 => %{
+              "current_step" => "thanks",
+              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => true, "123e4567-e89b-12d3-a456-426655440222" => false}
+            }
+          }
+        }
+      }
+    end
+
+    test "should not create calls that have already been registered", %{subject: subject} do
+      known_subjects_answers = %{
+        subject => %{
+          "language" => "en",
+          "answers" => %{
+            1 => %{
+              "current_step" => "thanks",
+              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
+            },
+            4 => %{
+              "current_step" => "thanks",
+              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => true, "123e4567-e89b-12d3-a456-426655440222" => false}
+            }
+          }
+        }
+      }
+
+      current_calls_count = Repo.one(from c in "calls", select: count(c.id))
+      AidaBot.create_missing_calls_and_answers(known_subjects_answers, [subject])
+      assert Repo.one(from c in "calls", select: count(c.id)) == (current_calls_count + 1)
+    end
+
+    test "should create missing call answers", %{subject: subject} do
+      known_subjects_answers = %{
+        subject => %{
+          "language" => "en",
+          "answers" => %{
+            1 => %{
+              "current_step" => "thanks",
+              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
+            },
+            4 => %{
+              "current_step" => "thanks",
+              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => true, "123e4567-e89b-12d3-a456-426655440222" => false}
+            }
+          }
+        }
+      }
+
+      current_call_answers_count = Repo.one(from c in "call_answers", select: count(c.id))
+      AidaBot.create_missing_calls_and_answers(known_subjects_answers, [subject])
+      assert Repo.one(from c in "call_answers", select: count(c.id)) == (current_call_answers_count + 4)
+    end
+  end
+
+  describe "current step" do
+    setup [:with_campaign_subjects]
+
+    test "infers calls' current steps from session data", %{campaign: campaign, subject: subject} do
+      data = [
+        %{
+          "id" => "aaaaaaaa-336c-4ad2-ba5c-b49676da20f6",
+          "data" => %{
+            "language" => "es",
+            "survey/registration/registration_id" => subject.registration_identifier,
+            "survey/1/symptom:123e4567-e89b-12d3-a456-426655440222" => "yes",
+            "survey/1/symptom:123e4567-e89b-12d3-a456-426655440111" => "no",
+            "survey/3/symptom:123e4567-e89b-12d3-a456-426655440111" => "no",
+            ".survey/3" => %{
+              "step" => 2
+            },
+            ".survey/4" => %{
+              "step" => 1
+            }
+          }
+        }
+      ]
+      assert AidaBot.subject_answers(campaign, data) == %{
+        subject.registration_identifier => %{
+          "language" => "es",
+          "answers" => %{
+            1 => %{
+              "current_step" => "thanks",
+              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
+            },
+            3 => %{
+              "current_step" => "symptom:123e4567-e89b-12d3-a456-426655440222",
+              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false}
+            },
+            4 => %{
+              "current_step" => "symptom:123e4567-e89b-12d3-a456-426655440111",
+              "symptoms" => %{}
+            }
+          }
+        }
+      }
+    end
+
+    test "should insert a call with it's current step", %{subject: subject} do
+      known_subjects_answers = %{
+        subject => %{
+          "language" => "en",
+          "answers" => %{
+            1 => %{
+              "current_step" => "thanks",
+              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
+            },
+            4 => %{
+              "current_step" => "symptom:123e4567-e89b-12d3-a456-426655440222",
+              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => true}
+            }
+          }
+        }
+      }
+
+      AidaBot.create_missing_calls_and_answers(known_subjects_answers, [subject])
+
+      [first, second] = Repo.all(Call)
+      assert (first.current_step == "thanks" and second.current_step == "symptom:123e4567-e89b-12d3-a456-426655440222")
+          or (second.current_step == "thanks" and first.current_step == "symptom:123e4567-e89b-12d3-a456-426655440222")
+    end
+  end
+
+  describe "duplicated calls" do
+    setup [:with_campaign_subjects, :with_subject_calls]
+
+    test "should not create calls for unknown subjects", %{call: call} do
+      {:ok, ignored} = build(:call, campaign: call.campaign, subject: call.subject, inserted_at: call.inserted_at) |> Repo.insert(on_conflict: :nothing)
+      assert is_nil(ignored.id)
     end
   end
 
