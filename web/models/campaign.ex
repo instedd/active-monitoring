@@ -68,6 +68,10 @@ defmodule ActiveMonitoring.Campaign do
     Enum.map(symptoms, fn([id, _]) -> "symptom:#{id}" end)
   end
 
+  def chat_steps(campaign) do
+    symptom_steps(campaign)
+  end
+
   def steps(%{additional_information: additional_information} = campaign) do
     Enum.concat([
       ["language",

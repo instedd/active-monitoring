@@ -67,7 +67,6 @@ defmodule ActiveMonitoring.Subject do
     subjects
       |> Enum.filter(fn s -> Subject.active_case(s, now) end)
       |> Enum.group_by(fn subject ->
-        # TODO: Check with Mati if we asume the first day as day 0
         Timex.diff(now, Subject.enroll_date(subject), :days) + 1
       end)
   end

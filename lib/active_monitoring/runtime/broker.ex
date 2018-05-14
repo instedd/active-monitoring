@@ -78,6 +78,10 @@ defmodule ActiveMonitoring.Runtime.Broker do
           "Unknown response publishing manifest: #{campaign.aida_bot_id}\n#{inspect(response)}\n\n"
         )
     end
+
+    # TODO: it may make sense to have a different broker to receive the responses
+    # ie, constantly poll instead of doing it once a day
+    AidaBot.retrieve_responses(campaign)
   end
 
   defp call_pending_subjects(%{subjects: subjects} = campaign, now) do

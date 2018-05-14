@@ -19,12 +19,6 @@ defmodule ActiveMonitoring.CampaignsView do
     %{data: render_one(campaign)}
   end
 
-  def render("manifest.json", %{manifest: manifest}) do
-    %{
-      data: manifest |> Poison.encode!()
-    }
-  end
-
   defp render_one(campaign) do
     %{
       id: campaign.id,

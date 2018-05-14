@@ -59,8 +59,7 @@ defmodule ActiveMonitoring.CampaignsControllerTest do
     setup [:with_user_campaign]
 
     test "a user campaign manifest", %{conn: conn, campaign: campaign} do
-      response = conn |> get(campaigns_manifest_path(conn, :manifest, campaign)) |> json_response(200)
-      manifest = Poison.decode!(response["data"])
+      manifest = conn |> get(campaigns_manifest_path(conn, :manifest, campaign)) |> json_response(200)
       assert manifest["version"] == "1"
       assert manifest["languages"] == campaign.langs
     end
