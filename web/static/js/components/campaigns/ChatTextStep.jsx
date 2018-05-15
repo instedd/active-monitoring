@@ -38,11 +38,11 @@ type ChatTextStepProps = {
 class ChatTextStepComponent extends Component<ChatTextStepProps> {
   getTopicTexts(topic) {
     if (topic == 'welcome') {
-      return { title: 'Welcome message', description: 'Present the objectives of this chat bot' }
+      return { title: 'Welcome message', description: 'Present the objectives of this chat bot and instruct the user to send "registration" to enroll to the daily survey' }
     } else if (topic == 'identify') {
-      return { title: 'Identify message', description: 'Ask subject to enter their ID or request it if they do not have one' }
+      return { title: 'Identify message', description: 'Ask subject to enter their ID' }
     } else if (topic == 'registration') {
-      return { title: 'Registration message', description: 'Inform the subject to send "registration" to register to the campaign' }
+      return { title: 'Registration message', description: 'Inform the subject that the registration number is invalid, ant that he should call to get one' }
     } else if (topic == 'educational') {
       return { title: 'Educational information', description: 'Inform the subject about additional information such as prevention measures' }
     } else if (topic == 'additional_information_intro') {

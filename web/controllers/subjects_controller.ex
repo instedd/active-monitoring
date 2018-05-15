@@ -90,7 +90,7 @@ defmodule ActiveMonitoring.SubjectsController do
           my_campaign = campaign |> Repo.preload([subjects: :campaign])
 
           my_campaign
-          |> AidaBot.manifest(Subject.active_cases_per_day(my_campaign.subjects, DateTime.utc_now))
+          |> AidaBot.manifest(Subject.active_cases_per_day(my_campaign.subjects, DateTime.utc_now), my_campaign.subjects)
           |> AidaBot.update(my_campaign.aida_bot_id)
         end
 

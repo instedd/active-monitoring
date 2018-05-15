@@ -10,13 +10,20 @@ defmodule ActiveMonitoring.AidaBotTest do
     [campaign: insert(:campaign) |> Repo.preload(:subjects)]
   end
 
-  defp with_campaign_subjects %{campaign: campaign} do
+  defp with_campaign_subjects(%{campaign: campaign}) do
     subject = insert(:subject, campaign: campaign)
     [subject: subject, campaign: campaign |> Repo.preload(:subjects)]
   end
 
-  defp with_subject_calls %{campaign: campaign, subject: subject} do
-    call = insert(:call, campaign: campaign, subject: subject, inserted_at: AidaBot.date_for_monitoring_index(subject, 1))
+  defp with_subject_calls(%{campaign: campaign, subject: subject}) do
+    call =
+      insert(
+        :call,
+        campaign: campaign,
+        subject: subject,
+        inserted_at: AidaBot.date_for_monitoring_index(subject, 1)
+      )
+
     [call: call]
   end
 
@@ -131,14 +138,108 @@ defmodule ActiveMonitoring.AidaBotTest do
         })
         |> AidaBot.manifest()
 
-      assert manifest[:skills] |> Enum.count() == 1
-
-      {:ok, survey} = manifest[:skills] |> Enum.fetch(0)
-
-      assert survey[:id] == "registration"
+      assert manifest[:skills] |> Enum.count() == 0
     end
 
     test "it should have a survey with a text question to ask for the registration identifier" do
+      campaign =
+        insert(:campaign, %{langs: ["en", "es"]})
+        |> Campaign.with_chat_text(%{
+          topic: "identify",
+          language: "en",
+          value: "Please tell me your Registration Id"
+        })
+        |> Campaign.with_chat_text(%{
+          topic: "identify",
+          language: "es",
+          value: "Por favor dígame su número de registro"
+        })
+        |> Campaign.with_chat_text(%{
+          topic: "thanks",
+          language: "en",
+          value: "thanks!"
+        })
+        |> Campaign.with_chat_text(%{
+          topic: "thanks",
+          language: "es",
+          value: "gracias!"
+        })
+        |> Campaign.with_chat_text(%{
+          topic: "registration",
+          language: "en",
+          value: "Send \"registration\" to register for the campaign or call 1234567890 to get your registration id"
+        })
+        |> Campaign.with_chat_text(%{
+          topic: "registration",
+          language: "es",
+          value: "Envíe \"registration\" para registrarse a la campaña o llame al 1234567890 para obtener su identificador de registro"
+        })
+
+      subject1 = insert(:subject, campaign: campaign)
+      subject2 = insert(:subject, campaign: campaign)
+
+      manifest =
+        campaign
+        |> AidaBot.manifest(%{}, [subject1, subject2])
+
+      {:ok, skill} = manifest[:skills] |> Enum.fetch(1)
+
+      assert skill == %{
+               type: "survey",
+               id: "registration",
+               name: "registration",
+               keywords: %{
+                 "en" => ["registration"],
+                 "es" => ["registration"]
+               },
+               questions: [
+                 %{
+                   type: "select_one",
+                   choices: "registration",
+                   name: "registration_id",
+                   message: %{
+                     "en" => "Please tell me your Registration Id",
+                     "es" => "Por favor dígame su número de registro"
+                   },
+                   constraint_message: %{
+                     "en" => "Send \"registration\" to register for the campaign or call 1234567890 to get your registration id",
+                     "es" => "Envíe \"registration\" para registrarse a la campaña o llame al 1234567890 para obtener su identificador de registro"
+                   }
+                 },
+                 %{
+                   type: "note",
+                   name: "thanks",
+                   message: %{
+                     "en" => "thanks!",
+                     "es" => "gracias!"
+                   }
+                 }
+               ],
+               choice_lists: [
+                 %{
+                   name: "registration",
+                   choices: [
+                     %{
+                       name: "#{subject1.registration_identifier}",
+                       labels: %{
+                         "en" => ["#{subject1.registration_identifier}"],
+                         "es" => ["#{subject1.registration_identifier}"]
+                       }
+                     },
+                     %{
+                       name: "#{subject2.registration_identifier}",
+                       labels: %{
+                         "en" => ["#{subject2.registration_identifier}"],
+                         "es" => ["#{subject2.registration_identifier}"]
+                       }
+                     }
+                   ]
+                 }
+               ]
+             }
+    end
+
+    test "it shouldn't have a registration survey if there are no subjects" do
       campaign =
         insert(:campaign, %{langs: ["en", "es"]})
         |> Campaign.with_chat_text(%{
@@ -166,39 +267,14 @@ defmodule ActiveMonitoring.AidaBotTest do
         campaign
         |> AidaBot.manifest()
 
-      {:ok, skill} = manifest[:skills] |> Enum.fetch(1)
+      assert manifest[:skills] |> Enum.count() == 1
 
-      assert skill == %{
-               type: "survey",
-               id: "registration",
-               name: "registration",
-               keywords: %{
-                 "en" => ["registration"],
-                 "es" => ["registration"]
-               },
-               questions: [
-                 %{
-                   type: "text",
-                   name: "registration_id",
-                   message: %{
-                     "en" => "Please tell me your Registration Id",
-                     "es" => "Por favor dígame su número de registro"
-                   }
-                 },
-                 %{
-                   type: "note",
-                   name: "thanks",
-                   message: %{
-                     "en" => "thanks!",
-                     "es" => "gracias!"
-                   }
-                 }
-               ],
-               choice_lists: []
-             }
+      {:ok, skill} = manifest[:skills] |> Enum.fetch(0)
+
+      assert skill[:type] == "language_detector"
     end
 
-    test "it shouldn't have a survey without subjects" do
+    test "it shouldn't have a survey without active subjects" do
       campaign =
         insert(:campaign, %{langs: ["en", "es"]})
         |> Campaign.with_chat_text(%{
@@ -226,7 +302,11 @@ defmodule ActiveMonitoring.AidaBotTest do
         campaign
         |> AidaBot.manifest()
 
-      assert manifest[:skills] |> Enum.count() == 2
+      assert manifest[:skills] |> Enum.count() == 1
+
+      {:ok, skill} = manifest[:skills] |> Enum.fetch(0)
+
+      assert skill[:type] == "language_detector"
     end
 
     test "surveys should have a question for every symptom" do
@@ -272,7 +352,7 @@ defmodule ActiveMonitoring.AidaBotTest do
 
       manifest =
         campaign
-        |> AidaBot.manifest(%{1 => [subject1, subject2]})
+        |> AidaBot.manifest(%{1 => [subject1, subject2]}, [subject1, subject2])
 
       survey_start = {Timex.today() |> Timex.to_erl(), {15, 0, 0}}
 
@@ -384,11 +464,12 @@ defmodule ActiveMonitoring.AidaBotTest do
         "${survey\/registration\/registration_id} = \"#{subject1.registration_identifier}\" " <>
           "or ${survey\/registration\/registration_id} = \"#{subject2.registration_identifier}\""
 
-      relevance3 = "${survey\/registration\/registration_id} = \"#{subject3.registration_identifier}\""
+      relevance3 =
+        "${survey\/registration\/registration_id} = \"#{subject3.registration_identifier}\""
 
       manifest =
         campaign
-        |> AidaBot.manifest(%{1 => [subject1, subject2], 3 => [subject3]})
+        |> AidaBot.manifest(%{1 => [subject1, subject2], 3 => [subject3]}, [subject1, subject2, subject3])
 
       assert manifest[:skills] |> Enum.count() == 4
 
@@ -557,7 +638,7 @@ defmodule ActiveMonitoring.AidaBotTest do
 
       manifest =
         campaign
-        |> AidaBot.manifest(%{1 => [subject1, subject2]})
+        |> AidaBot.manifest(%{1 => [subject1, subject2]}, [subject1, subject2])
 
       survey_start = {Timex.today() |> Timex.to_erl(), {15, 0, 0}}
 
@@ -674,7 +755,7 @@ defmodule ActiveMonitoring.AidaBotTest do
 
       manifest =
         campaign
-        |> AidaBot.manifest(%{1 => [subject1, subject2]})
+        |> AidaBot.manifest(%{1 => [subject1, subject2]}, [subject1, subject2])
 
       survey_start = {Timex.today() |> Timex.to_erl(), {15, 0, 0}}
 
@@ -776,11 +857,17 @@ defmodule ActiveMonitoring.AidaBotTest do
 
   describe "poll" do
     test "should poll data from AIDA", %{campaign: campaign} do
-      with_mock HTTPoison, [get: fn(_url) ->
-        {:ok, %HTTPoison.Response{ body: Poison.encode! %{ "data" => [] }}}
-        end] do
+      with_mock HTTPoison,
+        get: fn _url ->
+          {:ok, %HTTPoison.Response{body: Poison.encode!(%{"data" => []})}}
+        end do
         AidaBot.retrieve_responses(campaign)
-        assert called HTTPoison.get("http://aida-backend/api/bots/123e4567-e89b-12d3-a456-426655440000/session_data?include_internal=true")
+
+        assert called(
+                 HTTPoison.get(
+                   "http://aida-backend/api/bots/123e4567-e89b-12d3-a456-426655440000/session_data?include_internal=true"
+                 )
+               )
       end
     end
 
@@ -797,6 +884,7 @@ defmodule ActiveMonitoring.AidaBotTest do
           }
         }
       ]
+
       assert AidaBot.subject_answers(campaign, data) == %{}
     end
   end
@@ -804,7 +892,10 @@ defmodule ActiveMonitoring.AidaBotTest do
   describe "with subjects" do
     setup [:with_campaign_subjects]
 
-    test "should create a new call when AIDA reports a session with an known registration ID", %{campaign: campaign, subject: subject} do
+    test "should create a new call when AIDA reports a session with an known registration ID", %{
+      campaign: campaign,
+      subject: subject
+    } do
       data = [
         %{
           "id" => "aaaaaaaa-336c-4ad2-ba5c-b49676da20f6",
@@ -814,10 +905,14 @@ defmodule ActiveMonitoring.AidaBotTest do
           }
         }
       ]
-      assert AidaBot.subject_answers(campaign, data) == %{subject.registration_identifier => %{"answers" => %{}, "language" => "en"}}
+
+      assert AidaBot.subject_answers(campaign, data) == %{
+               subject.registration_identifier => %{"answers" => %{}, "language" => "en"}
+             }
     end
 
-    test "should create a call with a symptom when AIDA reports a session with a symptom answer", %{campaign: campaign, subject: subject} do
+    test "should create a call with a symptom when AIDA reports a session with a symptom answer",
+         %{campaign: campaign, subject: subject} do
       data = [
         %{
           "id" => "aaaaaaaa-336c-4ad2-ba5c-b49676da20f6",
@@ -831,21 +926,28 @@ defmodule ActiveMonitoring.AidaBotTest do
           }
         }
       ]
+
       assert AidaBot.subject_answers(campaign, data) == %{
-        subject.registration_identifier => %{
-          "language" => "en",
-          "answers" => %{
-            1 => %{
-              "current_step" => "thanks",
-              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
-            },
-            4 => %{
-              "current_step" => "thanks",
-              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => true, "123e4567-e89b-12d3-a456-426655440222" => false}
-            }
-          }
-        }
-      }
+               subject.registration_identifier => %{
+                 "language" => "en",
+                 "answers" => %{
+                   1 => %{
+                     "current_step" => "thanks",
+                     "symptoms" => %{
+                       "123e4567-e89b-12d3-a456-426655440111" => false,
+                       "123e4567-e89b-12d3-a456-426655440222" => true
+                     }
+                   },
+                   4 => %{
+                     "current_step" => "thanks",
+                     "symptoms" => %{
+                       "123e4567-e89b-12d3-a456-426655440111" => true,
+                       "123e4567-e89b-12d3-a456-426655440222" => false
+                     }
+                   }
+                 }
+               }
+             }
     end
   end
 
@@ -859,36 +961,52 @@ defmodule ActiveMonitoring.AidaBotTest do
           "answers" => %{
             1 => %{
               "current_step" => "thanks",
-              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
+              "symptoms" => %{
+                "123e4567-e89b-12d3-a456-426655440111" => false,
+                "123e4567-e89b-12d3-a456-426655440222" => true
+              }
             },
             4 => %{
               "current_step" => "thanks",
-              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => true, "123e4567-e89b-12d3-a456-426655440222" => false}
+              "symptoms" => %{
+                "123e4567-e89b-12d3-a456-426655440111" => true,
+                "123e4567-e89b-12d3-a456-426655440222" => false
+              }
             }
           }
         },
         "XXX_NON_EXISTING_REGISTRATION_IDENTIFIER_XXX" => %{
           "language" => "es",
           "answers" => %{
-            1 => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
-          }
-        }
-      }
-      assert AidaBot.known_subjects_answers(parsed_answers, [subject]) == %{
-        subject => %{
-          "language" => "en",
-          "answers" => %{
             1 => %{
-              "current_step" => "thanks",
-              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
-            },
-            4 => %{
-              "current_step" => "thanks",
-              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => true, "123e4567-e89b-12d3-a456-426655440222" => false}
+              "123e4567-e89b-12d3-a456-426655440111" => false,
+              "123e4567-e89b-12d3-a456-426655440222" => true
             }
           }
         }
       }
+
+      assert AidaBot.known_subjects_answers(parsed_answers, [subject]) == %{
+               subject => %{
+                 "language" => "en",
+                 "answers" => %{
+                   1 => %{
+                     "current_step" => "thanks",
+                     "symptoms" => %{
+                       "123e4567-e89b-12d3-a456-426655440111" => false,
+                       "123e4567-e89b-12d3-a456-426655440222" => true
+                     }
+                   },
+                   4 => %{
+                     "current_step" => "thanks",
+                     "symptoms" => %{
+                       "123e4567-e89b-12d3-a456-426655440111" => true,
+                       "123e4567-e89b-12d3-a456-426655440222" => false
+                     }
+                   }
+                 }
+               }
+             }
     end
 
     test "should not create calls that have already been registered", %{subject: subject} do
@@ -898,19 +1016,25 @@ defmodule ActiveMonitoring.AidaBotTest do
           "answers" => %{
             1 => %{
               "current_step" => "thanks",
-              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
+              "symptoms" => %{
+                "123e4567-e89b-12d3-a456-426655440111" => false,
+                "123e4567-e89b-12d3-a456-426655440222" => true
+              }
             },
             4 => %{
               "current_step" => "thanks",
-              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => true, "123e4567-e89b-12d3-a456-426655440222" => false}
+              "symptoms" => %{
+                "123e4567-e89b-12d3-a456-426655440111" => true,
+                "123e4567-e89b-12d3-a456-426655440222" => false
+              }
             }
           }
         }
       }
 
-      current_calls_count = Repo.one(from c in "calls", select: count(c.id))
+      current_calls_count = Repo.one(from(c in "calls", select: count(c.id)))
       AidaBot.create_missing_calls_and_answers(known_subjects_answers, [subject])
-      assert Repo.one(from c in "calls", select: count(c.id)) == (current_calls_count + 1)
+      assert Repo.one(from(c in "calls", select: count(c.id))) == current_calls_count + 1
     end
 
     test "should create missing call answers", %{subject: subject} do
@@ -920,19 +1044,27 @@ defmodule ActiveMonitoring.AidaBotTest do
           "answers" => %{
             1 => %{
               "current_step" => "thanks",
-              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
+              "symptoms" => %{
+                "123e4567-e89b-12d3-a456-426655440111" => false,
+                "123e4567-e89b-12d3-a456-426655440222" => true
+              }
             },
             4 => %{
               "current_step" => "thanks",
-              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => true, "123e4567-e89b-12d3-a456-426655440222" => false}
+              "symptoms" => %{
+                "123e4567-e89b-12d3-a456-426655440111" => true,
+                "123e4567-e89b-12d3-a456-426655440222" => false
+              }
             }
           }
         }
       }
 
-      current_call_answers_count = Repo.one(from c in "call_answers", select: count(c.id))
+      current_call_answers_count = Repo.one(from(c in "call_answers", select: count(c.id)))
       AidaBot.create_missing_calls_and_answers(known_subjects_answers, [subject])
-      assert Repo.one(from c in "call_answers", select: count(c.id)) == (current_call_answers_count + 4)
+
+      assert Repo.one(from(c in "call_answers", select: count(c.id))) ==
+               current_call_answers_count + 4
     end
   end
 
@@ -958,25 +1090,29 @@ defmodule ActiveMonitoring.AidaBotTest do
           }
         }
       ]
+
       assert AidaBot.subject_answers(campaign, data) == %{
-        subject.registration_identifier => %{
-          "language" => "es",
-          "answers" => %{
-            1 => %{
-              "current_step" => "thanks",
-              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
-            },
-            3 => %{
-              "current_step" => "symptom:123e4567-e89b-12d3-a456-426655440222",
-              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false}
-            },
-            4 => %{
-              "current_step" => "symptom:123e4567-e89b-12d3-a456-426655440111",
-              "symptoms" => %{}
-            }
-          }
-        }
-      }
+               subject.registration_identifier => %{
+                 "language" => "es",
+                 "answers" => %{
+                   1 => %{
+                     "current_step" => "thanks",
+                     "symptoms" => %{
+                       "123e4567-e89b-12d3-a456-426655440111" => false,
+                       "123e4567-e89b-12d3-a456-426655440222" => true
+                     }
+                   },
+                   3 => %{
+                     "current_step" => "symptom:123e4567-e89b-12d3-a456-426655440222",
+                     "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false}
+                   },
+                   4 => %{
+                     "current_step" => "symptom:123e4567-e89b-12d3-a456-426655440111",
+                     "symptoms" => %{}
+                   }
+                 }
+               }
+             }
     end
 
     test "should insert a call with it's current step", %{subject: subject} do
@@ -986,7 +1122,10 @@ defmodule ActiveMonitoring.AidaBotTest do
           "answers" => %{
             1 => %{
               "current_step" => "thanks",
-              "symptoms" => %{"123e4567-e89b-12d3-a456-426655440111" => false, "123e4567-e89b-12d3-a456-426655440222" => true}
+              "symptoms" => %{
+                "123e4567-e89b-12d3-a456-426655440111" => false,
+                "123e4567-e89b-12d3-a456-426655440222" => true
+              }
             },
             4 => %{
               "current_step" => "symptom:123e4567-e89b-12d3-a456-426655440222",
@@ -999,8 +1138,11 @@ defmodule ActiveMonitoring.AidaBotTest do
       AidaBot.create_missing_calls_and_answers(known_subjects_answers, [subject])
 
       [first, second] = Repo.all(Call)
-      assert (first.current_step == "thanks" and second.current_step == "symptom:123e4567-e89b-12d3-a456-426655440222")
-          or (second.current_step == "thanks" and first.current_step == "symptom:123e4567-e89b-12d3-a456-426655440222")
+
+      assert (first.current_step == "thanks" and
+                second.current_step == "symptom:123e4567-e89b-12d3-a456-426655440222") or
+               (second.current_step == "thanks" and
+                  first.current_step == "symptom:123e4567-e89b-12d3-a456-426655440222")
     end
   end
 
@@ -1008,7 +1150,15 @@ defmodule ActiveMonitoring.AidaBotTest do
     setup [:with_campaign_subjects, :with_subject_calls]
 
     test "should not create calls for unknown subjects", %{call: call} do
-      {:ok, ignored} = build(:call, campaign: call.campaign, subject: call.subject, inserted_at: call.inserted_at) |> Repo.insert(on_conflict: :nothing)
+      {:ok, ignored} =
+        build(
+          :call,
+          campaign: call.campaign,
+          subject: call.subject,
+          inserted_at: call.inserted_at
+        )
+        |> Repo.insert(on_conflict: :nothing)
+
       assert is_nil(ignored.id)
     end
   end

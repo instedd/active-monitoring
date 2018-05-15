@@ -107,9 +107,10 @@ defmodule ActiveMonitoring.Campaign do
     Enum.find_value(audios, fn([t, l, id]) -> t == topic && l == language && id end)
   end
 
-  def chat_text_for(chat_texts, topic), do: chat_text_for(chat_texts, topic, nil)
-  def chat_text_for(%{chat_texts: chat_texts}, topic, language), do: chat_text_for(chat_texts, topic, language)
-  def chat_text_for(chat_texts, topic, language) when is_list(chat_texts) do
+  def chat_text_for(%{chat_texts: chat_texts}, topic) do
+    Enum.find_value(chat_texts, fn([t, _, chat_text]) -> t == topic && chat_text end)
+  end
+  def chat_text_for(%{chat_texts: chat_texts}, topic, language) do
     Enum.find_value(chat_texts, fn([t, l, chat_text]) -> t == topic && l == language && chat_text end)
   end
 

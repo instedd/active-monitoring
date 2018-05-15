@@ -287,17 +287,19 @@ class Subjects extends Component<SubjectsProps> {
       fetching
     } = this.props.subjects
 
+    const campaign = this.props.campaign.data
+
     const showDialog = editingSubject != null
     let subjectForm = null
     if (editingSubject != null) {
       subjectForm = this.subjectForm(editingSubject)
     }
-    let tableOrLoadingIndicator = fetching ? this.circularProgress() : this.subjectsList(this.props.campaign.data.mode)
+    let tableOrLoadingIndicator = fetching || !campaign ? this.circularProgress() : this.subjectsList(campaign.mode)
 
     return (
       <div className='md-grid--no-spacing'>
         <ActiveCampaignSubNav
-          title={(this.props.campaign.data && this.props.campaign.data.name) ? this.props.campaign.data.name : ''}
+          title={(campaign && campaign.name) ? campaign.name : ''}
           addButtonHandler={() => this.showSubjectForm()}
           campaignId={this.props.campaignId}
         />

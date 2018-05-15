@@ -27,12 +27,12 @@ defmodule ActiveMonitoring.AidaBot do
     |> Map.get("data")
   end
 
-  def manifest(campaign, subjects \\ %{}) do
+  def manifest(campaign, active_subjects_per_day \\ %{}, campaign_subjects \\ []) do
     %{
       version: "1",
       languages: campaign.langs,
       front_desk: front_desk(campaign),
-      skills: skills(campaign, subjects),
+      skills: skills(campaign, active_subjects_per_day, campaign_subjects),
       channels: channels(campaign),
       variables: []
     }
@@ -89,8 +89,8 @@ defmodule ActiveMonitoring.AidaBot do
     ]
   end
 
-  defp skills(campaign, subjects) do
-    language_detector(campaign) ++ registration(campaign) ++ survey(campaign, subjects)
+  defp skills(campaign, active_subjects_per_day, campaign_subjects) do
+    language_detector(campaign) ++ registration(campaign, campaign_subjects) ++ survey(campaign, active_subjects_per_day)
   end
 
   defp language_detector(%{langs: [_]}), do: []
@@ -108,7 +108,8 @@ defmodule ActiveMonitoring.AidaBot do
     ]
   end
 
-  defp registration(campaign) do
+  defp registration(_, []), do: []
+  defp registration(campaign, subjects) do
     [
       %{
         type: "survey",
@@ -121,30 +122,52 @@ defmodule ActiveMonitoring.AidaBot do
         questions:
           [
             %{
-              type: "text",
+              type: "select_one",
+              choices: "registration",
               name: "registration_id",
               message:
                 localize(campaign, fn lang ->
                   campaign |> Campaign.chat_text_for("identify", lang)
-                end)
+                end),
+              constraint_message: localize(campaign, fn lang ->
+                  campaign |> Campaign.chat_text_for("registration", lang)
+                end),
             }
           ]
           |> Enum.concat(thanks_note(campaign)),
-        choice_lists: []
+        choice_lists: registration_choices(campaign, subjects)
       }
     ]
   end
 
-  defp survey(%{monitor_duration: monitor_duration} = campaign, subjects) do
+  defp registration_choices(campaign, subjects) do
+    [
+      %{
+        name: "registration",
+        choices:
+          subjects
+          |> Enum.map(fn subject ->
+            %{
+              name: subject.registration_identifier,
+              labels:
+                localize(campaign, fn _lang ->
+                  [subject.registration_identifier]
+                end)
+            }
+          end)
+      }
+    ]
+  end
+
+  defp survey(campaign, subjects_by_day) do
     survey_start = {Timex.today() |> Timex.to_erl(), {15, 0, 0}}
 
     schedule =
       Timex.Timezone.resolve(campaign.timezone, survey_start)
       |> DateTime.to_iso8601()
 
-    1..monitor_duration
-    |> Enum.reduce([], fn campaign_day, surveys ->
-      survey(surveys, campaign, subjects |> Map.get(campaign_day), campaign_day, schedule)
+    Enum.reduce(subjects_by_day, [], fn({campaign_day, subjects}, surveys) ->
+      survey(surveys, campaign, subjects, campaign_day, schedule)
     end)
   end
 
