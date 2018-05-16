@@ -31,8 +31,8 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
       assert call.campaign_id == campaign.id
     end
 
-    test "it should not infer the subject (not even by phone number)", %{campaign: campaign} do
-      build(:subject, campaign: campaign, phone_number: "9990001") |> Repo.insert!
+    test "it should not infer the subject (not even by contact address)", %{campaign: campaign} do
+      build(:subject, campaign: campaign, contact_address: "9990001") |> Repo.insert!
 
       Flow.handle_status(campaign.id, "CALL_SID_1", "9990001", "ringing")
 
@@ -176,7 +176,7 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
       owner = build(:user) |> Repo.insert!
       campaign = build(:campaign, user: owner) |> with_audios |> with_channel |> Repo.insert!
       call = build(:call, campaign: campaign, language: "es") |> on_step("registration") |> Repo.insert!
-      subject = build(:subject, campaign: campaign, phone_number: "9990001") |> Repo.insert!
+      subject = build(:subject, campaign: campaign, contact_address: "9990001") |> Repo.insert!
       response = Flow.handle(campaign.id, call.sid, nil)
       {:ok, campaign: campaign, call: call, response: response, subject: subject}
     end

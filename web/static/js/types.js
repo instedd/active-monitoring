@@ -25,7 +25,7 @@ export type Campaign = {
 
 export type Subject = {
   id: number,
-  phoneNumber: string,
+  contactAddress: string,
   registrationIdentifier: string,
   enrollDate: Date,
   firstCallDate: ?Date,
@@ -36,7 +36,7 @@ export type Subject = {
 
 export type SubjectParams = {
   id?: number,
-  phoneNumber: string,
+  contactAddress: string,
   registrationIdentifier: string,
 }
 

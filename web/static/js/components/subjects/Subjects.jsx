@@ -65,7 +65,7 @@ class SubjectsList extends Component<SubjectsListProps> {
               <TableHeader>
                 <TableRow>
                   <TableColumn>ID</TableColumn>
-                  <TableColumn>Phone Number</TableColumn>
+                  <TableColumn>Contact Address</TableColumn>
                   <TableColumn>Enroll Date</TableColumn>
                   <TableColumn>{`First ${actionTitle}`}</TableColumn>
                   <TableColumn>{`Last ${actionTitle}`}</TableColumn>
@@ -122,7 +122,7 @@ class SubjectItem extends Component<SubjectItemProps> {
     return (
       <TableRow onClick={() => this.props.onClick(subject)}>
         <TableColumn>{subject.registrationIdentifier}</TableColumn>
-        <TableColumn>{subject.phoneNumber}</TableColumn>
+        <TableColumn>{subject.contactAddress}</TableColumn>
         <TableColumn>
           <FormatDate date={subject.enrollDate} />
         </TableColumn>
@@ -177,10 +177,10 @@ class Subjects extends Component<SubjectsProps> {
   }
 
   showSubjectForm() {
-    this.props.itemActions.editSubject({phoneNumber: '', registrationIdentifier: ''})
+    this.props.itemActions.editSubject({contactAddress: '', registrationIdentifier: ''})
   }
 
-  onEditPhoneNumber = (value) => this.onEditField('phoneNumber', value)
+  onEditContactAddress = (value) => this.onEditField('contactAddress', value)
   onEditRegistrationIdentifier = (value) => this.onEditField('registrationIdentifier', value)
 
   onEditField(fieldName, value) {
@@ -229,7 +229,7 @@ class Subjects extends Component<SubjectsProps> {
       onSubmit={() => editingSubject.id ? this.updateSubject() : this.createSubject()}
       onCancel={() => this.closeSubjectFormModal()}
       subject={editingSubject}
-      onEditPhoneNumber={this.onEditPhoneNumber}
+      onEditContactAddress={this.onEditContactAddress}
       onEditRegistrationIdentifier={this.onEditRegistrationIdentifier} />)
   }
 

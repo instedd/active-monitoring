@@ -6,7 +6,7 @@ defmodule ActiveMonitoring.Subject do
   import Timex
 
   schema "subjects" do
-    field :phone_number, :string
+    field :contact_address, :string
     field :registration_identifier, :string
 
     has_many :calls, Call
@@ -17,7 +17,7 @@ defmodule ActiveMonitoring.Subject do
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:phone_number, :registration_identifier, :campaign_id])
+    |> cast(params, [:contact_address, :registration_identifier, :campaign_id])
     |> validate_required([:registration_identifier])
     |> unique_constraint(:registration_identifier, name: :subjects_campaign_id_registration_identifier_index)
     |> assoc_constraint(:campaign)

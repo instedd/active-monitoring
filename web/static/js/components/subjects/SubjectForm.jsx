@@ -6,14 +6,14 @@ import type {SubjectParams} from '../../types'
 
 type Props = {
   onEditRegistrationIdentifier: (registrationIdentifier: string) => void,
-  onEditPhoneNumber: (phoneNumber: string) => void,
+  onEditContactAddress: (contactAddress: string) => void,
   onSubmit: () => void,
   onCancel: () => void,
   subject: SubjectParams
 }
 class SubjectForm extends Component<Props> {
   render() {
-    const { subject, onSubmit, onCancel, onEditPhoneNumber, onEditRegistrationIdentifier } = this.props
+    const { subject, onSubmit, onCancel, onEditContactAddress, onEditRegistrationIdentifier } = this.props
 
     return (
       <section id='subject'>
@@ -26,11 +26,11 @@ class SubjectForm extends Component<Props> {
             onBlur={e => onEditRegistrationIdentifier(e.target.value)}
           />
           <TextField
-            id='phone-number'
-            label='Phone Number'
+            id='contact-address'
+            label='Contact Address'
             className='md-cell md-cell--12'
-            defaultValue={subject.phoneNumber || ''}
-            onBlur={e => onEditPhoneNumber(e.target.value)}
+            defaultValue={subject.contactAddress || ''}
+            onBlur={e => onEditContactAddress(e.target.value)}
           />
         </div>
         <div className='md-grid'>
