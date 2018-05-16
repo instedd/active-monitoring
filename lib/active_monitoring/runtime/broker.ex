@@ -65,10 +65,10 @@ defmodule ActiveMonitoring.Runtime.Broker do
   end
 
   defp call_pending_subjects(%{subjects: subjects, mode: "chat"} = campaign, now) do
-    subjects = Subject.active_cases_per_day(subjects, now)
+    subjects_per_day = Subject.active_cases_per_day(subjects, now)
 
     case campaign
-         |> AidaBot.manifest(subjects)
+         |> AidaBot.manifest(subjects_per_day, subjects)
          |> AidaBot.update(campaign.aida_bot_id) do
       %{"id" => _} ->
         true

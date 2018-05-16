@@ -75,12 +75,14 @@ defmodule ActiveMonitoring.SubjectsController do
   end
 
   def create(conn, %{"subject" => subject_params, "campaigns_id" => campaign_id}) do
-    campaign = Repo.get!(Campaign, campaign_id)
-    |> authorize_campaign(conn)
+    campaign =
+      Repo.get!(Campaign, campaign_id)
+      |> authorize_campaign(conn)
 
-    changeset = campaign
-    |> build_assoc(:subjects)
-    |> Subject.changeset(subject_params)
+    changeset =
+      campaign
+      |> build_assoc(:subjects)
+      |> Subject.changeset(subject_params)
 
     case Repo.insert(changeset) do
       {:ok, subject} ->
@@ -107,14 +109,30 @@ defmodule ActiveMonitoring.SubjectsController do
   end
 
   def update(conn, %{"id" => subject_id, "campaigns_id" => campaign_id, "subject" => subject_params}) do
-    subject = Repo.get!(Campaign, campaign_id)
-    |> authorize_campaign(conn)
-    |> assoc(:subjects)
-    |> Repo.get!(subject_id)
+    campaign =
+      Repo.get!(Campaign, campaign_id)
+      |> authorize_campaign(conn)
+
+    subject =
+      campaign
+      |> assoc(:subjects)
+      |> Repo.get!(subject_id)
+
     changeset = Subject.changeset(subject, subject_params)
 
     case Repo.update(changeset) do
       {:ok, subject} ->
+        if campaign.mode == "chat" do
+          my_campaign = campaign |> Repo.preload(subjects: :campaign)
+
+          my_campaign
+          |> AidaBot.manifest(
+            Subject.active_cases_per_day(my_campaign.subjects, DateTime.utc_now()),
+            my_campaign.subjects
+          )
+          |> AidaBot.update(my_campaign.aida_bot_id)
+        end
+
         subject = Repo.preload(subject, :campaign)
         render(conn, "show.json", subject: subject)
 

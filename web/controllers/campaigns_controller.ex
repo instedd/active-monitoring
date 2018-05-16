@@ -59,6 +59,7 @@ defmodule ActiveMonitoring.CampaignsController do
         put_status(conn, :unprocessable_entity) |> render(ChangesetView, "error.json", errors)
     end
   end
+
   def manifest(conn, %{"campaigns_id" => campaign_id} = params) do
     target_day = Map.get(params, "target_day")
 
@@ -73,7 +74,7 @@ defmodule ActiveMonitoring.CampaignsController do
 
     subjects = Subject.active_cases_per_day(campaign.subjects, target_date)
 
-    manifest = campaign |> AidaBot.manifest(subjects)
+    manifest = campaign |> AidaBot.manifest(subjects, campaign.subjects)
 
     conn
     |> put_status(:ok)
