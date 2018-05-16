@@ -258,15 +258,26 @@ defmodule ActiveMonitoring.Runtime.FlowTest do
     test "it should forward the call on all symptoms positive", %{campaign: campaign, call: call} do
       response = Flow.handle(campaign.id, call.sid, "1")
 
-      assert %Call{current_step: "forward"} = Repo.one!(Call)
+      assert %Call{current_step: "forward", forwarded: true, needs_to_be_forwarded: true} = Repo.one!(Call)
       assert {:forward, %{audio: "id-forward-es", number: "5550000"}} = response
     end
 
     test "it should not forward the call if not all symptoms are positive", %{campaign: campaign, call: call} do
       response = Flow.handle(campaign.id, call.sid, "3")
 
-      assert %Call{current_step: "educational"} = Repo.one!(Call)
+      assert %Call{current_step: "educational", forwarded: false, needs_to_be_forwarded: false} = Repo.one!(Call)
       assert {:play, %{audio: "id-educational-es"}} = response
+    end
+
+    test "it should leave the call as forwarded if it was", %{campaign: campaign, call: call} do
+      response = Flow.handle(campaign.id, call.sid, "1")
+      assert {:forward, %{audio: "id-forward-es", number: "5550000"}} = response
+      response = Flow.handle(campaign.id, call.sid, "")
+      assert {:play, %{audio: "id-educational-es"}} = response
+      response = Flow.handle(campaign.id, call.sid, "3")
+      assert {:hangup, %{audio: "id-thanks-es"}} = response
+
+      assert %Call{current_step: "thanks", forwarded: true, needs_to_be_forwarded: true} = Repo.one!(Call)
     end
   end
 
