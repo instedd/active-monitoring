@@ -1,20 +1,26 @@
 // @flow
+export type Mode = 'call' | 'chat'
 export type Step = string
 export type LanguageCode = string
-export type Uuid = string
-export type Audio = [Step, LanguageCode, Uuid]
 export type Timezone = string
+
 export type Campaign = {
   id: number,
-  audios: Audio[],
   name: ?string,
   langs: string[],
   symptoms: string[][],
+  forwardingAddress: ?string,
+  forwardingCondition: ?string,
   additionalInformation: ?string,
   timezone: Timezone,
-  forwardingNumber: ?string,
   monitorDuration: ?number,
   channel: ?string,
+  fbPageId: ?string,
+  fbVerifyToken: ?string,
+  fbAccessToken: ?string,
+  mode: Mode,
+  chatTexts: string[][],
+  audios: string[][]
 }
 
 export type Subject = {
@@ -42,6 +48,7 @@ export type State = {
     editingSubject: Subject,
     targetPage: number
   },
+  campaign: Campaign
 }
 
 export type Items = {

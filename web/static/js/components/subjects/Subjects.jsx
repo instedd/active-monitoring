@@ -23,20 +23,22 @@ import SubjectForm from './SubjectForm'
 import ActiveCampaignSubNav from '../ActiveCampaignSubNav'
 import type { Subject, SubjectParams, Campaign } from '../../types'
 
-class SubjectsList extends Component {
-  props: {
-    items: Subject[],
-    showSubjectForm: () => void,
-    onPageChange: (page: number) => void,
-    onSubjectClick: (subject: Subject) => void,
-    exportCsv: () => void,
-    currentPage: ?number,
-    rowsPerPage: number,
-    count: number,
-  }
+type SubjectsListProps = {
+  campaignMode: string,
+  items: Subject[],
+  showSubjectForm: () => void,
+  onPageChange: (page: number) => void,
+  onSubjectClick: (subject: Subject) => void,
+  exportCsv: () => void,
+  currentPage: ?number,
+  rowsPerPage: number,
+  count: number,
+}
 
+class SubjectsList extends Component<SubjectsListProps> {
   render() {
     const subjects = this.props.items || []
+    const { campaignMode } = this.props
 
     if (subjects.length == 0) {
       return (
@@ -45,6 +47,13 @@ class SubjectsList extends Component {
           <NavLink to='#' onClick={this.props.showSubjectForm}>Add subject</NavLink>
         </EmptyListing>
       )
+    }
+
+    let actionTitle = ''
+    if (campaignMode === 'call') {
+      actionTitle = 'Call'
+    } else if (campaignMode === 'chat') {
+      actionTitle = 'Message'
     }
 
     return (
@@ -58,9 +67,9 @@ class SubjectsList extends Component {
                   <TableColumn>ID</TableColumn>
                   <TableColumn>Phone Number</TableColumn>
                   <TableColumn>Enroll Date</TableColumn>
-                  <TableColumn>First Call</TableColumn>
-                  <TableColumn>Last Call</TableColumn>
-                  <TableColumn>Last Successful Call</TableColumn>
+                  <TableColumn>{`First ${actionTitle}`}</TableColumn>
+                  <TableColumn>{`Last ${actionTitle}`}</TableColumn>
+                  <TableColumn>{`Last Successful ${actionTitle}`}</TableColumn>
                   <TableColumn>Active?</TableColumn>
                 </TableRow>
               </TableHeader>
@@ -88,11 +97,10 @@ class SubjectsList extends Component {
   }
 }
 
-class FormatDate extends Component {
-  props: {
-    date: ?Date,
-  }
-
+type FormatDateProps = {
+  date: ?Date
+}
+class FormatDate extends Component<FormatDateProps> {
   render() {
     const date = this.props.date
 
@@ -104,12 +112,11 @@ class FormatDate extends Component {
   }
 }
 
-class SubjectItem extends Component {
-  props: {
-    subject: Subject,
-    onClick: (subject: Subject) => void,
-  }
-
+type SubjectItemProps = {
+  subject: Subject,
+  onClick: (subject: Subject) => void,
+}
+class SubjectItem extends Component<SubjectItemProps> {
   render() {
     const subject = this.props.subject
     return (
@@ -134,38 +141,37 @@ class SubjectItem extends Component {
   }
 }
 
-class Subjects extends Component {
-  props: {
-    campaignId: number,
-    campaign: {
-      fetching: boolean,
-      data: Campaign
-    },
-    subjects: {
-      count: number,
-      items: Subject[],
-      editingSubject: ?SubjectParams,
-      limit: number,
-      page: ?number,
-      targetPage: number,
-      fetching: boolean,
-    },
-    campaignActions: {
-      campaignFetch: (campaignId: number) => void
-    },
-    collectionActions: {
-      fetchSubjects: (campaignId: number, limit: number, targetPage: number) => void,
-      changeTargetPage: (targetPage: number) => void,
-    },
-    itemActions: {
-      createSubject: (campaignId: number, subject: SubjectParams) => void,
-      updateSubject: (campaignId: number, subject: SubjectParams) => void,
-      editingSubjectCancel: () => void,
-      subjectEditing: (fieldName: string, value: string) => void,
-      editSubject: (subject: SubjectParams) => void,
-    }
+type SubjectsProps = {
+  campaignId: number,
+  campaign: {
+    fetching: boolean,
+    data: Campaign
+  },
+  subjects: {
+    count: number,
+    items: Subject[],
+    editingSubject: ?SubjectParams,
+    limit: number,
+    page: ?number,
+    targetPage: number,
+    fetching: boolean,
+  },
+  campaignActions: {
+    campaignFetch: (campaignId: number) => void
+  },
+  collectionActions: {
+    fetchSubjects: (campaignId: number, limit: number, targetPage: number) => void,
+    changeTargetPage: (targetPage: number) => void,
+  },
+  itemActions: {
+    createSubject: (campaignId: number, subject: SubjectParams) => void,
+    updateSubject: (campaignId: number, subject: SubjectParams) => void,
+    editingSubjectCancel: () => void,
+    subjectEditing: (fieldName: string, value: string) => void,
+    editSubject: (subject: SubjectParams) => void,
   }
-
+}
+class Subjects extends Component<SubjectsProps> {
   closeSubjectFormModal() {
     this.props.itemActions.editingSubjectCancel()
   }
@@ -231,7 +237,7 @@ class Subjects extends Component {
     return (<CircularProgress id='subjects-fetching-progress' />)
   }
 
-  subjectsList() {
+  subjectsList(campaignMode) {
     const {
       page,
       items,
@@ -240,16 +246,20 @@ class Subjects extends Component {
       count
     } = this.props.subjects
 
-    return (<SubjectsList
-      items={items}
-      count={count}
-      fetching={fetching}
-      currentPage={page}
-      rowsPerPage={limit}
-      showSubjectForm={() => this.showSubjectForm()}
-      exportCsv={() => this.exportCsv()}
-      onSubjectClick={(subject) => this.editSubject(subject)}
-      onPageChange={(targetPage) => this.goToPage(targetPage)} />)
+    return (
+      <SubjectsList
+        items={items}
+        campaignMode={campaignMode}
+        count={count}
+        fetching={fetching}
+        currentPage={page}
+        rowsPerPage={limit}
+        showSubjectForm={() => this.showSubjectForm()}
+        exportCsv={() => this.exportCsv()}
+        onSubjectClick={(subject) => this.editSubject(subject)}
+        onPageChange={(targetPage) => this.goToPage(targetPage)}
+      />
+    )
   }
 
   componentDidUpdate() {
@@ -277,17 +287,19 @@ class Subjects extends Component {
       fetching
     } = this.props.subjects
 
+    const campaign = this.props.campaign.data
+
     const showDialog = editingSubject != null
     let subjectForm = null
     if (editingSubject != null) {
       subjectForm = this.subjectForm(editingSubject)
     }
-    let tableOrLoadingIndicator = fetching ? this.circularProgress() : this.subjectsList()
+    let tableOrLoadingIndicator = fetching || !campaign ? this.circularProgress() : this.subjectsList(campaign.mode)
 
     return (
       <div className='md-grid--no-spacing'>
         <ActiveCampaignSubNav
-          title={(this.props.campaign.data && this.props.campaign.data.name) ? this.props.campaign.data.name : ''}
+          title={(campaign && campaign.name) ? campaign.name : ''}
           addButtonHandler={() => this.showSubjectForm()}
           campaignId={this.props.campaignId}
         />

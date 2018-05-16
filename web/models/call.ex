@@ -23,7 +23,7 @@ defmodule ActiveMonitoring.Call do
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:sid, :from, :current_step, :language, :campaign_id, :subject_id])
+    |> cast(params, [:sid, :from, :current_step, :language, :campaign_id, :subject_id, :inserted_at])
     |> assoc_constraint(:campaign)
   end
 
@@ -47,16 +47,5 @@ defmodule ActiveMonitoring.Call do
   def assign_subject(call, subject) do
     changeset(call, %{subject_id: subject.id})
     |> Repo.update!
-  end
-
-  defp render_one(call) do
-    %{
-      id: call.id,
-      sid: call.sid,
-      current_step: call.current_step,
-      language: call.language,
-      campaign: call.campaign_id,
-      subject: call.subject.phone_number
-    }
   end
 end

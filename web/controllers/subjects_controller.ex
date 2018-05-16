@@ -2,6 +2,7 @@ defmodule ActiveMonitoring.SubjectsController do
   use ActiveMonitoring.Web, :controller
 
   alias ActiveMonitoring.{
+    AidaBot,
     Campaign,
     ChangesetView,
     Repo,
@@ -84,6 +85,15 @@ defmodule ActiveMonitoring.SubjectsController do
     case Repo.insert(changeset) do
       {:ok, subject} ->
         subject = Repo.preload(subject, :campaign)
+
+        if campaign.mode == "chat" do
+          my_campaign = campaign |> Repo.preload([subjects: :campaign])
+
+          my_campaign
+          |> AidaBot.manifest(Subject.active_cases_per_day(my_campaign.subjects, DateTime.utc_now), my_campaign.subjects)
+          |> AidaBot.update(my_campaign.aida_bot_id)
+        end
+
         conn
         |> put_status(:created)
         |> put_resp_header("location", campaigns_subjects_path(conn, :index, campaign))

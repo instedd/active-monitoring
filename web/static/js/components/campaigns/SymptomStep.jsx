@@ -1,6 +1,6 @@
+// @flow
 import { connect } from 'react-redux'
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component, type Node } from 'react'
 import { addEmptySymptom, editSymptom, removeSymptom } from '../../actions/symptoms'
 import { campaignUpdate } from '../../actions/campaign'
 import SelectField from 'react-md/lib/SelectFields'
@@ -10,38 +10,81 @@ import List from 'react-md/lib/Lists/List'
 import ListItem from 'react-md/lib/Lists/ListItem'
 import EditableTitleLabel from '../EditableTitleLabel'
 import FontIcon from 'react-md/lib/FontIcons'
+import type { Campaign, Mode } from '../../types'
 
-class SymptomStepComponent extends Component {
+type Props = {
+  campaign: Campaign,
+  onRemove: number => void,
+  onAdd: () => void,
+  onEdit: (string, number) => void,
+  onEditForwarding: (string, string) => void,
+  children: Node
+}
+
+class SymptomStepComponent extends Component<Props> {
+  symptomsCopy(mode: Mode): string {
+    let copy = 'upload audio'
+    if (mode === 'chat') {
+      copy = 'enter texts'
+    }
+    return `The symptoms will be used to evaluate positive cases of the disease and send alerts to responders. Later you will be asked to ${copy} explaining how to evaluate these symptoms.`
+  }
+
+  forwardConditionCopy(mode: Mode, option: 'all' | 'any'): {value: string, label: string} {
+    let action = 'Forward call'
+    let condition = 'any symptom is'
+
+    if (mode === 'chat') {
+      action = 'Contact responder'
+    }
+
+    if (option === 'all') {
+      condition = 'all symptoms are'
+    }
+
+    return {value: option, label: `${action} if ${condition} positive`}
+  }
+
+  forwardAddressLabel(mode: Mode): string {
+    if (mode === 'chat') {
+      return 'Contact email address'
+    } else {
+      return 'Forward number'
+    }
+  }
+
   render() {
+    const { campaign } = this.props
+
     return (
       <section id='symptoms' className='full-height'>
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
             <h1>Define the symptoms</h1>
             <p>
-              The symptoms will be used to evaluate positive cases of the disease and send alerts to the persons responsible. Later you will be asked to upload audio explaining how to evaluate this symptoms.
+              {this.symptomsCopy(campaign.mode)}
             </p>
           </div>
         </div>
         <div className='md-grid'>
           <SelectField
             id='forwarding-condition'
-            menuItems={[{value: 'any', label: 'Forward call if any symptom is positive'}, {value: 'all', label: 'Forward call if all symptoms are positive'}]}
+            menuItems={[this.forwardConditionCopy(campaign.mode, 'any'), this.forwardConditionCopy(campaign.mode, 'all')]}
             className='md-cell md-cell--8  md-cell--bottom'
-            value={this.props.forwardingCondition || 'any'}
+            value={campaign.forwardingCondition || 'any'}
             onChange={(val) => this.props.onEditForwarding('forwardingCondition', val)}
           />
           <TextField
-            id='forwarding-number'
-            label='Forward number'
+            id='forwarding-address'
+            label={this.forwardAddressLabel(campaign.mode)}
             className='md-cell md-cell--4'
-            defaultValue={this.props.forwardingNumber || ''}
-            onSubmit={(val) => this.props.onEditForwarding('forwardingNumber', val)}
+            defaultValue={campaign.forwardingAddress || ''}
+            onSubmit={(val) => this.props.onEditForwarding('forwardingAddress', val)}
           />
         </div>
         <div className='md-grid'>
           <List className='md-cell md-cell--12'>
-            {this.props.symptoms.map(([id, name], i) =>
+            {campaign.symptoms.map(([id, name], i) =>
               <ListItem
                 key={id}
                 rightIcon={<FontIcon onClick={() => this.props.onRemove(i)}>remove_circle</FontIcon>}
@@ -65,22 +108,9 @@ class SymptomStepComponent extends Component {
   }
 }
 
-SymptomStepComponent.propTypes = {
-  symptoms: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-  onRemove: PropTypes.func,
-  onAdd: PropTypes.func,
-  onEdit: PropTypes.func,
-  forwardingNumber: PropTypes.string,
-  forwardingCondition: PropTypes.string,
-  onEditForwarding: PropTypes.func,
-  children: PropTypes.element
-}
-
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    symptoms: state.campaign.data.symptoms || [],
-    forwardingNumber: state.campaign.data.forwardingNumber,
-    forwardingCondition: state.campaign.data.forwardingCondition
+    campaign: ownProps.campaign
   }
 }
 

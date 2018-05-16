@@ -2,9 +2,8 @@ defmodule ActiveMonitoring.Runtime.Broker do
   use GenServer
   use Timex
   import Ecto.Query
-  import Ecto
   require Logger
-  alias ActiveMonitoring.{Repo, Campaign, Channel}
+  alias ActiveMonitoring.{Repo, Campaign, Channel, AidaBot, Subject}
 
   @poll_interval :timer.minutes(15)
   @server_ref {:global, __MODULE__}
@@ -63,6 +62,26 @@ defmodule ActiveMonitoring.Runtime.Broker do
         local_3pm = Timex.set(local_now, [hour: 15, minute: 0, second: 0])
         Timex.before?(local_3pm, local_now)
     end
+  end
+
+  defp call_pending_subjects(%{subjects: subjects, mode: "chat"} = campaign, now) do
+    subjects = Subject.active_cases_per_day(subjects, now)
+
+    case campaign
+         |> AidaBot.manifest(subjects)
+         |> AidaBot.update(campaign.aida_bot_id) do
+      %{"id" => _} ->
+        true
+
+      response ->
+        Logger.error(
+          "Unknown response publishing manifest: #{campaign.aida_bot_id}\n#{inspect(response)}\n\n"
+        )
+    end
+
+    # TODO: it may make sense to have a different broker to receive the responses
+    # ie, constantly poll instead of doing it once a day
+    AidaBot.retrieve_responses(campaign)
   end
 
   defp call_pending_subjects(%{subjects: subjects} = campaign, now) do

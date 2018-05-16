@@ -14,22 +14,22 @@ defmodule ActiveMonitoring.Factory do
     %Campaign{
       name: "Campaign",
       forwarding_condition: "all",
-      forwarding_number: "5550000",
-      symptoms: [["id-fever", "Fever"], ["id-rash", "Rash"]],
+      forwarding_address: "5550000",
+      symptoms: [["123e4567-e89b-12d3-a456-426655440111", "Fever"], ["123e4567-e89b-12d3-a456-426655440222", "Rash"]],
       langs: ["en", "es"],
       audios: [],
+      chat_texts: [],
       additional_information: "compulsory",
       monitor_duration: 30,
       timezone: "Europe/London",
-      user: build(:user)
+      user: build(:user),
+      aida_bot_id: "123e4567-e89b-12d3-a456-426655440000",
+      mode: "call"
     }
   end
 
   def with_audios(campaign) do
-    topics =
-      campaign.symptoms
-      |> Enum.map(fn([id, _]) -> "symptom:#{id}" end)
-      |> Enum.concat(["welcome", "identify", "registration", "forward", "additional_information_intro", "educational", "thanks"])
+    topics = Campaign.topics(campaign)
 
     lang_audios =
       for lang <- campaign.langs,
@@ -40,6 +40,20 @@ defmodule ActiveMonitoring.Factory do
       [["language", nil, "id-language"] | lang_audios]
 
     %{campaign | audios: audios}
+  end
+
+  def with_chat_texts(campaign) do
+    topics = Campaign.topics(campaign)
+
+    entries =
+      for lang <- campaign.chat_texts,
+          topic <- topics,
+          do: [topic, lang, "id-#{topic}-#{lang}"]
+
+    values =
+      [["language", nil, "id-language"] | entries]
+
+    campaign |> Map.put(:chat_texts, values)
   end
 
   def with_channel(campaign) do
@@ -68,7 +82,7 @@ defmodule ActiveMonitoring.Factory do
 
   def call_answer_factory do
     %CallAnswer{
-      symptom: "id-fever",
+      symptom: "123e4567-e89b-12d3-a456-426655440111",
       response: true
     }
   end

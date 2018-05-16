@@ -10,8 +10,16 @@ defmodule ActiveMonitoring.CampaignTest do
     [campaign: build(:campaign) |> with_audios]
   end
 
+  test "can't create campaign with invalid mode", context do
+    campaign = context[:campaign]
+
+    changeset = Campaign.changeset(campaign, %{mode: "superdupermode"})
+    [mode: {mode_error, _}] = changeset.errors
+    assert String.length(mode_error) > 0
+  end
+
   test "generate steps from symptoms", context do
-    assert ["language", "welcome", "identify", "registration", "symptom:id-fever", "symptom:id-rash", "forward", "educational", "thanks"] == Campaign.steps(context[:campaign])
+    assert ["language", "welcome", "identify", "registration", "symptom:123e4567-e89b-12d3-a456-426655440111", "symptom:123e4567-e89b-12d3-a456-426655440222", "forward", "educational", "thanks"] == Campaign.steps(context[:campaign])
   end
 
   test "returns audio for language topic", context do
@@ -19,11 +27,11 @@ defmodule ActiveMonitoring.CampaignTest do
   end
 
   test "returns audio for symptom", context do
-    assert "id-symptom:id-rash-en" == Campaign.audio_for(context[:campaign], "symptom:id-rash", "en")
+    assert "id-symptom:123e4567-e89b-12d3-a456-426655440222-en" == Campaign.audio_for(context[:campaign], "symptom:123e4567-e89b-12d3-a456-426655440222", "en")
   end
 
   test "returns nil for audio for missing language", context do
-    assert nil == Campaign.audio_for(context[:campaign], "symptom:id-rash", "it")
+    assert nil == Campaign.audio_for(context[:campaign], "symptom:123e4567-e89b-12d3-a456-426655440222", "it")
   end
 
   test "returns nil for audio for missing topic", context do

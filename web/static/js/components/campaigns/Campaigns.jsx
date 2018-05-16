@@ -37,6 +37,7 @@ class CampaignsList extends Component {
               <TableHeader>
                 <TableRow>
                   <TableColumn>Name</TableColumn>
+                  <TableColumn>Mode</TableColumn>
                   <TableColumn>Role</TableColumn>
                   <TableColumn>Last Activity</TableColumn>
                 </TableRow>
@@ -76,6 +77,7 @@ class CampaignItem extends Component {
     return (
       <TableRow className='pointer' onClick={() => this.props.onClick(campaign.id)}>
         <TableColumn>{this.campaignName()}</TableColumn>
+        <TableColumn>{campaign.mode}</TableColumn>
         <TableColumn>...</TableColumn>
         <TableColumn>{campaign.startedAt ? 'Started' : '...' }</TableColumn>
       </TableRow>

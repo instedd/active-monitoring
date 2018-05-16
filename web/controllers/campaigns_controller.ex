@@ -7,20 +7,22 @@ defmodule ActiveMonitoring.CampaignsController do
     Repo,
     Call,
     Subject,
-    Channel
+    AidaBot
   }
 
   def index(conn, _) do
-    campaigns = conn
-    |> current_user
-    |> assoc(:campaigns)
-    |> Repo.all
+    campaigns =
+      conn
+      |> current_user
+      |> assoc(:campaigns)
+      |> Repo.all()
 
     render(conn, "index.json", campaigns: campaigns)
   end
 
   def show(conn, %{"id" => id}) do
-    campaign = Repo.get!(Campaign, id) |> authorize_campaign(conn)
+    campaign = Campaign.load(conn, id)
+
     if campaign.started_at != nil do
       calls = Call.stats(campaign)
       subjects = Subject.stats(id)
@@ -44,29 +46,48 @@ defmodule ActiveMonitoring.CampaignsController do
     end
   end
 
-  def launch(conn, %{"campaigns_id" => id}) do
-    campaign = Repo.get!(Campaign, id) |> authorize_campaign(conn)
-    changeset = Campaign.changeset(campaign, %{})
-    changeset = Ecto.Changeset.put_change(changeset, :started_at, Ecto.DateTime.utc())
-    if Channel.verify_exclusive(campaign.channel) do
-      # Campaign.set_up_verboice(campaign)
-      calls = Call.stats(campaign)
-      subjects = Subject.stats(id)
+  def launch(conn, %{"campaigns_id" => campaign_id}) do
+    campaign = Campaign.load(conn, campaign_id)
 
-      case Repo.update(changeset) do
-        {:ok, campaign} ->
-          render(conn, "show.json", campaign: campaign, calls: calls, subjects: subjects)
+    case Campaign.launch(campaign) do
+      {:ok, campaign} ->
+        calls = Call.stats(campaign)
+        subjects = Subject.stats(campaign_id)
+        render(conn, "show.json", campaign: campaign, calls: calls, subjects: subjects)
 
-        {:error, changeset} ->
-          put_status(conn, 403) |> render(ChangesetView, "error.json", changeset: changeset)
-      end
-    else
-      put_status(conn, 403) |> render(ChangesetView, "error.json", errors: %{channel: "already in use"})
+      {:error, errors} ->
+        put_status(conn, :unprocessable_entity) |> render(ChangesetView, "error.json", errors)
     end
+  end
+  def manifest(conn, %{"campaigns_id" => campaign_id} = params) do
+    target_day = Map.get(params, "target_day")
+
+    target_date = case Timex.parse target_day, "{YYYY}{0M}{0D}" do
+      {:ok, target_date} -> Timex.shift(target_date, seconds: 1)
+      _ -> Timex.now
+    end
+
+    campaign =
+      Campaign.load(conn, campaign_id)
+      |> Repo.preload(subjects: :campaign)
+
+    subjects = Subject.active_cases_per_day(campaign.subjects, target_date)
+
+    manifest = campaign |> AidaBot.manifest(subjects)
+
+    conn
+    |> put_status(:ok)
+    |> put_resp_content_type("application/json")
+    |> text(
+      manifest
+      |> ProperCase.to_snake_case
+      |> Poison.encode!
+    )
   end
 
   def update(conn, %{"id" => id, "campaign" => campaign_params}) do
-    campaign = Repo.get!(Campaign, id) |> authorize_campaign(conn)
+    campaign = Campaign.load(conn, id)
+
     changeset = Campaign.changeset(campaign, campaign_params)
 
     case Repo.update(changeset) do

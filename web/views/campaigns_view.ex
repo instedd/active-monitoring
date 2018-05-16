@@ -23,16 +23,21 @@ defmodule ActiveMonitoring.CampaignsView do
     %{
       id: campaign.id,
       name: campaign.name,
+      mode: campaign.mode,
       symptoms: campaign.symptoms,
-      forwarding_number: campaign.forwarding_number,
+      forwarding_address: campaign.forwarding_address,
       forwarding_condition: campaign.forwarding_condition,
       audios: campaign.audios,
+      chat_texts: campaign.chat_texts,
       langs: campaign.langs,
       additional_information: campaign.additional_information,
       started_at: campaign.started_at,
       monitor_duration: campaign.monitor_duration,
       timezone: campaign.timezone,
-      channel: campaign.channel
+      channel: campaign.channel,
+      fb_page_id: campaign.fb_page_id,
+      fb_verify_token: campaign.fb_verify_token,
+      fb_access_token: campaign.fb_access_token
     }
   end
 end

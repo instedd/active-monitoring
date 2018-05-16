@@ -55,6 +55,7 @@ defmodule ActiveMonitoring.Router do
       delete "/sessions", SessionController, :api_delete
 
       resources "/campaigns", CampaignsController, only: [:index, :create, :show, :update, :delete] do
+        get "/manifest", CampaignsController, :manifest, as: :manifest
         put "/launch", CampaignsController, :launch, as: :launch
 
         get "/subjects/export", SubjectsController, :export_csv, as: :subjects_export_csv

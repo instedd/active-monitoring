@@ -1,21 +1,37 @@
 // @flow
-import type { Campaign, Audio } from '../types'
+import type { Campaign, LanguageCode } from '../types'
+import values from 'lodash/values'
+import flatten from 'lodash/flatten'
 
-export const audioEntries = (campaign: Campaign): { [lang: string]: string[] } => {
-  const langs = campaign.langs.filter((lang) => lang && lang != '')
+export const neededMessages = (campaign: Campaign): { [lang: string]: string[] } => {
+  const symptoms = (campaign.symptoms || [])
+    .filter(([id, name]) => name && name != '')
+    .map(([id, name]) => `symptom:${id}`)
 
-  const symptoms = (campaign.symptoms || []).filter(([id, name]) => name && name != '').map(([id, name]) => `symptom:${id}`)
-  let topics = ['welcome', 'identify', 'registration'].concat(symptoms).concat(['forward', 'additional_information_intro', 'educational', 'thanks'])
+  let modeMessages = []
+  if (campaign.mode == 'chat') {
+    modeMessages = ['additional_information_intro', 'educational', 'thanks']
+  } else if (campaign.mode == 'call') {
+    modeMessages = ['forward', 'additional_information_intro', 'educational', 'thanks']
+  }
+
+  let topics = ['welcome', 'identify', 'registration']
+    .concat(symptoms)
+    .concat(modeMessages)
+
   if (campaign.additionalInformation == 'zero' || campaign.additionalInformation == undefined) {
     const i = topics.indexOf('additional_information_intro')
     topics.splice(i, 2)
   }
+
   if (campaign.additionalInformation == 'compulsory') {
     const i = topics.indexOf('additional_information_intro')
     topics.splice(i, 1)
   }
 
   const entries = {}
+
+  const langs = campaign.langs.filter((lang) => lang && lang != '')
   langs.forEach((lang) => {
     entries[lang] = topics.slice()
   })
@@ -23,26 +39,48 @@ export const audioEntries = (campaign: Campaign): { [lang: string]: string[] } =
   return entries
 }
 
-export const audiosInUse = (campaign: Campaign): Audio[] => {
-  const entries = audioEntries(campaign)
-  let inUse : Audio[] = []
-  const welcomeAudio = campaign.audios.find((audio) => audio[0] == 'language' && audio[1] == null)
-  if (welcomeAudio) {
-    inUse.push(welcomeAudio)
+export const messagesInUse = (campaign: Campaign): [] => {
+  const entries = neededMessages(campaign)
+
+  let inUse = []
+
+  let messages = []
+  if (campaign.mode == 'chat') {
+    messages = campaign.chatTexts
+  } else if (campaign.mode == 'call') {
+    messages = campaign.audios
   }
+
+  const welcomeMessage = messages.find((msg) => msg[0] == 'language' && msg[1] == '')
+  if (welcomeMessage && welcomeMessage[2] != '') {
+    inUse.push(welcomeMessage)
+  }
+
   for (const language in entries) {
     const steps = entries[language]
     steps.forEach((step) => {
-      const audio = campaign.audios.find((audio) => audio[0] == step && audio[1] == language)
-      if (audio) {
-        inUse.push(audio)
+      const msg = messages.find((msg) => msg[0] == step && msg[1] == language)
+      if (msg && msg[2] != '') {
+        inUse.push(msg)
       }
     })
   }
+
   return inUse
 }
 
-export const getAudioFileFor = (audios: Audio[], topic: string, language: string) => {
-  const audio = audios.find(([_topic, _language, _uuid]) => (topic == _topic && language == _language))
-  return audio && audio[2] // uuid
+export const getAudioFileFor = (messages: string[][], step: string, language: ?LanguageCode): string | void => {
+  const audio = messages.find(([_topic, _language, _uuid]) => (step == _topic && language == _language))
+  return audio && audio[2]
+}
+
+export const getChatTextFor = (messages: string[][], step: string, language: ?LanguageCode): string | void => {
+  const chatMessage = messages.find(([_topic, _language, _text]) => (step == _topic && language == _language))
+  return chatMessage && chatMessage[2]
+}
+
+export const completedMessages = (campaign: Campaign): boolean => {
+  const uploadedMessages = messagesInUse(campaign).length
+  const necessaryMessages = flatten(values(neededMessages(campaign))).length + 1
+  return (uploadedMessages > 1) && (uploadedMessages === necessaryMessages)
 }

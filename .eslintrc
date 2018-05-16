@@ -8,7 +8,8 @@
   },
   "rules": {
     "space-before-function-paren": [2, "never"],
-    "eqeqeq": "off"
+    "eqeqeq": "off",
+    "react/prop-types": [0]
   },
   "env": {
     "browser": true

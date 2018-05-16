@@ -88,19 +88,6 @@ defmodule ActiveMonitoring.Runtime.VerboiceChannel do
   end
 
   defimpl ActiveMonitoring.Runtime.Channel, for: ActiveMonitoring.Runtime.VerboiceChannel do
-    def has_delivery_confirmation?(_), do: false
-    def ask(_, _, _, _), do: throw(:not_implemented)
-    def prepare(_, _), do: :ok
-
-    def setup(channel, respondent, token) do
-      channel.client
-      |> Verboice.Client.call(address: respondent.sanitized_phone_number,
-                              channel: channel.channel_name,
-                              callback_url: VerboiceChannel.callback_url(respondent),
-                              status_callback_url: VerboiceChannel.status_callback_url(respondent, token))
-      |> ActiveMonitoring.Runtime.VerboiceChannel.process_call_response
-    end
-
     def has_queued_message?(channel, %{"verboice_call_id" => call_id}) do
       response = channel.client
       |> Verboice.Client.call_state(call_id)

@@ -55,6 +55,28 @@ defmodule ActiveMonitoring.CampaignsControllerTest do
     end
   end
 
+  describe "manifest.json" do
+    setup [:with_user_campaign]
+
+    test "a user campaign manifest", %{conn: conn, campaign: campaign} do
+      manifest = conn |> get(campaigns_manifest_path(conn, :manifest, campaign)) |> json_response(200)
+      assert manifest["version"] == "1"
+      assert manifest["languages"] == campaign.langs
+    end
+
+    test "unauthorized when trying to view another user's campaign manifest", %{conn: conn, other_user_campaign: other_user_campaign} do
+      assert_error_sent 403, fn ->
+        conn |> get(campaigns_manifest_path(conn, :manifest, other_user_campaign))
+      end
+    end
+
+    test "not found when trying to view the manifest of a campaign that doesn't exist", %{conn: conn} do
+      assert_error_sent 404, fn ->
+        conn |> get(campaigns_manifest_path(conn, :manifest, -1))
+      end
+    end
+  end
+
   describe "update" do
     setup [:with_user_campaign]
 
@@ -85,7 +107,7 @@ defmodule ActiveMonitoring.CampaignsControllerTest do
     test "launch", %{conn: conn, campaign: campaign, user: user} do
       build(:campaign, user: user, channel: campaign.channel) |> Repo.insert!
       conn = conn |> put(campaigns_launch_path(conn, :launch, campaign))
-      assert json_response(conn, 403) == %{"errors" => %{"channel" => "already in use"}}
+      assert json_response(conn, 422) == %{"errors" => %{"channel" => "already in use"}}
     end
   end
 

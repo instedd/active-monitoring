@@ -63,6 +63,14 @@ defmodule ActiveMonitoring.Subject do
     end
   end
 
+  def active_cases_per_day(subjects, now) do
+    subjects
+      |> Enum.filter(fn s -> Subject.active_case(s, now) end)
+      |> Enum.group_by(fn subject ->
+        Timex.diff(now, Subject.enroll_date(subject), :days) + 1
+      end)
+  end
+
   def active_case(%Subject{campaign: campaign} = subject, now) do
     subject_enroll_date = Subject.enroll_date(subject)
 

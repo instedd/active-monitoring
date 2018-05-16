@@ -25,11 +25,21 @@ var weekOfYear = function(date) {
 
 export default class CampaignDashboard extends Component {
   render() {
+    const { campaign, subjectStats, callStats } = this.props
+
     let weeksInChart = []
     let currentWeek = weekOfYear()
     for (var i = 12; i > 0; i--) {
       weeksInChart.push(currentWeek - i)
     }
+
+    let actionTitle = ''
+    if (campaign.mode === 'call') {
+      actionTitle = 'Calls'
+    } else if (campaign.mode === 'chat') {
+      actionTitle = 'Chats'
+    }
+
     return (
       <div>
         <div className='md-grid'>
@@ -43,19 +53,19 @@ export default class CampaignDashboard extends Component {
               <List className='md-cell md-cell--8'>
                 <ListItem
                   rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>}
-                  primaryText={this.props.subject_stats.cases}
+                  primaryText={subjectStats.cases}
                   secondaryText='Cases detected'
                   className='red-text' />
                 <ListItem
                   rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>}
-                  primaryText={this.props.subject_stats.totalSubjects}
-                  secondaryText='Enrolled callers' />
+                  primaryText={subjectStats.totalSubjects}
+                  secondaryText='Subjects' />
               </List>
             </div>
           </div>
           <div className='md-cell md-cell--9 dashboard-chart'>
             <Paper zDepth={2} className='white rounded-corners' >
-              <h2>Weekly enrolled subjects</h2>
+              <h2>Weekly enrolled Subjects</h2>
               <div id='chart'>
                 <FlexibleXYPlot
                   xType='ordinal'
@@ -68,7 +78,7 @@ export default class CampaignDashboard extends Component {
                   <YAxis style={{text: {stroke: 'none', fill: '#A4A4A4', fontSize: 12, top: 4}}}
                     top={20} />
                   <LineSeries
-                    data={this.props.subject_stats.timeline}
+                    data={subjectStats.timeline}
                     color='#4FAF54' />
                 </FlexibleXYPlot>
               </div>
@@ -78,7 +88,7 @@ export default class CampaignDashboard extends Component {
         <Divider className='dashboard-divider' />
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
-            <h3>Calls performance</h3>
+            <h3>{actionTitle} performance</h3>
           </div>
         </div>
         <div className='md-grid'>
@@ -87,22 +97,22 @@ export default class CampaignDashboard extends Component {
               <List className='md-cell md-cell--8'>
                 <ListItem
                   rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>}
-                  primaryText={this.props.call_stats.today}
-                  secondaryText='Calls today' />
+                  primaryText={callStats.today}
+                  secondaryText={`${actionTitle} today`} />
                 <ListItem
                   rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>}
-                  primaryText={this.props.call_stats.lastWeek}
-                  secondaryText='Calls last 7 days' />
+                  primaryText={callStats.lastWeek}
+                  secondaryText={`${actionTitle} last 7 days`} />
                 <ListItem
                   rightIcon={<FontIcon>keyboard_arrow_right</FontIcon>}
-                  primaryText={this.props.call_stats.successfulOverall}
-                  secondaryText='Successful calls' />
+                  primaryText={callStats.successfulOverall}
+                  secondaryText={`Successful ${actionTitle}`} />
               </List>
             </div>
           </div>
           <div className='md-cell md-cell--9 dashboard-chart'>
             <Paper zDepth={2} className='white rounded-corners'>
-              <h2>Weekly calls by status</h2>
+              <h2>Weekly {actionTitle} by status</h2>
               <DiscreteColorLegend
                 orientation='horizontal'
                 items={[{title: 'Successful', color: '#4FAF54'}, {title: 'Partial', color: '#FEC12E'}]} />
@@ -119,11 +129,11 @@ export default class CampaignDashboard extends Component {
                     top={20} />
                   <VerticalBarSeries
                     className='success'
-                    data={this.props.call_stats.timeline[0]}
+                    data={callStats.timeline[0]}
                     color='#4FAF54' />
                   <VerticalBarSeries
                     className='partial'
-                    data={this.props.call_stats.timeline[0]}
+                    data={callStats.timeline[0]}
                     color='#FEC12E' />
                 </FlexibleXYPlot>
               </div>
@@ -134,8 +144,8 @@ export default class CampaignDashboard extends Component {
     )
   }
 }
-
 CampaignDashboard.propTypes = {
-  call_stats: PropTypes.object,
-  subject_stats: PropTypes.object
+  callStats: PropTypes.object,
+  subjectStats: PropTypes.object,
+  campaign: PropTypes.object
 }

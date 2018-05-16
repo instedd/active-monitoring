@@ -3,7 +3,7 @@ defmodule ActiveMonitoring.Mixfile do
 
   def project do
     [app: :active_monitoring,
-     version: "0.0.1",
+     version: "0.0.2",
      elixir: "~> 1.2",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
@@ -32,7 +32,7 @@ defmodule ActiveMonitoring.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.2.1"},
+      {:phoenix, "~> 1.3.0"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
@@ -48,6 +48,7 @@ defmodule ActiveMonitoring.Mixfile do
       {:proper_case, "~> 1.0.2"},
       {:xml_builder, "~> 0.1.1"},
       {:ex_machina, "~> 2.0", only: :test},
+      {:mock, "~> 0.3.0", only: :test},
       {:oauth2, "~> 0.9"},
       {:csv, "~> 1.4.4"}
     ]

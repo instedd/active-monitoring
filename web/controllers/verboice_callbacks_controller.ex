@@ -1,7 +1,7 @@
 defmodule ActiveMonitoring.VerboiceCallbacksController do
   use ActiveMonitoring.Web, :controller
 
-  alias ActiveMonitoring.{Channel, Repo, Campaign}
+  alias ActiveMonitoring.{Repo, Campaign}
   alias ActiveMonitoring.Runtime.{Flow, TwiML}
   alias ActiveMonitoring.Router.Helpers
 

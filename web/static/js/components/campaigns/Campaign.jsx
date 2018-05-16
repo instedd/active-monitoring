@@ -28,8 +28,8 @@ class Campaign extends Component {
       if (this.props.campaign.data.startedAt != undefined) {
         subNav = <ActiveCampaignSubNav title={this.props.campaign.data.name} campaignId={this.props.campaign.campaignId} />
         content = <CampaignDashboard campaign={this.props.campaign.data}
-          call_stats={this.props.campaign.data.calls}
-          subject_stats={this.props.campaign.data.subjects} />
+          callStats={this.props.campaign.data.calls}
+          subjectStats={this.props.campaign.data.subjects} />
       } else {
         subNav = <SubNav><CampaignTitle campaign={this.props.campaign.data} /></SubNav>
         content = <CampaignCreationForm campaign={this.props.campaign.data} />

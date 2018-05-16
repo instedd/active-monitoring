@@ -2,7 +2,6 @@ defmodule ActiveMonitoring.SubjectTest do
   use ActiveMonitoring.ModelCase
 
   alias ActiveMonitoring.{Subject, Call}
-  alias Timex.Parse.DateTime.{Parser}
 
   import ActiveMonitoring.Factory
 

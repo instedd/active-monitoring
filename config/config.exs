@@ -13,6 +13,10 @@ config :active_monitoring,
 config :active_monitoring, :sox,
   bin: System.get_env("SOX_BINARY") || "sox"
 
+# Configures the AIDA backend url
+config :active_monitoring, :aida_backend,
+  url: System.get_env("AIDA_BACKEND_URL") || ""
+
 # Configures the endpoint
 config :active_monitoring, ActiveMonitoring.Endpoint,
   url: [host: "app.activemonitoring.dev"],
@@ -44,15 +48,6 @@ config :coherence, ActiveMonitoring.Coherence.Mailer,
 config :phoenix, :format_encoders,
   json: ProperCase.JSONEncoder.CamelCase
 
-# Import environment specific config. This must remain at the bottom
-# of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
-
-# Import local file
-if File.exists?("#{__DIR__}/local.exs") && Mix.env != :test do
-  import_config "local.exs"
-end
-
 config :active_monitoring, :channel,
   providers: %{
     "nuntium" => ActiveMonitoring.Runtime.NuntiumChannel,
@@ -82,3 +77,12 @@ version = case File.read("VERSION") do
 end
 
 config :active_monitoring, :version, version
+
+# Import environment specific config. This must remain at the bottom
+# of this file so it overrides the configuration defined above.
+import_config "#{Mix.env}.exs"
+
+# Import local file
+if File.exists?("#{__DIR__}/local.exs") && Mix.env != :test do
+  import_config "local.exs"
+end
