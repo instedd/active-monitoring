@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <title><%= @email.subject %></title>
+  </head>
+  <body>
+    <div>
+      <h2>
+        Hello <%= @forwarding_address %>,
+      </h2>
+      <p>
+        Go to Messenger and look for <%= @contact_address %> (registration identifier: <%= @registration_identifier %>) that reported positive symptoms.
+        Thanks
+      </p>
+    </div>
+  </body>
+</html>
