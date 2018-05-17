@@ -98,7 +98,8 @@ defmodule ActiveMonitoring.Subject do
         _ ->
           Repo.one(from c in Call,
             join: ca in CallAnswer, on: ca.call_id == c.id,
-            where: ca.response == ^true and c.campaign_id == ^campaign_id, select: count("id"))
+            join: s in Subject, on: s.id == c.subject_id,
+            where: ca.response == ^true and c.campaign_id == ^campaign_id, select: count(s.id, :distinct))
       end
     total_subjects = Repo.one(from s in Subject, select: count("id"), where: s.campaign_id == ^campaign_id)
     timeline = Repo.all((from s in Subject, where: s.campaign_id == ^campaign_id and s.inserted_at >= ^subtract(now(), Timex.Duration.from_days(90))) |> Call.by_week(:inserted_at))
