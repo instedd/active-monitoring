@@ -362,6 +362,14 @@ defmodule ActiveMonitoring.AidaBot do
     |> Enum.each(fn {subject, subject_data} ->
       language = subject_data["language"]
 
+      full_name = subject_data["full_name"]
+
+      subject = if subject.contact_address != full_name do
+        Subject.changeset(subject, %{contact_address: full_name}) |> Repo.update!
+      else
+        subject
+      end
+
       subject_data["answers"]
       |> Enum.each(fn {day, answer} ->
         %{"current_step" => current_step, "symptoms" => symptoms} = answer
@@ -440,6 +448,8 @@ defmodule ActiveMonitoring.AidaBot do
 
   defp calls_in_session(response, campaign) do
     language = response["language"]
+    first_name = response["first_name"]
+    last_name = response["last_name"]
     regex = ~r"^survey\/(\d+)\/symptom:([\w-]+)"
 
     all_answers =
@@ -462,8 +472,13 @@ defmodule ActiveMonitoring.AidaBot do
       |> Enum.group_by(fn %{day: day} -> day end, fn %{payload: payload} -> payload end)
       |> Map.new(fn {day, payload} -> {day, call_data(response, day, campaign, payload)} end)
 
-    %{"language" => language, "answers" => all_answers}
+    with_full_name_if_present(%{"language" => language, "answers" => all_answers}, first_name, last_name)
   end
+
+  defp with_full_name_if_present(session_info, nil, nil), do: session_info
+  defp with_full_name_if_present(session_info, nil, last_name), do: Map.put(session_info, "full_name", last_name)
+  defp with_full_name_if_present(session_info, first_name, nil), do: Map.put(session_info, "full_name", first_name)
+  defp with_full_name_if_present(session_info, first_name, last_name), do: Map.put(session_info, "full_name", "#{first_name} #{last_name}")
 
   def date_for_monitoring_index(subject, day) do
     Subject.enroll_date(subject)

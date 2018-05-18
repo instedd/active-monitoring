@@ -4,7 +4,7 @@ defmodule ActiveMonitoring.AidaBotTest do
   import ActiveMonitoring.Factory
   import Mock
 
-  alias ActiveMonitoring.{AidaBot, Campaign, Call}
+  alias ActiveMonitoring.{AidaBot, Campaign, Call, Subject}
 
   setup do
     [campaign: insert(:campaign) |> Repo.preload(:subjects)]
@@ -1213,6 +1213,40 @@ defmodule ActiveMonitoring.AidaBotTest do
         |> Repo.insert(on_conflict: :nothing)
 
       assert is_nil(ignored.id)
+    end
+  end
+
+  describe "subject names" do
+    setup [:with_campaign_subjects, :with_subject_calls]
+
+    test "should update a subject's contact address with their full name if available", %{
+      campaign: campaign,
+      subject: subject
+    } do
+      data = [
+        %{
+          "id" => "aaaaaaaa-336c-4ad2-ba5c-b49676da20f6",
+          "data" => %{
+            "language" => "en",
+            "survey/registration/registration_id" => subject.registration_identifier,
+            "first_name" => "Guy",
+            "last_name" => "Incognito"
+          }
+        }
+      ]
+      new_name = "Guy Incognito"
+
+      assert (Subject |> Repo.get!(subject.id)).contact_address != new_name
+
+      with_mock HTTPoison,
+        get: fn _url ->
+          {:ok, %HTTPoison.Response{body: Poison.encode!(%{"data" => data})}}
+        end do
+
+          AidaBot.retrieve_responses(campaign)
+      end
+
+      assert (Subject |> Repo.get!(subject.id)).contact_address == new_name
     end
   end
 
