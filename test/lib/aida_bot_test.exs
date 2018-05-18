@@ -6,13 +6,14 @@ defmodule ActiveMonitoring.AidaBotTest do
 
   alias ActiveMonitoring.{AidaBot, Campaign, Call, Subject}
 
-  setup do
+  defp with_campaign(_) do
     [campaign: insert(:campaign) |> Repo.preload(:subjects)]
   end
 
-  defp with_campaign_subjects(%{campaign: campaign}) do
+  defp with_campaign_subjects(_) do
+    campaign = insert(:campaign)
     subject = insert(:subject, campaign: campaign)
-    [subject: subject, campaign: campaign |> Repo.preload(:subjects)]
+    [subject: subject, campaign: (campaign |> Repo.preload(:subjects))]
   end
 
   defp with_subject_calls(%{campaign: campaign, subject: subject}) do
@@ -28,6 +29,8 @@ defmodule ActiveMonitoring.AidaBotTest do
   end
 
   describe "manifest" do
+    setup [:with_campaign]
+
     test "it should be a version 1 manifest", context do
       manifest =
         context[:campaign]
@@ -909,6 +912,7 @@ defmodule ActiveMonitoring.AidaBotTest do
   end
 
   describe "poll" do
+    setup [:with_campaign]
     test "should poll data from AIDA", %{campaign: campaign} do
       with_mock HTTPoison,
         get: fn _url ->
