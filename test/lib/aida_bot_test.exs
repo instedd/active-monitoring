@@ -138,7 +138,11 @@ defmodule ActiveMonitoring.AidaBotTest do
         })
         |> AidaBot.manifest()
 
-      assert manifest[:skills] |> Enum.count() == 0
+      assert manifest[:skills] |> Enum.count() == 1
+
+      {:ok, skill} = manifest[:skills] |> Enum.fetch(0)
+
+      assert skill[:type] == "keyword_responder"
     end
 
     test "it should have a survey with a text question to ask for the registration identifier" do
@@ -167,12 +171,14 @@ defmodule ActiveMonitoring.AidaBotTest do
         |> Campaign.with_chat_text(%{
           topic: "registration",
           language: "en",
-          value: "Send \"registration\" to register for the campaign or call 1234567890 to get your registration id"
+          value:
+            "Send \"registration\" to register for the campaign or call 1234567890 to get your registration id"
         })
         |> Campaign.with_chat_text(%{
           topic: "registration",
           language: "es",
-          value: "Envíe \"registration\" para registrarse a la campaña o llame al 1234567890 para obtener su identificador de registro"
+          value:
+            "Envíe \"registration\" para registrarse a la campaña o llame al 1234567890 para obtener su identificador de registro"
         })
 
       subject1 = insert(:subject, campaign: campaign)
@@ -202,8 +208,10 @@ defmodule ActiveMonitoring.AidaBotTest do
                      "es" => "Por favor dígame su número de registro"
                    },
                    constraint_message: %{
-                     "en" => "Send \"registration\" to register for the campaign or call 1234567890 to get your registration id",
-                     "es" => "Envíe \"registration\" para registrarse a la campaña o llame al 1234567890 para obtener su identificador de registro"
+                     "en" =>
+                       "Send \"registration\" to register for the campaign or call 1234567890 to get your registration id",
+                     "es" =>
+                       "Envíe \"registration\" para registrarse a la campaña o llame al 1234567890 para obtener su identificador de registro"
                    }
                  },
                  %{
@@ -242,6 +250,16 @@ defmodule ActiveMonitoring.AidaBotTest do
     test "it shouldn't have a registration survey if there are no subjects" do
       campaign =
         insert(:campaign, %{langs: ["en", "es"]})
+        |> Campaign.with_welcome(%{
+          mode: "chat",
+          language: "en",
+          value: "Please send 'registration' to register"
+        })
+        |> Campaign.with_welcome(%{
+          mode: "chat",
+          language: "es",
+          value: "Por favor envíe 'registration' para registrarse"
+        })
         |> Campaign.with_chat_text(%{
           topic: "identify",
           language: "en",
@@ -262,16 +280,46 @@ defmodule ActiveMonitoring.AidaBotTest do
           language: "es",
           value: "gracias!"
         })
+        |> Campaign.with_chat_text(%{
+          topic: "registration",
+          language: "en",
+          value: "Contact 1234567890"
+        })
+        |> Campaign.with_chat_text(%{
+          topic: "registration",
+          language: "es",
+          value: "Contacte al 1234567890"
+        })
 
       manifest =
         campaign
         |> AidaBot.manifest()
 
-      assert manifest[:skills] |> Enum.count() == 1
+      assert manifest[:skills] |> Enum.count() == 2
 
-      {:ok, skill} = manifest[:skills] |> Enum.fetch(0)
+      {:ok, skill} = manifest[:skills] |> Enum.fetch(1)
 
-      assert skill[:type] == "language_detector"
+      assert skill == %{
+               type: "keyword_responder",
+               id: "registration",
+               name: "registration",
+               explanation: %{
+                 "en" => "Please send 'registration' to register",
+                 "es" => "Por favor envíe 'registration' para registrarse"
+               },
+               clarification: %{
+                 "en" => "Contact 1234567890",
+                 "es" => "Contacte al 1234567890"
+               },
+               keywords: %{
+                 "en" => ["registration"],
+                 "es" => ["registration"]
+               },
+               response: %{
+                 "en" => "Contact 1234567890",
+                 "es" => "Contacte al 1234567890"
+               }
+             }
     end
 
     test "it shouldn't have a survey without active subjects" do
@@ -302,11 +350,13 @@ defmodule ActiveMonitoring.AidaBotTest do
         campaign
         |> AidaBot.manifest()
 
-      assert manifest[:skills] |> Enum.count() == 1
+      assert manifest[:skills] |> Enum.count() == 2
 
       {:ok, skill} = manifest[:skills] |> Enum.fetch(0)
-
       assert skill[:type] == "language_detector"
+
+      {:ok, skill} = manifest[:skills] |> Enum.fetch(1)
+      assert skill[:type] == "keyword_responder"
     end
 
     test "surveys should have a question for every symptom" do
@@ -469,7 +519,10 @@ defmodule ActiveMonitoring.AidaBotTest do
 
       manifest =
         campaign
-        |> AidaBot.manifest(%{1 => [subject1, subject2], 3 => [subject3]}, [subject1, subject2, subject3])
+        |> AidaBot.manifest(
+          %{1 => [subject1, subject2], 3 => [subject3]},
+          [subject1, subject2, subject3]
+        )
 
       assert manifest[:skills] |> Enum.count() == 4
 
