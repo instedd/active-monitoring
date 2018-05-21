@@ -61,6 +61,14 @@ class BotChannelSelectionComponent extends Component<Props> {
             onBlur={(e) => this.props.onEditFbAccessToken(e.target.value)}
           />
         </div>
+        <div className='md-grid'>
+          <div className='md-cell md-cell--12'>
+            <p>
+              Don't forget to set the Callback URL on your Facebook Page
+            </p>
+            <TextField label='Facebook Callback URL' id='facebook-callback-url' value={`${location.protocol}//${location.host}/callback/facebook`} readOnly />
+          </div>
+        </div>
       </section>
     )
   }
