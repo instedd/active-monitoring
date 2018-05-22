@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Paper, List, ListItem, FontIcon, Divider } from 'react-md'
+import TextField from 'react-md/lib/TextFields'
+import Button from 'react-md/lib/Buttons/Button'
+import Card from 'react-md/lib/Cards/Card'
 import 'react-vis/dist/styles/legends.scss'
 import {
   XYPlot,
@@ -24,6 +27,14 @@ var weekOfYear = function(date) {
 }
 
 export default class CampaignDashboard extends Component {
+  openFbPageInfo() {
+    window.open('https://www.facebook.com/business/products/pages')
+  }
+
+  openFbBotInfo() {
+    window.open('https://developers.facebook.com/docs/messenger-platform/getting-started/app-setup')
+  }
+
   render() {
     const { campaign, subjectStats, callStats } = this.props
 
@@ -34,14 +45,58 @@ export default class CampaignDashboard extends Component {
     }
 
     let actionTitle = ''
+    let facebookSetupInfoComponent = null
     if (campaign.mode === 'call') {
       actionTitle = 'Calls'
     } else if (campaign.mode === 'chat') {
       actionTitle = 'Chats'
+      if (subjectStats.totalSubjects == 0) {
+        facebookSetupInfoComponent = (<Card>
+          <div className='md-grid'>
+            <div className='md-cell md-cell--6'>
+              <h3>Setup a Facebook channel</h3>
+              <p>
+                Before the campaign can start you need to create Facebook page and then subscribe a bot.
+              </p>
+              <p>
+                Note: This message will disappear when you create a Subject.
+              </p>
+
+              <Button flat primary label='Read about How to create a Facebook Page' onClick={this.openFbPageInfo}>info</Button>
+              <Button flat primary label='Read about How to subscribe a Facebook Bot' onClick={this.openFbBotInfo}>info</Button>
+              <TextField
+                label='Facebook Callback URL'
+                id='facebook-callback-url'
+                value={`${location.protocol}//${location.host}/callback/facebook`}
+                readOnly
+              />
+              <TextField
+                label='Facebook Page Id'
+                id='fb-page-id'
+                value={campaign.fbPageId}
+                readOnly
+              />
+              <TextField
+                label='Verify Token'
+                id='fb-verify-token'
+                value={campaign.fbVerifyToken}
+                readOnly
+              />
+              <TextField
+                label='Access Token'
+                id='fb-access-token'
+                value={campaign.fbAccessToken}
+                readOnly
+              />
+            </div>
+          </div>
+        </Card>)
+      }
     }
 
     return (
       <div>
+        {facebookSetupInfoComponent}
         <div className='md-grid'>
           <div className='md-cell md-cell--12'>
             <h3>Campaign performance</h3>

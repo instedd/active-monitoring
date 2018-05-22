@@ -42,6 +42,11 @@ class BotChannelSelectionComponent extends Component<Props> {
           </div>
         </div>
         <div className='md-grid'>
+          <TextField label='Facebook Callback URL'
+            id='facebook-callback-url'
+            value={`${location.protocol}//${location.host}/callback/facebook`}
+            readOnly
+          />
           <TextField
             label='Facebook Page Id'
             id='fb-page-id'
@@ -60,14 +65,6 @@ class BotChannelSelectionComponent extends Component<Props> {
             defaultValue={campaign.fbAccessToken || ''}
             onBlur={(e) => this.props.onEditFbAccessToken(e.target.value)}
           />
-        </div>
-        <div className='md-grid'>
-          <div className='md-cell md-cell--12'>
-            <p>
-              Don't forget to set the Callback URL on your Facebook Page
-            </p>
-            <TextField label='Facebook Callback URL' id='facebook-callback-url' value={`${location.protocol}//${location.host}/callback/facebook`} readOnly />
-          </div>
         </div>
       </section>
     )
