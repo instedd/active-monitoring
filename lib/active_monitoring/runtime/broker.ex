@@ -3,9 +3,10 @@ defmodule ActiveMonitoring.Runtime.Broker do
   use Timex
   import Ecto.Query
   require Logger
-  alias ActiveMonitoring.{Repo, Campaign, Channel, AidaBot, Subject}
+  alias ActiveMonitoring.{Repo, Campaign, Channel, AidaBot, Subject, Call}
 
   @poll_interval :timer.minutes(15)
+  @notify_interval :timer.minutes(5)
   @server_ref {:global, __MODULE__}
 
   def server_ref, do: @server_ref
@@ -27,6 +28,7 @@ defmodule ActiveMonitoring.Runtime.Broker do
 
   def init(_args) do
     :timer.send_after(1000, :poll)
+    :timer.send_after(3000, :notify)
     {:ok, nil}
   end
 
@@ -42,12 +44,26 @@ defmodule ActiveMonitoring.Runtime.Broker do
     end
   end
 
-  def handle_info(:poll, state) do
-    handle_info(:poll, state, Timex.now)
+  def handle_info(:notify, state, _now) do
+    calls = Repo.all(from c in Call, where: c.needs_to_be_forwarded and not(c.forwarded), limit: ^50) |> Repo.preload(:campaign) |> Repo.preload(:subject)
+    Enum.each(calls, fn(call) ->
+      try do
+        ActiveMonitoring.RespondentEmail.positive_symptoms(call.campaign, call.subject) |> ActiveMonitoring.Mailer.deliver!
+        call |> Call.changeset(%{forwarded: true}) |> Repo.update!
+      rescue
+        e in RuntimeError -> Logger.error("Error forwarding call: #{inspect(e)}\n#{inspect(call)}\n\n")
+      end
+    end)
+    :timer.send_after(@notify_interval, :notify)
+    {:noreply, state}
   end
 
-  def handle_info(_, state) do
+  def handle_info(_, state, _) do
     {:noreply, state}
+  end
+
+  def handle_info(message, state) do
+    handle_info(message, state, Timex.now)
   end
 
   defp active_campaigns_to_remind(now) do
