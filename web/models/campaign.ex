@@ -147,7 +147,7 @@ defmodule ActiveMonitoring.Campaign do
   def set_up_verboice(campaign) do
     base_url = "https://verboice-stg.instedd.org"
     Verboice.Client.new(base_url,ActiveMonitoring.OAuthTokenServer.get_token("verboice", base_url, campaign.user_id))
-    Verboice.Client.create_project("Active Monitoring set up", %{
+    Verboice.Client.create_project("Health Check set up", %{
       status_callback_url: Helpers.verboice_callbacks_url(ActiveMonitoring.Endpoint, :status_callback, campaign.id),
       user: "",
       password: "",

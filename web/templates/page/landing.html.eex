@@ -15,7 +15,7 @@
             <i class="md-icon material-icons md-cell--desktop-hidden side-menu" onclick="openNav()">menu</i>
             <div class="brand-logo">
               <img src="/images/icon.svg" width="60px">
-              <span>Active Monitoring</span>
+              <span>Health Check</span>
               </div>
           </div>
           <div class="md-cell--right md-text-right md-cell--phone-hidden md-cell--tablet-hidden">
@@ -39,9 +39,9 @@
               <h1 class="md-display-2 md-font-bold text-white">Track and Check</h1>
               <div class="md-headline text-white">Verify health status of traveling staff and beneficiaries</div>
               <p class="top-margin">
-                What is Active Monitoring?
+                What is Health Check?
                 <br>
-                Active Monitoring allows travelers to report on their wellbeing through automated calls with an Interactive Voice Response (IVR) system.
+                Health Check allows travelers to report on their wellbeing through automated calls with an Interactive Voice Response (IVR) system.
               </p>
             </div>
             <div class="md-cell md-cell--12-tablet md-cell--8-desktop md-cell--bottom md-text-right">
@@ -110,7 +110,7 @@
             among immigrants, refugees, travelers, expatriates, and other globally
             mobile populations, and to prevent the introduction, transmission, and
             spread of communicable diseases through regulation, science, research,
-            preparedness, and response. 
+            preparedness, and response.
             <br/><span></span>
             GDMQ also has the regulatory mission to
             prevent the introduction, transmission, and interstate spread of
