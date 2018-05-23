@@ -43,7 +43,7 @@ config :active_monitoring, ActiveMonitoring.Mailer,
   adapter: Swoosh.Adapters.Local
 
 config :coherence,
-  email_from_name: "Active Monitoring Dev",
+  email_from_name: "Health Check Dev",
   email_from_email: "myname@domain.com"
 
 config :coherence, ActiveMonitoring.Coherence.Mailer,
