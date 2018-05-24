@@ -4,15 +4,16 @@ defmodule ActiveMonitoring.AidaBotTest do
   import ActiveMonitoring.Factory
   import Mock
 
-  alias ActiveMonitoring.{AidaBot, Campaign, Call}
+  alias ActiveMonitoring.{AidaBot, Campaign, Call, Subject}
 
-  setup do
+  defp with_campaign(_) do
     [campaign: insert(:campaign) |> Repo.preload(:subjects)]
   end
 
-  defp with_campaign_subjects(%{campaign: campaign}) do
+  defp with_campaign_subjects(_) do
+    campaign = insert(:campaign)
     subject = insert(:subject, campaign: campaign)
-    [subject: subject, campaign: campaign |> Repo.preload(:subjects)]
+    [subject: subject, campaign: (campaign |> Repo.preload(:subjects))]
   end
 
   defp with_subject_calls(%{campaign: campaign, subject: subject}) do
@@ -27,7 +28,16 @@ defmodule ActiveMonitoring.AidaBotTest do
     [call: call]
   end
 
+  defp retrieve_mocked_campaign_data(%{aida_bot_id: bot_id} = campaign, data) do
+    with_mock HTTPoison, get: fn _url -> {:ok, %HTTPoison.Response{body: Poison.encode!(%{"data" => data})}} end do
+      AidaBot.retrieve_responses(campaign)
+      assert called(HTTPoison.get("http://aida-backend/api/bots/#{bot_id}/session_data?include_internal=true"))
+    end
+  end
+
   describe "manifest" do
+    setup [:with_campaign]
+
     test "it should be a version 1 manifest", context do
       manifest =
         context[:campaign]
@@ -909,19 +919,9 @@ defmodule ActiveMonitoring.AidaBotTest do
   end
 
   describe "poll" do
+    setup [:with_campaign]
     test "should poll data from AIDA", %{campaign: campaign} do
-      with_mock HTTPoison,
-        get: fn _url ->
-          {:ok, %HTTPoison.Response{body: Poison.encode!(%{"data" => []})}}
-        end do
-        AidaBot.retrieve_responses(campaign)
-
-        assert called(
-                 HTTPoison.get(
-                   "http://aida-backend/api/bots/123e4567-e89b-12d3-a456-426655440000/session_data?include_internal=true"
-                 )
-               )
-      end
+      retrieve_mocked_campaign_data(campaign, [])
     end
 
     test "should find no new sessions on empty answer", %{campaign: campaign} do
@@ -1062,7 +1062,7 @@ defmodule ActiveMonitoring.AidaBotTest do
              }
     end
 
-    test "should not create calls that have already been registered", %{subject: subject} do
+    test "should not create calls that have already been registered", %{campaign: campaign, subject: subject} do
       known_subjects_answers = %{
         subject => %{
           "language" => "en",
@@ -1086,11 +1086,11 @@ defmodule ActiveMonitoring.AidaBotTest do
       }
 
       current_calls_count = Repo.one(from(c in "calls", select: count(c.id)))
-      AidaBot.create_missing_calls_and_answers(known_subjects_answers, [subject])
+      AidaBot.create_missing_calls_and_answers(known_subjects_answers, campaign)
       assert Repo.one(from(c in "calls", select: count(c.id))) == current_calls_count + 1
     end
 
-    test "should create missing call answers", %{subject: subject} do
+    test "should create missing call answers", %{campaign: campaign, subject: subject} do
       known_subjects_answers = %{
         subject => %{
           "language" => "en",
@@ -1114,7 +1114,7 @@ defmodule ActiveMonitoring.AidaBotTest do
       }
 
       current_call_answers_count = Repo.one(from(c in "call_answers", select: count(c.id)))
-      AidaBot.create_missing_calls_and_answers(known_subjects_answers, [subject])
+      AidaBot.create_missing_calls_and_answers(known_subjects_answers, campaign)
 
       assert Repo.one(from(c in "call_answers", select: count(c.id))) ==
                current_call_answers_count + 4
@@ -1168,7 +1168,7 @@ defmodule ActiveMonitoring.AidaBotTest do
              }
     end
 
-    test "should insert a call with it's current step", %{subject: subject} do
+    test "should insert a call with it's current step", %{campaign: campaign, subject: subject} do
       known_subjects_answers = %{
         subject => %{
           "language" => "en",
@@ -1188,7 +1188,7 @@ defmodule ActiveMonitoring.AidaBotTest do
         }
       }
 
-      AidaBot.create_missing_calls_and_answers(known_subjects_answers, [subject])
+      AidaBot.create_missing_calls_and_answers(known_subjects_answers, campaign)
 
       [first, second] = Repo.all(Call)
 
@@ -1196,6 +1196,118 @@ defmodule ActiveMonitoring.AidaBotTest do
                 second.current_step == "symptom:123e4567-e89b-12d3-a456-426655440222") or
                (second.current_step == "thanks" and
                   first.current_step == "symptom:123e4567-e89b-12d3-a456-426655440222")
+    end
+  end
+
+  describe "forward on any symptom" do
+    setup do
+      context = with_campaign_subjects(nil)
+      campaign = Keyword.get(context, :campaign)
+      subject = Keyword.get(context, :subject)
+      campaign = Campaign.changeset(campaign, %{forwarding_condition: "any"}) |> Repo.update!
+      {:ok, campaign: campaign, subject: subject}
+    end
+
+    test "doesn't have to forward", %{campaign: campaign, subject: subject} do
+      data = [
+        %{
+          "id" => "aaaaaaaa-336c-4ad2-ba5c-b49676da20f6",
+          "data" => %{
+            "language" => "es",
+            "survey/registration/registration_id" => subject.registration_identifier,
+            "survey/1/symptom:123e4567-e89b-12d3-a456-426655440222" => "no",
+            "survey/1/symptom:123e4567-e89b-12d3-a456-426655440111" => "no"
+          }
+        }
+      ]
+
+      retrieve_mocked_campaign_data(campaign, data)
+
+      assert Repo.one(Call).needs_to_be_forwarded == false
+    end
+
+    test "has to forward", %{campaign: campaign, subject: subject} do
+      data = [
+        %{
+          "id" => "aaaaaaaa-336c-4ad2-ba5c-b49676da20f6",
+          "data" => %{
+            "language" => "es",
+            "survey/registration/registration_id" => subject.registration_identifier,
+            "survey/1/symptom:123e4567-e89b-12d3-a456-426655440222" => "yes",
+            "survey/1/symptom:123e4567-e89b-12d3-a456-426655440111" => "no"
+          }
+        }
+      ]
+
+      retrieve_mocked_campaign_data(campaign, data)
+
+      assert Repo.one(Call).needs_to_be_forwarded == true
+    end
+  end
+
+  describe "forward on all symptoms" do
+    setup do
+      context = with_campaign_subjects(nil)
+      campaign = Keyword.get(context, :campaign)
+      subject = Keyword.get(context, :subject)
+      campaign = Campaign.changeset(campaign, %{forwarding_condition: "all"}) |> Repo.update!
+      {:ok, campaign: campaign, subject: subject}
+    end
+
+    test "doesn't have to forward", %{campaign: campaign, subject: subject} do
+      data = [
+        %{
+          "id" => "aaaaaaaa-336c-4ad2-ba5c-b49676da20f6",
+          "data" => %{
+            "language" => "es",
+            "survey/registration/registration_id" => subject.registration_identifier,
+            "survey/1/symptom:123e4567-e89b-12d3-a456-426655440222" => "yes",
+            "survey/1/symptom:123e4567-e89b-12d3-a456-426655440111" => "no"
+          }
+        }
+      ]
+
+      retrieve_mocked_campaign_data(campaign, data)
+
+      assert Repo.one(Call).needs_to_be_forwarded == false
+    end
+
+    test "has to forward", %{campaign: campaign, subject: subject} do
+      data = [
+        %{
+          "id" => "aaaaaaaa-336c-4ad2-ba5c-b49676da20f6",
+          "data" => %{
+            "language" => "es",
+            "survey/registration/registration_id" => subject.registration_identifier,
+            "survey/1/symptom:123e4567-e89b-12d3-a456-426655440222" => "yes",
+            "survey/1/symptom:123e4567-e89b-12d3-a456-426655440111" => "yes"
+          }
+        }
+      ]
+
+      retrieve_mocked_campaign_data(campaign, data)
+
+      assert Repo.one(Call).needs_to_be_forwarded == true
+    end
+
+    test "doesn't have to forward on ongoing session", %{campaign: campaign, subject: subject} do
+      data = [
+        %{
+          "id" => "aaaaaaaa-336c-4ad2-ba5c-b49676da20f6",
+          "data" => %{
+            "language" => "es",
+            "survey/registration/registration_id" => subject.registration_identifier,
+            "survey/1/symptom:123e4567-e89b-12d3-a456-426655440222" => "yes",
+            ".survey/1" => %{
+              "step" => 1
+            }
+          }
+        }
+      ]
+
+      retrieve_mocked_campaign_data(campaign, data)
+
+      assert Repo.one(Call).needs_to_be_forwarded == false
     end
   end
 
@@ -1213,6 +1325,34 @@ defmodule ActiveMonitoring.AidaBotTest do
         |> Repo.insert(on_conflict: :nothing)
 
       assert is_nil(ignored.id)
+    end
+  end
+
+  describe "subject names" do
+    setup [:with_campaign_subjects, :with_subject_calls]
+
+    test "should update a subject's contact address with their full name if available", %{
+      campaign: campaign,
+      subject: subject
+    } do
+      data = [
+        %{
+          "id" => "aaaaaaaa-336c-4ad2-ba5c-b49676da20f6",
+          "data" => %{
+            "language" => "en",
+            "survey/registration/registration_id" => subject.registration_identifier,
+            "first_name" => "Guy",
+            "last_name" => "Incognito"
+          }
+        }
+      ]
+      new_name = "Guy Incognito"
+
+      assert (Subject |> Repo.get!(subject.id)).contact_address != new_name
+
+      retrieve_mocked_campaign_data(campaign, data)
+
+      assert (Subject |> Repo.get!(subject.id)).contact_address == new_name
     end
   end
 

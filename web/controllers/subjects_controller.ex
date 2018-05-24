@@ -29,7 +29,7 @@ defmodule ActiveMonitoring.SubjectsController do
   end
 
   def export_csv(conn, %{"campaigns_id" => campaign_id}) do
-    header = ["ID", "Phone Number", "Enroll date", "First Call Date", "Last Call Date", "Last Successful Call", "Active Case"]
+    header = ["ID", "Contact Address", "Enroll date", "First Call Date", "Last Call Date", "Last Successful Call", "Active Case"]
 
     campaign = Repo.get!(Campaign, campaign_id)
     |> authorize_campaign(conn)
@@ -43,7 +43,7 @@ defmodule ActiveMonitoring.SubjectsController do
     |> Stream.map(fn subject ->
       [
         subject.registration_identifier,
-        subject.phone_number,
+        subject.contact_address,
         subject |> Subject.enroll_date,
         subject |> Subject.first_call_date || "",
         subject |> Subject.last_call_date || "",

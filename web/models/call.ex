@@ -11,6 +11,8 @@ defmodule ActiveMonitoring.Call do
     field :from, :string
     field :current_step, :string
     field :language, :string
+    field :forwarded, :boolean, default: false
+    field :needs_to_be_forwarded, :boolean, default: false
 
     belongs_to :campaign, Campaign
 
@@ -23,7 +25,7 @@ defmodule ActiveMonitoring.Call do
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:sid, :from, :current_step, :language, :campaign_id, :subject_id, :inserted_at])
+    |> cast(params, [:sid, :from, :current_step, :language, :campaign_id, :subject_id, :inserted_at, :forwarded, :needs_to_be_forwarded])
     |> assoc_constraint(:campaign)
   end
 

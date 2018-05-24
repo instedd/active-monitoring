@@ -19,3 +19,6 @@ config :active_monitoring, ActiveMonitoring.Repo,
   hostname: System.get_env("DATABASE_HOST") || "localhost",
   pool: Ecto.Adapters.SQL.Sandbox,
   ownership_timeout: 10 * 60 * 1000
+
+config :active_monitoring, ActiveMonitoring.Mailer,
+  adapter: Swoosh.Adapters.Test

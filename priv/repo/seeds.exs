@@ -25,16 +25,16 @@ campaign = Repo.insert!(%Campaign{
 })
 
 subjects = [
-  Repo.insert!(%Subject{phone_number: "123456781", campaign_id: campaign.id}),
-  Repo.insert!(%Subject{phone_number: "123456782", campaign_id: campaign.id}),
-  Repo.insert!(%Subject{phone_number: "123456783", campaign_id: campaign.id}),
-  Repo.insert!(%Subject{phone_number: "123456784", campaign_id: campaign.id}),
-  Repo.insert!(%Subject{phone_number: "123456785", campaign_id: campaign.id}),
-  Repo.insert!(%Subject{phone_number: "123456786", campaign_id: campaign.id}),
-  Repo.insert!(%Subject{phone_number: "123456787", campaign_id: campaign.id}),
-  Repo.insert!(%Subject{phone_number: "123456788", campaign_id: campaign.id}),
-  Repo.insert!(%Subject{phone_number: "123456789", campaign_id: campaign.id}),
-  Repo.insert!(%Subject{phone_number: "123456780", campaign_id: campaign.id}),
+  Repo.insert!(%Subject{contact_address: "123456781", campaign_id: campaign.id}),
+  Repo.insert!(%Subject{contact_address: "123456782", campaign_id: campaign.id}),
+  Repo.insert!(%Subject{contact_address: "123456783", campaign_id: campaign.id}),
+  Repo.insert!(%Subject{contact_address: "123456784", campaign_id: campaign.id}),
+  Repo.insert!(%Subject{contact_address: "123456785", campaign_id: campaign.id}),
+  Repo.insert!(%Subject{contact_address: "123456786", campaign_id: campaign.id}),
+  Repo.insert!(%Subject{contact_address: "123456787", campaign_id: campaign.id}),
+  Repo.insert!(%Subject{contact_address: "123456788", campaign_id: campaign.id}),
+  Repo.insert!(%Subject{contact_address: "123456789", campaign_id: campaign.id}),
+  Repo.insert!(%Subject{contact_address: "123456780", campaign_id: campaign.id}),
 ]
 
 

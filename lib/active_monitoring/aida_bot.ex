@@ -357,25 +357,52 @@ defmodule ActiveMonitoring.AidaBot do
     |> Map.new()
   end
 
-  def create_missing_calls_and_answers(answers_by_subject, _two) do
+  def with_needs_to_be_forwarded(call_changes, %{forwarding_condition: "any"}, answers) do
+    if (answers |> Enum.any?(fn {_symptom, answer} -> answer end)) do
+      Map.put(call_changes, :needs_to_be_forwarded, true)
+    else
+      call_changes
+    end
+  end
+
+  def with_needs_to_be_forwarded(%{current_step: "thanks"} = call_changes, %{forwarding_condition: "all"}, answers) do
+    if (answers |> Enum.all?(fn {_symptom, answer} -> answer end)) do
+      Map.put(call_changes, :needs_to_be_forwarded, true)
+    else
+      call_changes
+    end
+  end
+  def with_needs_to_be_forwarded(call_changes, %{forwarding_condition: "all"}, _answers), do: call_changes
+
+  def create_missing_calls_and_answers(answers_by_subject, campaign) do
     answers_by_subject
     |> Enum.each(fn {subject, subject_data} ->
       language = subject_data["language"]
+
+      full_name = subject_data["full_name"]
+
+      subject = if subject.contact_address != full_name do
+        Subject.changeset(subject, %{contact_address: full_name}) |> Repo.update!
+      else
+        subject
+      end
 
       subject_data["answers"]
       |> Enum.each(fn {day, answer} ->
         %{"current_step" => current_step, "symptoms" => symptoms} = answer
 
+        call_changes = with_needs_to_be_forwarded(%{
+          campaign_id: subject.campaign_id,
+          language: language,
+          subject_id: subject.id,
+          current_step: current_step,
+          inserted_at: date_for_monitoring_index(subject, day)
+        }, campaign, symptoms)
+
         %{id: call_id} =
           Call.changeset(
             %Call{},
-            %{
-              campaign_id: subject.campaign_id,
-              language: language,
-              subject_id: subject.id,
-              current_step: current_step,
-              inserted_at: date_for_monitoring_index(subject, day)
-            }
+            call_changes
           )
           |> Repo.insert!(
             on_conflict: [set: [current_step: current_step]],
@@ -404,7 +431,7 @@ defmodule ActiveMonitoring.AidaBot do
 
     subject_answers(campaign, body["data"])
     |> known_subjects_answers(campaign.subjects)
-    |> create_missing_calls_and_answers(campaign.subjects)
+    |> create_missing_calls_and_answers(campaign)
   end
 
   defp parse_boolean(text) do
@@ -440,6 +467,8 @@ defmodule ActiveMonitoring.AidaBot do
 
   defp calls_in_session(response, campaign) do
     language = response["language"]
+    first_name = response["first_name"]
+    last_name = response["last_name"]
     regex = ~r"^survey\/(\d+)\/symptom:([\w-]+)"
 
     all_answers =
@@ -462,8 +491,13 @@ defmodule ActiveMonitoring.AidaBot do
       |> Enum.group_by(fn %{day: day} -> day end, fn %{payload: payload} -> payload end)
       |> Map.new(fn {day, payload} -> {day, call_data(response, day, campaign, payload)} end)
 
-    %{"language" => language, "answers" => all_answers}
+    with_full_name_if_present(%{"language" => language, "answers" => all_answers}, first_name, last_name)
   end
+
+  defp with_full_name_if_present(session_info, nil, nil), do: session_info
+  defp with_full_name_if_present(session_info, nil, last_name), do: Map.put(session_info, "full_name", last_name)
+  defp with_full_name_if_present(session_info, first_name, nil), do: Map.put(session_info, "full_name", first_name)
+  defp with_full_name_if_present(session_info, first_name, last_name), do: Map.put(session_info, "full_name", "#{first_name} #{last_name}")
 
   def date_for_monitoring_index(subject, day) do
     Subject.enroll_date(subject)

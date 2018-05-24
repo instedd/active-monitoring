@@ -51,7 +51,7 @@ defmodule ActiveMonitoring.SubjectsControllerTest do
       assert length(response["data"]["subjects"]) == 4
       subj = Enum.find(response["data"]["subjects"], fn(sub) -> sub["registrationIdentifier"] == subject.registration_identifier end)
       assert subj
-      assert subj["phoneNumber"] == subject.phone_number
+      assert subj["contactAddress"] == subject.contact_address
     end
 
     test "subjects csv export", %{conn: conn, campaign: campaign, subject: subject} do
@@ -60,8 +60,8 @@ defmodule ActiveMonitoring.SubjectsControllerTest do
       assert get_resp_header(conn, "content-disposition") == ["attachment; filename=\"export_#{campaign.name}_subjects.csv\""]
       assert get_resp_header(conn, "content-type") == ["text/csv; charset=utf-8"]
       [header, line1 | _] = csv |> String.split("\r\n")
-      assert header == "ID,Phone Number,Enroll date,First Call Date,Last Call Date,Last Successful Call,Active Case"
-      assert line1 == "#{subject.registration_identifier},#{subject.phone_number},#{subject.inserted_at},,,,true"
+      assert header == "ID,Contact Address,Enroll date,First Call Date,Last Call Date,Last Successful Call,Active Case"
+      assert line1 == "#{subject.registration_identifier},#{subject.contact_address},#{subject.inserted_at},,,,true"
     end
 
     test "lists subjects by page size", %{conn: conn, campaign: campaign} do
@@ -74,15 +74,15 @@ defmodule ActiveMonitoring.SubjectsControllerTest do
       response = conn |> get(campaigns_subjects_path(conn, :index, campaign)) |> json_response(200)
       assert response["meta"]["count"] == 4
 
-      phone_number = "4440000"
+      contact_address = "4440000"
       registration_identifier = "12341234"
 
       response = conn
-      |> post(campaigns_subjects_path(conn, :create, campaign), subject: %{phone_number: phone_number, registration_identifier: registration_identifier})
+      |> post(campaigns_subjects_path(conn, :create, campaign), subject: %{contact_address: contact_address, registration_identifier: registration_identifier})
       |> json_response(201)
 
       assert response["data"]["id"]
-      assert response["data"]["phoneNumber"] == phone_number
+      assert response["data"]["contactAddress"] == contact_address
       assert response["data"]["campaignId"] == campaign.id
       assert response["data"]["registrationIdentifier"] == registration_identifier
 
@@ -91,17 +91,17 @@ defmodule ActiveMonitoring.SubjectsControllerTest do
     end
 
     test "updates a subject", %{conn: conn, campaign: campaign, subject: subject} do
-      phone_number = "4440000"
+      contact_address = "4440000"
       registration_identifier = "12341234"
-      assert subject.phone_number != phone_number
+      assert subject.contact_address != contact_address
       assert subject.registration_identifier != registration_identifier
 
       response = conn
-      |> patch(campaigns_subjects_path(conn, :update, campaign, subject), subject: %{phone_number: phone_number, registration_identifier: registration_identifier})
+      |> patch(campaigns_subjects_path(conn, :update, campaign, subject), subject: %{contact_address: contact_address, registration_identifier: registration_identifier})
       |> json_response(200)
 
       assert response["data"]["id"] == subject.id
-      assert response["data"]["phoneNumber"] == phone_number
+      assert response["data"]["contactAddress"] == contact_address
       assert response["data"]["registrationIdentifier"] == registration_identifier
       assert response["data"]["campaignId"] == campaign.id
     end
@@ -176,13 +176,13 @@ defmodule ActiveMonitoring.SubjectsControllerTest do
 
     test "doesn't allow to create another user's campaign subject", %{conn: conn, other_campaign: other_campaign} do
       assert_error_sent 403, fn ->
-        conn |> post(campaigns_subjects_path(conn, :create, other_campaign), subject: %{phone_number: "4444333221"})
+        conn |> post(campaigns_subjects_path(conn, :create, other_campaign), subject: %{contact_address: "4444333221"})
       end
     end
 
     test "doesn't allow to update another user's campaign subject", %{conn: conn, other_campaign: other_campaign, other_subject: other_subject} do
       assert_error_sent 403, fn ->
-        conn |> patch(campaigns_subjects_path(conn, :update, other_campaign, other_subject), subject: %{phone_number: "4444333221"})
+        conn |> patch(campaigns_subjects_path(conn, :update, other_campaign, other_subject), subject: %{contact_address: "4444333221"})
       end
     end
   end

@@ -12,7 +12,14 @@ defmodule ActiveMonitoring.Runtime.Flow do
     language = fetch_or_choose_language(call, digits, campaign)
     call = associate_call_subject(call, digits, campaign)
     step = next_step(campaign, call, digits) |> check_forward(campaign, call, digits)
-    Call.changeset(call, %{current_step: step, language: language}) |> Repo.update!
+    changeset = Call.changeset(call, %{current_step: step, language: language})
+    changeset = if step == "forward" do
+      Ecto.Changeset.put_change(changeset, :needs_to_be_forwarded, true)
+      |> Ecto.Changeset.put_change(:forwarded, true)
+    else
+      changeset
+    end
+    changeset |> Repo.update!
 
     action = action_for(step)
     {action, data_for(action, campaign, step, language)}

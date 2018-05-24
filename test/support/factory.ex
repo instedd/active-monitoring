@@ -62,7 +62,7 @@ defmodule ActiveMonitoring.Factory do
 
   def subject_factory do
     %Subject{
-      phone_number: sequence(:phone_number, &"555#{&1 |> Integer.to_string |> String.pad_leading(4, "0")}"),
+      contact_address: sequence(:contact_address, &"555#{&1 |> Integer.to_string |> String.pad_leading(4, "0")}"),
       registration_identifier: sequence(:registration_identifier, fn(n) -> n |> Integer.to_string |> String.pad_leading(8, "0") end),
       campaign: build(:campaign)
     }

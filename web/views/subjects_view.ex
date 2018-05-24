@@ -21,7 +21,7 @@ defmodule ActiveMonitoring.SubjectsView do
       id: subject.id,
       campaign_id: subject.campaign_id,
       registration_identifier: subject.registration_identifier,
-      phone_number: subject.phone_number,
+      contact_address: subject.contact_address,
       enroll_date: Subject.enroll_date(subject),
       first_call_date: Subject.first_call_date(subject),
       last_call_date: Subject.last_call_date(subject),

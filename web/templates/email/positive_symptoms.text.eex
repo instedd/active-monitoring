@@ -1,0 +1,5 @@
+Hello <%= @forwarding_address %>,
+
+Go to Messenger and look for <%= @contact_address %> (registration identifier: <%= @registration_identifier %>) that reported positive symptoms.
+
+Thanks
