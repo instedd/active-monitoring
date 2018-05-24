@@ -6,6 +6,7 @@ defmodule ActiveMonitoring.Runtime.Broker do
   alias ActiveMonitoring.{Repo, Campaign, Channel, AidaBot, Subject, Call}
 
   @poll_interval :timer.minutes(15)
+  @fetch_interval :timer.minutes(10)
   @notify_interval :timer.minutes(5)
   @server_ref {:global, __MODULE__}
 
@@ -28,8 +29,20 @@ defmodule ActiveMonitoring.Runtime.Broker do
 
   def init(_args) do
     :timer.send_after(1000, :poll)
+    :timer.send_after(2000, :fetch)
     :timer.send_after(3000, :notify)
     {:ok, nil}
+  end
+
+  def handle_info(:fetch, state, now) do
+    try do
+      active_campaigns_to_remind(now)
+      |> Enum.each(fn campaign -> AidaBot.retrieve_responses(campaign) end)
+
+      {:noreply, state}
+    after
+      :timer.send_after(@fetch_interval, :fetch)
+    end
   end
 
   def handle_info(:poll, state, now) do
@@ -94,10 +107,6 @@ defmodule ActiveMonitoring.Runtime.Broker do
           "Unknown response publishing manifest: #{campaign.aida_bot_id}\n#{inspect(response)}\n\n"
         )
     end
-
-    # TODO: it may make sense to have a different broker to receive the responses
-    # ie, constantly poll instead of doing it once a day
-    AidaBot.retrieve_responses(campaign)
   end
 
   defp call_pending_subjects(%{subjects: subjects} = campaign, now) do
