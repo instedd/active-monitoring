@@ -36,7 +36,7 @@ defmodule ActiveMonitoring.Runtime.Broker do
 
   def handle_info(:fetch, state, now) do
     try do
-      active_campaigns_to_remind(now)
+      active_chat_campaigns(now)
       |> Enum.each(fn campaign -> AidaBot.retrieve_responses(campaign) end)
 
       {:noreply, state}
@@ -77,6 +77,11 @@ defmodule ActiveMonitoring.Runtime.Broker do
 
   def handle_info(message, state) do
     handle_info(message, state, Timex.now)
+  end
+
+  defp active_chat_campaigns(now) do
+    Repo.all(from c in Campaign, where: (c.mode == "chat") and not(is_nil(c.started_at)) )
+    |> Repo.preload([subjects: :campaign])
   end
 
   defp active_campaigns_to_remind(now) do
