@@ -77,11 +77,12 @@ Coherence uses Swoosh as it's mailer lib. In development, we use Swoosh's local 
 mounts a mini email client that displays sent emails at `{BASE_URL}/dev/mailbox`. That comes handy
 to test flows which depend on email without having to send them in development.
 
-## Learn more
+## Intercom
 
-* Phoenix
-  * Official website: http://www.phoenixframework.org/
-  * Guides: http://phoenixframework.org/docs/overview
-  * Docs: https://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
+Active Monitoring supports Intercom as its CRM platform. To load the Intercom chat widget, simply start Active Monitoring with the env variable `INTERCOM_APP_ID` set to your Intercom app id (https://www.intercom.com/help/faqs-and-troubleshooting/getting-set-up/where-can-i-find-my-workspace-id-app-id).
+
+Active Monitoring will forward any conversation with a logged user identifying them through their email address. Anonymous, unlogged users will also be able to communicate.
+
+If you don't want to use Intercom, you can simply omit `INTERCOM_APP_ID` or set it to `''`.
+
+To test the feature in development, add the `INTERCOM_APP_ID` variable and its value to the `environment` object inside the `app` service in `docker-compose.yml`.
