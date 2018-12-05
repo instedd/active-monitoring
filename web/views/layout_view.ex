@@ -12,7 +12,8 @@ defmodule ActiveMonitoring.LayoutView do
       version: version,
       user: user_email,
       logout_url: guisso_logout_url(conn),
-      verboice: [Application.get_env(:active_monitoring, :verboice)] |> guisso_configs
+      verboice: [Application.get_env(:active_monitoring, :verboice)] |> guisso_configs,
+      intercom_app_id: ActiveMonitoring.Intercom.intercom_app_id()
     }
 
     {:ok, config_json} = client_config |> Poison.encode

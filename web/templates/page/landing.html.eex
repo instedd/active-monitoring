@@ -1,3 +1,7 @@
+<script>
+  <%= raw(config_intercom(@conn)) %>
+</script>
+
 <body class="landing">
   <a href="javascript:void(0)" id="Overlay" class="overlay" onclick="closeNav()"></a>
   <div id="Sidenav" class="sidenav">

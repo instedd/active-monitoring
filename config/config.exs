@@ -81,6 +81,8 @@ end
 
 config :active_monitoring, :version, version
 
+config :active_monitoring, intercom_app_id: System.get_env("INTERCOM_APP_ID")
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

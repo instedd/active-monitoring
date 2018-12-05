@@ -11,6 +11,10 @@
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
+  <script>
+    <%= raw(config_intercom(@conn)) %>
+  </script>
+
   <body>
     <div class="container">
       <header class="header">

@@ -10,7 +10,9 @@ import createHistory from 'history/createBrowserHistory'
 import { routerMiddleware } from 'react-router-redux'
 import thunkMiddleware from 'redux-thunk'
 import logger from 'redux-logger'
+import Intercom from 'react-intercom'
 
+import { config } from './config'
 import reducers from './reducers'
 import Nav from './components/Nav'
 import Campaign from './components/campaigns/Campaign'
@@ -48,6 +50,16 @@ if (root) {
                 <Route exact path='/campaigns/:campaignId/subjects' component={Subjects} />
               </Switch>
             </div>
+            {
+              config.intercom_app_id ? (
+                <Intercom
+                  appID={config.intercom_app_id}
+                  user_id={config.user}
+                  email={config.user}
+                  name={config.user}
+                />
+              ) : null
+            }
           </main>
         </div>
       </Router>
