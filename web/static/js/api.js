@@ -97,7 +97,12 @@ export const createCampaign = (campaign) => {
 }
 
 export const logout = (guissoLogoutUrl) => {
-  apiDelete('sessions').then(() => { window.location.href = guissoLogoutUrl })
+  apiDelete('sessions').then(() => {
+    window.location.href = guissoLogoutUrl
+    if (window.Intercom != null) {
+      window.Intercom('shutdown')
+    }
+  })
 }
 
 export const updateCampaign = (campaign) => {
