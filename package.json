@@ -14,7 +14,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "iso-639-3": "^1.0.0",
     "isomorphic-fetch": "^2.2.1",
-    "jquery": "^3.2.1",
+    "jquery": "^3.5.0",
     "lodash": "^4.17.4",
     "moment": "^2.20.1",
     "phoenix": "file:deps/phoenix",
