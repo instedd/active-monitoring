@@ -2,7 +2,7 @@ FROM elixir:1.4.2
 
 RUN \
   apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql-client inotify-tools sox libsox-fmt-mp3 && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql-client inotify-tools sox libsox-fmt-mp3 ca-certificates && \
   apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN mix local.hex --force
